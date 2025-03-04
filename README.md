@@ -39,13 +39,37 @@ Neuro Resume — инновационный проект, использующи
     <td align="center">
       <a href="https://github.com/ptmff">
         <img src="https://github.com/ptmff.png" width="100px;" alt="ptmff"/><br />
-        <sub><b>username1</b></sub>
+        <sub><b>ptmff</b></sub>
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/username2">
-        <img src="https://github.com/username2.png" width="100px;" alt="username2"/><br />
-        <sub><b>username2</b></sub>
+      <a href="https://github.com/denis-mist">
+        <img src="https://github.com/denis-mist.png" width="100px;" alt="username2"/><br />
+        <sub><b>denis-mist</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/denis-mist">
+        <img src="https://github.com/denis-mist.png" width="100px;" alt="username2"/><br />
+        <sub><b>denis-mist</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/denis-mist">
+        <img src="https://github.com/denis-mist.png" width="100px;" alt="username2"/><br />
+        <sub><b>denis-mist</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/denis-mist">
+        <img src="https://github.com/denis-mist.png" width="100px;" alt="username2"/><br />
+        <sub><b>denis-mist</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/denis-mist">
+        <img src="https://github.com/denis-mist.png" width="100px;" alt="username2"/><br />
+        <sub><b>denis-mist</b></sub>
       </a>
     </td>
     <!-- Добавьте больше участников по необходимости -->
