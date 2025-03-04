@@ -1,40 +1,38 @@
 # Neuro Resume
 
-[![Последний коммит](https://img.shields.io/github/last-commit/ptmff/neuro_resume?style=flat-square)](https://github.com/YOUR_GITHUB_USERNAME/neuro_resume/commits/main)
-[![Размер репозитория](https://img.shields.io/github/repo-size/ptmff/neuro_resume?style=flat-square)](https://github.com/YOUR_GITHUB_USERNAME/neuro_resume)
+[![Последний коммит](https://img.shields.io/github/last-commit/ptmff/neuro_resume?style=flat-square)](https://github.com/ptmff/neuro_resume/commits/main)
+[![Размер репозитория](https://img.shields.io/github/repo-size/ptmff/neuro_resume?style=flat-square)](https://github.com/ptmff/neuro_resume)
 [![Лицензия](https://img.shields.io/github/license/ptmff/neuro_resume?style=flat-square)](LICENSE)
 
-Neuro Resume – инновационный проект для создания и анализа резюме с использованием нейросетевых алгоритмов.
+Neuro Resume — инновационный проект, использующий нейросетевые алгоритмы для создания, анализа и оптимизации резюме. Проект автоматически распознаёт ключевую информацию, оценивает данные и генерирует персональные рекомендации по улучшению документа. Современный интерактивный интерфейс делает работу с резюме простой и удобной.
 
-## Особенности
-- **Анализ резюме:** Автоматическое распознавание и оценка данных.
-- **Рекомендации:** Генерация персональных рекомендаций по улучшению.
-- **Интерактивный интерфейс:** Удобное и современное оформление.
+---
 
-## Виджеты
+## Особенности проекта
 
-### GitHub Stats
-Отличные динамические виджеты для отображения статистики вашего профиля:
+- **Анализ резюме:** Автоматическое распознавание ключевых данных и оценка профессионального опыта.
+- **Персональные рекомендации:** Генерация советов по улучшению структуры и содержания резюме.
+- **Интерактивный интерфейс:** Удобное и современное оформление для пользователей.
 
-- **Общая статистика:**
+---
 
-  ![Neuro Resume Stats](https://github-readme-stats.vercel.app/api?username=ptmff&show_icons=true&theme=radical)
+## Виджеты проекта
 
-- **Топ языки программирования:**
+### Статистика репозитория
 
-  ![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=ptmff&layout=compact)
+Динамические виджеты отображают основную статистику проекта:
 
-### Статистика активности
-Отображение активности коммитов (статистика, streak и т.д.):
+- **Общая статистика проекта:**
 
-- **GitHub Streak:**
+  ![Project Stats](https://github-readme-stats.vercel.app/api/pin/?username=ptmff&repo=neuro_resume&theme=radical)
 
-  ![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=ptmff&theme=dark)
+- **Топ языки проекта:**
 
-> Если хотите отобразить статистику коммитов по участникам, можно воспользоваться сторонними инструментами вроде [git-fame](https://github.com/casperdcl/git-fame) для локального анализа и добавить результаты в раздел «Коммиты» ниже.
+  ![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=ptmff&repo=neuro_resume&layout=compact&theme=radical)
 
-### Коммиты по участникам
-Для визуализации вклада каждого участника можно добавить список с аватарами:
+### Контрибьюторы
+
+Вклад нашей команды и активность участников проекта:
 
 <table>
   <tr>
@@ -53,3 +51,16 @@ Neuro Resume – инновационный проект для создания
     <!-- Добавьте больше участников по необходимости -->
   </tr>
 </table>
+
+> Для более детального анализа вклада каждого участника можно воспользоваться сторонними инструментами, например, [git-fame](https://github.com/casperdcl/git-fame).
+
+---
+
+## Вклад и обратная связь
+
+Мы всегда открыты для новых идей и улучшений!  
+Если у вас есть предложения или вопросы, пожалуйста, [создайте issue](https://github.com/ptmff/neuro_resume/issues).
+
+---
+
+© 2025 Neuro Resume. Все права защищены.
