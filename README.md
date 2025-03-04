@@ -16,8 +16,6 @@ Neuro Resume — инновационный проект, использующи
 
 ---
 
-## Виджеты проекта
-
 ### Статистика репозитория
 
 - **Общая статистика проекта:**
@@ -47,28 +45,26 @@ Neuro Resume — инновационный проект, использующи
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/denis-mist">
-        <img src="https://github.com/denis-mist.png" width="100px;" alt="username2"/><br />
-        <sub><b>denis-mist</b></sub>
+      <a href="https://github.com/fuglyy">
+        <img src="https://github.com/fuglyy.png" width="100px;" alt="fuglyy"/><br />
+        <sub><b>fuglyy</b></sub>
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/denis-mist">
-        <img src="https://github.com/denis-mist.png" width="100px;" alt="username2"/><br />
-        <sub><b>denis-mist</b></sub>
+      <a href="https://github.com/n1ck0n">
+        <img src="https://github.com/n1ck0n.png" width="100px;" alt="n1ck0n"/><br />
+        <sub><b>n1ck0n</b></sub>
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/denis-mist">
-        <img src="https://github.com/denis-mist.png" width="100px;" alt="username2"/><br />
-        <sub><b>denis-mist</b></sub>
+      <a href="https://github.com/xle6yc3k">
+        <img src="https://github.com/xle6yc3k.png" width="100px;" alt="xle6yc3k"/><br />
+        <sub><b>xle6yc3k</b></sub>
       </a>
     </td>
-    <!-- Добавьте больше участников по необходимости -->
   </tr>
 </table>
 
-> Свои карточки поправьте, пока на всех Дениса повесил
 
 ---
 
@@ -80,3 +76,5 @@ Neuro Resume — инновационный проект, использующи
 ---
 
 © 2025 Neuro Resume. Все права защищены.
+
+
