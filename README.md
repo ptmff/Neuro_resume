@@ -37,8 +37,8 @@ Neuro Resume — инновационный проект, использующи
 <table>
   <tr>
     <td align="center">
-      <a href="https://github.com/username1">
-        <img src="https://github.com/username1.png" width="100px;" alt="username1"/><br />
+      <a href="https://github.com/ptmff">
+        <img src="https://github.com/ptmff.png" width="100px;" alt="ptmff"/><br />
         <sub><b>username1</b></sub>
       </a>
     </td>
