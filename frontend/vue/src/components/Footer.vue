@@ -58,3 +58,47 @@
     </div>
   </footer>
 </template>
+
+<style>
+/* 🔹 Основные стили футера */
+.footer {
+  height: 500px;
+  background-color: #fff;
+  color: #3b2f2f;
+}
+
+footer .row {
+  
+}
+
+/* 🔹 Логотип */
+.footer-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #8b5e3c;
+  text-decoration: none;
+}
+
+/* 🔹 Описание */
+.footer-description {
+  font-size: 0.9rem;
+  color: #6d4c2f;
+  max-width: 250px;
+}
+
+/* 🔹 Социальные иконки */
+.social-icons {
+  margin: 15px 0;
+}
+
+.social-icon {
+  color: #8b5e3c;
+  font-size: 1.2rem;
+  margin-right: 10px;
+  transition: color 0.3s ease;
+}
+
+.social-icon:hover {
+  color: #3b2f2f;
+}
+</style>
