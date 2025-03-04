@@ -20,8 +20,6 @@ Neuro Resume — инновационный проект, использующи
 
 ### Статистика репозитория
 
-Динамические виджеты отображают основную статистику проекта:
-
 - **Общая статистика проекта:**
 
   ![Project Stats](https://github-readme-stats.vercel.app/api/pin/?username=ptmff&repo=neuro_resume&theme=radical)
@@ -29,7 +27,7 @@ Neuro Resume — инновационный проект, использующи
 - **Топ языки проекта:**
 
   ![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=ptmff&repo=neuro_resume&layout=compact&theme=radical)
-
+  думаю нужно залить что-то чтобы нормально отображало
 ### Контрибьюторы
 
 Наша команда:
