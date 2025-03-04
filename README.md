@@ -80,3 +80,8 @@ Neuro Resume — инновационный проект, использующи
 ---
 
 © 2025 Neuro Resume. Все права защищены.
+
+
+[![All Contributors](https://img.shields.io/github/all-contributors/ptmff/neuro_resume?color=ee8449&style=flat-square)](#contributors)
+
+
