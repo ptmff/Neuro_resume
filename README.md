@@ -32,7 +32,7 @@ Neuro Resume — инновационный проект, использующи
 
 ### Контрибьюторы
 
-Вклад нашей команды и активность участников проекта:
+Наша команда:
 
 <table>
   <tr>
@@ -66,17 +66,11 @@ Neuro Resume — инновационный проект, использующи
         <sub><b>denis-mist</b></sub>
       </a>
     </td>
-    <td align="center">
-      <a href="https://github.com/denis-mist">
-        <img src="https://github.com/denis-mist.png" width="100px;" alt="username2"/><br />
-        <sub><b>denis-mist</b></sub>
-      </a>
-    </td>
     <!-- Добавьте больше участников по необходимости -->
   </tr>
 </table>
 
-> Для более детального анализа вклада каждого участника можно воспользоваться сторонними инструментами, например, [git-fame](https://github.com/casperdcl/git-fame).
+> Свои карточки поправьте, пока на всех Дениса повесил
 
 ---
 
