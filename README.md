@@ -1,8 +1,8 @@
 # Neuro Resume
 
-[![Последний коммит](https://img.shields.io/github/last-commit/ptmff/neuro-resume?style=flat-square)](https://github.com/YOUR_GITHUB_USERNAME/neuro-resume/commits/main)
-[![Размер репозитория](https://img.shields.io/github/repo-size/ptmff/neuro-resume?style=flat-square)](https://github.com/YOUR_GITHUB_USERNAME/neuro-resume)
-[![Лицензия](https://img.shields.io/github/license/ptmff/neuro-resume?style=flat-square)](LICENSE)
+[![Последний коммит](https://img.shields.io/github/last-commit/ptmff/neuro_resume?style=flat-square)](https://github.com/YOUR_GITHUB_USERNAME/neuro_resume/commits/main)
+[![Размер репозитория](https://img.shields.io/github/repo-size/ptmff/neuro_resume?style=flat-square)](https://github.com/YOUR_GITHUB_USERNAME/neuro_resume)
+[![Лицензия](https://img.shields.io/github/license/ptmff/neuro_resume?style=flat-square)](LICENSE)
 
 Neuro Resume – инновационный проект для создания и анализа резюме с использованием нейросетевых алгоритмов.
 
