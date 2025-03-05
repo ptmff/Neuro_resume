@@ -101,4 +101,53 @@ footer .row {
 .social-icon:hover {
   color: #3b2f2f;
 }
+
+/* 🔹 Заголовки секций */
+.footer-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #3b2f2f;
+  margin-bottom: 15px;
+}
+
+/* 🔹 Ссылки */
+.footer-links {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links li {
+  margin-bottom: 8px;
+}
+
+.footer-links a {
+  text-decoration: none;
+  color: #6d4c2f;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: #8b5e3c;
+}
+
+/* 🔹 Юридическая информация */
+.terms {
+  margin-top: 5px;
+}
+
+.terms a {
+  font-size: 0.9rem;
+  color: #6d4c2f;
+  text-decoration: none;
+}
+
+.terms a:hover {
+  color: #8b5e3c;
+}
+
+/* 🔹 Копирайт */
+.copyright {
+  font-size: 0.9rem;
+  color: #6d4c2f;
+}
 </style>
