@@ -1,6 +1,20 @@
 <template>
-  <div class="page">
-    <h1>Создание резюме</h1>
-    <p>Создайте своё идеальное резюме.</p>
-  </div>
+  
+
+<div class="page">
+  <ResumeForm/>
+</div>
 </template>
+
+<script>
+import ResumeForm from '../components/ResumeForm.vue';
+
+export default{
+components:{
+  ResumeForm
+},
+};
+</script>
+
+<style scoped>
+</style>

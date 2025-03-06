@@ -1,6 +1,6 @@
 <template>
   <footer class="footer py-5 fade-up">
-    <div class="container fixed-bottom">
+    <div class="container ">
       <div class="row align-items-center justify-content-center">
         <!-- Левая часть: Логотип и текст -->
         <div class="col-lg-4 col-md-12 text-center text-lg-start">
