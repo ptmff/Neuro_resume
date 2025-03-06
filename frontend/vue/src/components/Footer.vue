@@ -150,4 +150,32 @@ footer .row {
   font-size: 0.9rem;
   color: #6d4c2f;
 }
+
+/* 🔹 Адаптация <991px */
+@media (max-width: 991px) {
+    .footer {
+      height: 600px;
+    }
+    .footer-description {
+        margin: 0 auto;
+    }
+}
+
+/* 🔹 Полная адаптация <768px */
+@media (max-width: 768px) {
+  .footer {
+    height: 700px;
+  }
+  .footer .row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-links {
+    width: 100%;
+    text-align: center;
+  }
+}
 </style>
