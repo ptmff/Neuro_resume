@@ -60,7 +60,22 @@
     min-height: 640px;
   }
   
-
+  .resume-header h3 {
+    color: #8b5e3c;
+    margin-bottom: 5px;
+  }
+  
+  .profession {
+    font-size: 1.5rem;
+    color: #666;
+  }
+  
+  .resume-section h5 {
+    color: #8b5e3c;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+  }
   </style>
   
   
