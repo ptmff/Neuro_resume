@@ -29,3 +29,34 @@
     </div>
   </nav>
 </template>
+
+<style>
+/* 🔹 Стили лого */
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* 🔹 Стили для навигации */
+.navbar-nav .nav-link {
+  color: #5A3E2B;
+  position: relative;
+  text-decoration: none;
+}
+
+/* 🔹 Подчеркивание при наведении */
+.navbar-nav .nav-link::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 2px;
+  background: #8B5E3C;
+  transition: width 0.3s ease-in-out;
+}
+
+.navbar-nav .nav-link:hover::after,
+.navbar-nav .router-link-active::after {
+  width: 100%;
+}
+
+</style>
