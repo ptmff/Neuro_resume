@@ -51,5 +51,9 @@ onMounted(() => {
   transform: translateY(0);
   }
 
+  @media (max-width: 768px) {
+  h2 { font-size: 1.5rem; }
+  i { font-size: 1.2rem; }
+  }
   </style>
   
