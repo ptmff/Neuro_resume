@@ -58,20 +58,38 @@
   
   
   <style>
-  section { text-align: center; }
-  h2 { font-size: 1.5rem; }
-  i { font-size: 1.2rem; margin-right: 5px; }
+/* 🔹 Основная секция */
+.how-it-works {
+  background-color: #fff;
+  padding: 60px 0;
+}
 
-  div {
+/* 🔹 Заголовок */
+.section-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #3b2f2f;
+  margin-bottom: 40px;
+}
+
+/* 🔹 Контейнер шагов */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* 🔹 Элемент шага */
+.timeline-step {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 30px;
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-  }
-
-  div.appear {
-  opacity: 1;
-  transform: translateY(0);
-  }
+  transform: translateY(40px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
 
 @media (min-width: 768.1px) {
   .timeline {
