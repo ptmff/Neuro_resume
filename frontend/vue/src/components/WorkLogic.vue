@@ -118,6 +118,34 @@
   font-size: 1.5rem;
 }
 
+/* 🔹 Вертикальная линия (только на мобилке) */
+.timeline-line {
+  width: 4px;
+  height: 50px;
+  background-color: #8b5e3c;
+  margin-top: 10px;
+}
+
+/* 🔹 Текстовый блок */
+.timeline-text {
+  max-width: 300px;
+}
+
+/* 🔹 Заголовок шага */
+.step-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #3b2f2f;
+  margin-bottom: 5px;
+}
+
+/* 🔹 Описание шага */
+.step-text {
+  font-size: 1rem;
+  color: #6d4c2f;
+}
+
+
 @media (min-width: 768.1px) {
   .timeline {
     display: flex;
