@@ -1,28 +1,21 @@
 <template>
     <section>
       <h2>Как это работает?</h2>
-      <div>
-        <i class="fas fa-user"></i>
-        <h4>Заполни данные</h4>
-        <p>Введи информацию о себе.</p>
-      </div>
-      <div>
-        <i class="fas fa-palette"></i>
-        <h4>Выбери стиль</h4>
-        <p>Настрой резюме под себя.</p>
-      </div>
-      <div>
-        <i class="fas fa-magic"></i>
-        <h4>Оптимизируй</h4>
-        <p>Используй AI для улучшения.</p>
-      </div>
-      <div>
-        <i class="fas fa-download"></i>
-        <h4>Скачай и отправь</h4>
-        <p>Скачай PDF и отправь.</p>
+      <div v-for="(step, index) in steps" :key="index">
+        <i :class="step.icon"></i>
+        <h4>{{ step.title }}</h4>
+        <p>{{ step.text }}</p>
       </div>
     </section>
   </template>
+  
+  <script setup>
+  const steps = [
+    { icon: "fas fa-user", title: "Заполни данные", text: "Введи информацию о себе." },
+    { icon: "fas fa-palette", title: "Выбери стиль", text: "Настрой резюме под себя." },
+  ];
+  </script>
+  
   
   <style>
   section { text-align: center; }
