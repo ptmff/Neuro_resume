@@ -83,3 +83,101 @@ const setActiveAdvantage = (index) => {
   activeIndex.value = index;
 };
 </script>
+
+<style>
+/* 🔹 Основная секция */
+.advantages {
+  background-color: #f5ebe0;
+  padding: 60px 0;
+}
+
+/* 🔹 Заголовок */
+.section-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #3b2f2f;
+  margin-bottom: 40px;
+}
+
+/* 🔹 Контейнер преимуществ */
+.advantages-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  gap: 30px;
+}
+
+/* 🔹 Список преимуществ */
+.advantages-list {
+  list-style: none;
+  padding: 0;
+  width: 40%;
+}
+
+.advantages-list li {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  font-size: 1.2rem;
+  color: #6d4c2f;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.advantages-list li:hover,
+.advantages-list li.active {
+  background: #8b5e3c;
+  color: #fff;
+}
+
+/* 🔹 Иконки */
+.advantage-icon {
+  font-size: 1.5rem;
+  margin-right: 10px;
+}
+
+/* 🔹 Описание с изображением */
+.advantage-description {
+  width: 55%;
+  background: linear-gradient(135deg, rgba(139, 94, 60, 0.1), rgba(139, 94, 60, 0.2));
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.advantage-image {
+  flex: 0 0 80px;
+}
+
+.advantage-image img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+/* 🔹 Текст */
+.advantage-text {
+  flex: 1;
+}
+
+.advantage-text h4 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #3b2f2f;
+  margin-bottom: 10px;
+}
+
+.advantage-text p {
+  font-size: 1rem;
+  color: #6d4c2f;
+}
+</style>
