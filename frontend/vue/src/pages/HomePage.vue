@@ -2,6 +2,7 @@
   <div>
     <HeroSection />
     <FunctionalSection />
+    
   </div>
 </template>
 
@@ -13,6 +14,7 @@ export default {
   components: {
     HeroSection,
     FunctionalSection,
+
   },
 };
 </script>
