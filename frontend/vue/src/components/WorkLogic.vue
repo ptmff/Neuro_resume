@@ -23,5 +23,17 @@
   section { text-align: center; }
   h2 { font-size: 1.5rem; }
   i { font-size: 1.2rem; margin-right: 5px; }
+
+  div {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  div.appear {
+  opacity: 1;
+  transform: translateY(0);
+  }
+
   </style>
   
