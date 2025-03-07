@@ -56,4 +56,23 @@
   width: 100%;
   max-width: 350px;
 }
+
+/* 🔹 Иконка */
+.feature-icon {
+    font-size: 3rem;
+    color: #8b5e3c;
+    margin-bottom: 15px;
+  }
+  
+  /* 🔹 Текст */
+  .feature-title {
+    font-size: 1.5rem;
+    color: #3b2f2f;
+    font-weight: bold;
+  }
+  
+  .feature-description {
+    font-size: 1rem;
+    color: #6d4c2f;
+  }
 </style>
