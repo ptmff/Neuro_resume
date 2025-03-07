@@ -15,3 +15,42 @@
       </div>
     </section>
   </template>
+
+<style>
+/* 🔹 Основная секция */
+.hero-section {
+  position: relative;
+  background-color: #ece7e2;
+  padding: 100px 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  min-height: 600px;
+}
+
+/* 🔹 Контейнер для контента */
+.hero-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1400px;
+  width: 100%;
+  padding: 0 50px;
+  position: relative;
+  z-index: 2;
+}
+
+/* 🔹 Изображение куба */
+.hero-cube {
+  position: absolute;
+  right: -10%;
+  top: 50%;
+  transform: translateY(-50%) rotate(30deg);
+  width: 70vw;
+  max-width: 900px;
+  z-index: 1000;
+  filter: grayscale(80%) sepia(50%) saturate(60%) hue-rotate(10deg) brightness(110%);
+}
+</style>
