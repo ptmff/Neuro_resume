@@ -1,7 +1,18 @@
 <template>
-    <div class="page">
-      <h1>Главная</h1>
-      <p>Главная страница.</p>
-    </div>
-  </template>
-  
+  <div>
+    <HeroSection />
+  </div>
+</template>
+
+<script>
+import HeroSection from "../components/HeroSection.vue";
+
+export default {
+  components: {
+    HeroSection,
+  },
+};
+</script>
+
+<style scoped>
+</style>
