@@ -76,6 +76,15 @@
     transition: all 0.3s;
   }
   
+  .template-card:hover {
+    border-color: #8b5e3c;
+  }
+  
+  .template-card.selected {
+    border-color: #8b5e3c;
+    background-color: rgba(139, 94, 60, 0.1);
+  }
+  
   .template-name {
     font-size: 0.9rem;
     text-align: center;
