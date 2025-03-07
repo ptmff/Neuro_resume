@@ -29,3 +29,31 @@
     }
   };
   </script>
+
+<style>
+/* 🔹 Основная секция */
+.functional-section {
+  background-color: #fff;
+  padding: 60px 0;
+}
+
+/* 🔹 Контейнер */
+.container-fluid {
+  max-width: 1200px;
+}
+
+/* 🔹 Карточки */
+.functional-item {
+  padding: 20px;
+  border: 2px solid #8b5e3c;
+  border-radius: 12px;
+  margin: 15px;
+  text-align: center;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  max-width: 350px;
+}
+</style>
