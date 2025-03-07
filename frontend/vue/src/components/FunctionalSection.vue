@@ -1,20 +1,25 @@
 <template>
     <section>
-      <div>
-        <i class="fas fa-bolt"></i>
-        <h4>Быстро и просто</h4>
-        <p>Создавайте резюме за пару минут.</p>
-      </div>
-      <div>
-        <i class="fas fa-brain"></i>
-        <h4>AI-анализ</h4>
-        <p>Алгоритм анализирует ваш опыт.</p>
-      </div>
-      <div>
-        <i class="fas fa-file-alt"></i>
-        <h4>Готовые шаблоны</h4>
-        <p>Выбирайте стильные шаблоны.</p>
+      <div v-for="(feature, index) in features" :key="index">
+        <i :class="feature.icon"></i>
+        <h4>{{ feature.title }}</h4>
+        <p>{{ feature.description }}</p>
       </div>
     </section>
   </template>
+  
+  <script>
+  export default {
+    name: "FunctionalSection",
+    setup() {
+      return {
+        features: [
+          { icon: "fas fa-bolt", title: "Быстро и просто", description: "Создавайте резюме за пару минут." },
+          { icon: "fas fa-brain", title: "AI-анализ", description: "Алгоритм анализирует ваш опыт." },
+          { icon: "fas fa-file-alt", title: "Готовые шаблоны", description: "Выбирайте стильные шаблоны." }
+        ]
+      };
+    }
+  };
+  </script>
   
