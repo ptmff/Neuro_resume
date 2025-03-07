@@ -91,5 +91,33 @@
     background-color: #3b2f2f !important;
     color: #ece7e2 !important;
   }
+  
+  /* 🔹 Адаптивность */
+  @media (max-width: 768px) {
+    .hero-content {
+      flex-direction: column;
+      text-align: center;
+    }
+  
+    /* Выравнивание кнопок по центру */
+    .hero-buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+  
+    .hero-btn {
+      width: 100%;
+      max-width: 250px;
+    }
+  }
+  
+  /* 🔹 Блюр куба при наложении текста на куб */
+  @media (max-width: 945px) {
+    .hero-cube {
+      filter: grayscale(85%) sepia(40%) brightness(115%) contrast(85%) blur(5px);
+    }
+  }
   </style>
   
