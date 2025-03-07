@@ -11,6 +11,17 @@
             <p class="mb-0">Наш алгоритм проанализировал ваше резюме и предлагает улучшения</p>
           </div>
         </div>
+        
+        <div class="optimization-suggestions">
+          <div class="suggestion-item p-3 mb-2" v-for="(suggestion, index) in aiSuggestions" :key="index">
+            <h6>{{ suggestion.title }}</h6>
+            <p>{{ suggestion.description }}</p>
+            <div class="d-flex">
+              <button class="btn btn-sm me-2" @click="$emit('apply-suggestion', index)">Применить</button>
+              <button class="btn btn-outline-secondary btn-sm">Игнорировать</button>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="d-flex justify-content-between mt-4">
         <button type="button" class="btn btn-outline-secondary" @click="$emit('prev-step')">Назад</button>
@@ -63,7 +74,10 @@
   }
   
   /* AI оптимизация */
-
+  .ai-optimization-container {
+    background-color: #f9f5f0;
+    border-radius: 8px;
+  }
   
   .ai-icon {
     width: 40px;
@@ -77,6 +91,11 @@
     font-size: 1.2rem;
   }
   
+  .suggestion-item {
+    background-color: white;
+    border-radius: 6px;
+    border-left: 4px solid #8b5e3c;
+  }
   </style>
   
   
