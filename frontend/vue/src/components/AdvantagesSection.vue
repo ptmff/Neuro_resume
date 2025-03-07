@@ -5,17 +5,7 @@
         
         <div class="advantages-content">
           <!-- Список преимуществ -->
-          <ul class="advantages-list">
-            <li 
-              v-for="(advantage, index) in advantages" 
-              :key="index" 
-              @mouseover="setActiveAdvantage(index)"
-              :class="{ 'active': activeIndex === index }"
-            >
-              <i :class="advantage.icon" class="advantage-icon"></i>
-              <span>{{ advantage.title }}</span>
-            </li>
-          </ul>
+          
           
         </div>
       </div>
