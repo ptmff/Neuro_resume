@@ -180,4 +180,37 @@ const setActiveAdvantage = (index) => {
   font-size: 1rem;
   color: #6d4c2f;
 }
+
+/* 🔹 Анимация появления */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s, transform 0.3s ease-out;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* 🔹 Адаптация */
+@media (max-width: 768px) {
+  .advantages-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .advantages-list {
+    width: 100%;
+  }
+
+  .advantage-description {
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .advantage-image img {
+    width: 60px;
+    height: 60px;
+  }
+}
 </style>
