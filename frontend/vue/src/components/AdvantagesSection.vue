@@ -213,4 +213,6 @@ const setActiveAdvantage = (index) => {
     height: 60px;
   }
 }
+
+/* лопп */
 </style>
