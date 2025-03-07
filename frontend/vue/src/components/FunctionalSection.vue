@@ -75,4 +75,34 @@
     font-size: 1rem;
     color: #6d4c2f;
   }
+  /* 🔹 Адаптивность */
+  @media (max-width: 768px) {
+    .functional-item {
+      max-width: 90%;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .functional-item {
+      max-width: 95%;
+    }
+  }
+  
+  /* 🔹 Анимация появления вверх */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(50px);
+    animation: fadeUp 1s ease-out forwards;
+  }
+  
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 </style>
