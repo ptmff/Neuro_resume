@@ -10,10 +10,12 @@
   </template>
   
   <script setup>
-  const steps = [
+    const steps = [
     { icon: "fas fa-user", title: "Заполни данные", text: "Введи информацию о себе." },
     { icon: "fas fa-palette", title: "Выбери стиль", text: "Настрой резюме под себя." },
-  ];
+    { icon: "fas fa-magic", title: "Оптимизируй", text: "Используй AI для улучшения." },
+    { icon: "fas fa-download", title: "Скачай и отправь", text: "Скачай PDF и отправь работодателю." }
+    ];
   </script>
   
   
