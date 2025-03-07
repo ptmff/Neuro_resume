@@ -91,6 +91,33 @@
   transition: opacity 0.8s ease-out, transform 0.8s ease-out;
 }
 
+/* 🔹 Анимация появления */
+.timeline-step.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 🔹 Левая часть (иконка + линия) */
+.timeline-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* 🔹 Круглая иконка */
+.icon-circle {
+  width: 50px;
+  height: 50px;
+  background-color: #8b5e3c;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
 @media (min-width: 768.1px) {
   .timeline {
     display: flex;
