@@ -1,37 +1,59 @@
 <template>
-    <section>
-      <h2>Как это работает?</h2>
-      <div v-for="(step, index) in steps" :key="index">
-        <i :class="step.icon"></i>
-        <h4>{{ step.title }}</h4>
-        <p>{{ step.text }}</p>
+    <section class="how-it-works fade-in-left">
+      <div class="container">
+        <h2 class="section-title text-center">Как это работает?</h2>
+  
+        <div class="timeline">
+          <div 
+            v-for="(step, index) in steps" 
+            :key="index" 
+            class="timeline-step"
+            :class="{ 'active': isVisible, 'left': index % 2 === 0, 'right': index % 2 !== 0 }"
+            ref="stepElements"
+          >
+            <!-- Левая часть: иконка + линия (линия только на мобилке) -->
+            <div class="timeline-left">
+              <div class="icon-circle">
+                <i :class="step.icon"></i>
+              </div>
+              <div v-if="index !== steps.length - 1" class="timeline-line"></div>
+            </div>
+  
+            <!-- Текстовый блок -->
+            <div class="timeline-text">
+              <h4 class="step-title">{{ step.title }}</h4>
+              <p class="step-text">{{ step.text }}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   </template>
   
   <script setup>
-  import { ref, onMounted } from "vue";
-
-    const steps = [
-    { icon: "fas fa-user", title: "Заполни данные", text: "Введи информацию о себе." },
-    { icon: "fas fa-palette", title: "Выбери стиль", text: "Настрой резюме под себя." },
-    { icon: "fas fa-magic", title: "Оптимизируй", text: "Используй AI для улучшения." },
-    { icon: "fas fa-download", title: "Скачай и отправь", text: "Скачай PDF и отправь работодателю." }
-    ];
-
-    const stepElements = ref([]);
-
-onMounted(() => {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("appear");
-      }
-    });
-  }, { threshold: 0.3 });
-
-  stepElements.value.forEach(el => observer.observe(el));
-});
+  import { ref, onMounted } from 'vue';
+  
+  const steps = ref([
+    { icon: 'fas fa-user', title: 'Заполни данные', text: 'Введи информацию о себе для генерации резюме.' },
+    { icon: 'fas fa-palette', title: 'Выбери стиль', text: 'Настрой визуальный стиль резюме под себя.' },
+    { icon: 'fas fa-magic', title: 'Оптимизируй', text: 'Используй AI для улучшения и подбора ключевых слов.' },
+    { icon: 'fas fa-download', title: 'Скачай и отправь', text: 'Скачай PDF и отправь работодателю!' },
+  ]);
+  
+  const stepElements = ref([]);
+  const isVisible = ref(false);
+  
+  onMounted(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          isVisible.value = true;
+        }
+      });
+    }, { threshold: 0.3 });
+  
+    stepElements.value.forEach((el) => observer.observe(el));
+  });
   </script>
   
   
