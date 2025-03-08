@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <ProgressBar />
+    <ProgressBar :currentStep="currentStep" @step-click="goToStep"/>
     <div class="resume-container">
       <ResumeForm v-if="currentStep === 1"  :resumeData="resumeData" @next-step="nextStep" v-model="resumeData"/>
       <TemplateSelection
@@ -113,9 +113,43 @@ export default {
 
   
   nextStep() {
-      if (this.currentStep < 4) {
-        if (this.currentStep === 1) {
+    if (this.currentStep < 4) {
+      if (this.currentStep === 1) {
 
+      const isFormValid = this.resumeData.name &&
+                          this.isValidEmail(this.resumeData.email) &&
+                          this.isValidPhone(this.resumeData.phone) &&
+                          this.resumeData.location &&
+                          this.resumeData.profession &&
+                          this.resumeData.education &&
+                          this.resumeData.experience &&
+                          this.resumeData.skills;
+      if (!isFormValid) {
+        alert("Некоторые поля заполнены неверно")
+        return; 
+      }
+    }
+    if (this.currentStep === 2) {
+      if (this.selectedTemplate == null) {
+        alert("Не выбран шаблон")
+        return;
+      }
+    }
+      this.currentStep++;
+      this.scrollToTop();
+    }
+  },
+  prevStep() {
+    if (this.currentStep > 1) {
+      this.currentStep--;
+      this.scrollToTop();
+    }
+  },
+
+  goToStep(step) {
+    if (step > this.currentStep) {
+     /* if (this.currentStep === 1) {
+        // Проверяем, заполнены ли все поля в ResumeForm
         const isFormValid = this.resumeData.name &&
                             this.isValidEmail(this.resumeData.email) &&
                             this.isValidPhone(this.resumeData.phone) &&
@@ -126,27 +160,19 @@ export default {
                             this.resumeData.skills;
         if (!isFormValid) {
           alert("Некоторые поля заполнены неверно")
-          return; 
+          return; // Не переходим, если форма не валидна
         }
       }
       if (this.currentStep === 2) {
         if (this.selectedTemplate == null) {
           alert("Не выбран шаблон")
-          return;
+          return; // Не переходим, если форма не валидна
         }
-      }
-        this.currentStep++;
-        this.scrollToTop();
-      }
-    },
-    prevStep() {
-      if (this.currentStep > 1) {
-        this.currentStep--;
-        this.scrollToTop();
-      }
-    },
+      }*/
+    }
+    this.currentStep = step; 
+  },
 
-  
   handleSendToEmployer(email) {
     if (!isValidEmail(email)){
       alert('Пожалуйста, введите корректный email.', email);
