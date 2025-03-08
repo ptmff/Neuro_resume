@@ -62,7 +62,26 @@
       'send-to-employer', 
       'create-new-resume', 
       'prev-step'
-    ]
+    ],
+    methods: {
+    sendToEmployer() {
+      if (!this.employerEmail) {
+        alert('Пожалуйста, введите email работодателя.');
+        return;
+      }
+
+      // Регулярное выражение для проверки формата email
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(this.employerEmail)) {
+        alert('Пожалуйста, введите корректный email.');
+        return;
+      }
+
+      // Если email корректен, выводим сообщение об успешной проверке
+      alert('Email успешно проверен: ' + this.employerEmail);
+      // Здесь вы можете добавить логику для дальнейших действий, если необходимо
+    }
+  }
   };
   </script>
   
