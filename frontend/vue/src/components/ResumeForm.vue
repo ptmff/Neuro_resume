@@ -8,6 +8,7 @@
                 v-model="resumeData.name"
                 placeholder="Имя Фамилия"
                 required
+                @input="validateName"
             />
             <FormField
                 id="email"
@@ -76,8 +77,16 @@ export default {
         required: true
         }
     },
-    emits: ['next-step']
-    
+    emits: ['next-step'],
+    methods: {
+        validateName(event) {
+      let value = event.target.value;
+      value = value.replace(/[^А-Яа-яЁёA-Za-z\s-]/g, ''); // Разрешаем буквы, пробел и дефис
+      value = value.replace(/-{2,}/g, '-'); // Убираем двойные дефисы
+      value = value.replace(/^\-|\-$/g, ''); // Убираем дефисы в начале и конце
+      this.resumeData.name = value;
+    }
+    }
     };
 </script>
 
