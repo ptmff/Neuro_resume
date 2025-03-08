@@ -1,7 +1,7 @@
 <template>
     <div class="container mt-5">
         <h2 class="title mb-5" >Создать резюме</h2>
-        <form @submit.prevent="generateResume">
+        <form @submit.prevent="$emit('next-step')">
             <FormField
                 id="name"
                 label="Имя и Фамилия"
@@ -70,25 +70,14 @@ export default {
     components:{
         FormField
     },
-    data() {
-        return {
+    props: {
         resumeData: {
-            name: '',
-            email: '',
-            phone: '',
-            profession: '',
-            education: '',
-            experience: '',
-            skills: ''
+        type: Object,
+        required: true
         }
-        };
     },
-    methods: {
-        generateResume() {
-        // Здесь можно добавить логику для отправки данных на сервер
-        console.log('Резюме создано:', this.resumeData);
-        }
-    }
+    emits: ['next-step']
+    
     };
 </script>
 
