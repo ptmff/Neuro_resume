@@ -57,47 +57,80 @@ export default {
 
 /* Прогресс-бар */
 .progress-steps {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+    
+  }
+  
+  .step-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #e0d5c8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 8px;
+    color: #8b5e3c;
+    font-size: 1.2rem;
+    position: relative; /* Добавлено для позиционирования псевдоэлемента */
+    transition: all 1.2s;
 }
 
-.step {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  z-index: 1;
+
+
+/* Псевдоэлемент для меньшего кружочка */
+.step-icon::after {
+    content: '';
+    width: 30px; /* Размер меньшего кружочка */
+    height: 30px; /* Размер меньшего кружочка */
+    border-radius: 50%;
+    background-color: rgba(139, 94, 60, 0.8); /* Темный цвет */
+    position: absolute; /* Позиционирование относительно родителя */
+    transition: opacity 0.3s; /* Плавный переход */
+    opacity: 0; /* Скрыт по умолчанию */
 }
 
-.step-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background-color: #e0d5c8;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 8px;
-  color: #8b5e3c;
-  font-size: 1.2rem;
-  position: relative; /* Добавлено для позиционирования псевдоэлемента */
-}
-.step-text {
-  font-size: 0.9rem;
-  font-weight: 500;
+.step-icon:hover::after {
+    opacity: 1; /* Показать при наведении */
 }
 
-.step-line {
-  flex-grow: 1;
-  height: 3px;
-  background-color: #e0d5c8;
-  margin: 0 10px;
-  position: relative;
-  top: -15px;
-  z-index: 0;
-  transition: all 1.2s;
+.step.active .step-icon {
+    background-color: #8b5e3c;
+    color: white;
+    transition: all 1.2s;
 }
+  
+  .step-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  
+  .step-line {
+    flex-grow: 1;
+    height: 3px;
+    background-color: #e0d5c8;
+    margin: 0 10px;
+    position: relative;
+    top: -15px;
+    z-index: 0;
+    transition: all 1.2s;
+  }
+  
+  .step-line.active {
+    background-color: #8b5e3c;
+    transition: all 1.2s;
+  }
 
 </style>

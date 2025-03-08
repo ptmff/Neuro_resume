@@ -1,5 +1,5 @@
 <template>
-    <div class="container mt-5">
+    <div class="container p-5">
         <h2 class="title mb-5" >Заполните данные</h2>
         <form @submit.prevent="$emit('next-step')">
             <div class="row">

@@ -208,13 +208,13 @@ export default {
 
 <style scoped>
 .resume-container {
-  display: flex; /* Используем Flexbox для размещения компонентов по горизонтали */
-  justify-content: space-between; /* Распределяем пространство между компонентами */
-  align-items: stretch; /* Выравниваем компоненты по верхнему краю */
+  display: flex; 
+  justify-content: space-between; 
+  align-items: stretch; 
 }
 
 .resume-container > * {
-  flex: 1; /* Каждый компонент занимает равное пространство */
-  margin: 0 10px; /* Добавляем отступы между компонентами */
+  flex: 1; 
+  margin: 0 10px;
 }
 </style>
