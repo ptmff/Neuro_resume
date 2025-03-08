@@ -129,6 +129,12 @@ export default {
           return; 
         }
       }
+      if (this.currentStep === 2) {
+        if (this.selectedTemplate == null) {
+          alert("Не выбран шаблон")
+          return;
+        }
+      }
         this.currentStep++;
         this.scrollToTop();
       }
