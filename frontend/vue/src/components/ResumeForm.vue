@@ -28,6 +28,13 @@
                 @input="formatPhone"
             />
             <FormField
+                    id="location"
+                    label="Город"
+                    v-model="resumeData.location"
+                    placeholder="Москва"
+                    required
+                />
+            <FormField
                 id="profession"
                 label="Профессия"
                 v-model="resumeData.profession"
