@@ -148,7 +148,7 @@ export default {
 
   goToStep(step) {
     if (step > this.currentStep) {
-     /* if (this.currentStep === 1) {
+      if (this.currentStep === 1) {
         // Проверяем, заполнены ли все поля в ResumeForm
         const isFormValid = this.resumeData.name &&
                             this.isValidEmail(this.resumeData.email) &&
@@ -160,15 +160,15 @@ export default {
                             this.resumeData.skills;
         if (!isFormValid) {
           alert("Некоторые поля заполнены неверно")
-          return; // Не переходим, если форма не валидна
+          return; 
         }
       }
       if (this.currentStep === 2) {
         if (this.selectedTemplate == null) {
           alert("Не выбран шаблон")
-          return; // Не переходим, если форма не валидна
+          return; 
         }
-      }*/
+      }
     }
     this.currentStep = step; 
   },
