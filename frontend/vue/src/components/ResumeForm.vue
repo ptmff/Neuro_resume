@@ -2,38 +2,44 @@
     <div class="container mt-5">
         <h2 class="title mb-5" >Создать резюме</h2>
         <form @submit.prevent="$emit('next-step')">
-            <FormField
-                id="name"
-                label="Имя и Фамилия"
-                v-model="resumeData.name"
-                placeholder="Имя Фамилия"
-                required
-                @input="validateName"
-            />
-            <FormField
-                id="email"
-                label="Email"
-                type="email"
-                v-model="resumeData.email"
-                placeholder="name@example.com"
-                required
-            />
-            <FormField
-                id="phone"
-                label="Телефон"
-                type="tel"
-                v-model="resumeData.phone"
-                placeholder="+7 (999) 999-99-99"
-                required
-                @input="formatPhone"
-            />
-            <FormField
+            <div class="row">
+                <FormField class="col-md-6"
+                    id="name"
+                    label="Имя и Фамилия"
+                    v-model="resumeData.name"
+                    placeholder="Имя Фамилия"
+                    required
+                    @input="validateName"
+                />
+                <FormField class="col-md-6"
+                    id="email"
+                    label="Email"
+                    type="email"
+                    v-model="resumeData.email"
+                    placeholder="name@example.com"
+                    required
+                />
+            </div>
+            
+            <div class="row">
+                <FormField class="col-md-6"
+                    id="phone"
+                    label="Телефон"
+                    type="tel"
+                    v-model="resumeData.phone"
+                    placeholder="+7 (999) 999-99-99"
+                    required
+                    @input="formatPhone"
+                />
+                <FormField class="col-md-6"
                     id="location"
                     label="Город"
                     v-model="resumeData.location"
                     placeholder="Москва"
                     required
                 />
+            </div>
+            
             <FormField
                 id="profession"
                 label="Профессия"
@@ -46,7 +52,7 @@
                 label="Образование"
                 type="textarea"
                 v-model="resumeData.education"
-                placeholder="Образование"
+                placeholder="Например: МГУ, Факультет информатики, 2015-2019"
                 required
             />
             <FormField
@@ -54,7 +60,7 @@
                 label="Опыт работы"
                 type="textarea"
                 v-model="resumeData.experience"
-                placeholder="Опыт работы"
+                placeholder="Опишите ваш опыт работы, должности и обязанности"
                 required
             />
             <FormField
@@ -62,7 +68,7 @@
                 label="Навыки"
                 type="textarea"
                 v-model="resumeData.skills"
-                placeholder="Навыки"
+                placeholder="Перечислите ваши профессиональные навыки"
                 required
             />
             <div class="d-flex justify-content-between mt-4">
