@@ -25,6 +25,7 @@
                 v-model="resumeData.phone"
                 placeholder="+7 (999) 999 99-99"
                 required
+                @input="formatPhone"
             />
             <FormField
                 id="profession"
@@ -79,15 +80,34 @@ export default {
     },
     emits: ['next-step'],
     methods: {
+        formatPhone(event) {
+            let value = event.target.value.replace(/\D/g, ''); // Убираем всё, кроме цифр
+
+            if (value.startsWith('8')) {
+                value = '7' + value.slice(1);
+            }
+            
+            if (value.length > 11) {
+                value = value.slice(0, 11); // Ограничение 11 цифр
+            }
+
+            let formatted = '+7 ';
+            if (value.length > 1) formatted += `(${value.slice(1, 4)}`;
+            if (value.length > 4) formatted += `) ${value.slice(4, 7)}`;
+            if (value.length > 7) formatted += `-${value.slice(7, 9)}`;
+            if (value.length > 9) formatted += `-${value.slice(9, 11)}`;
+
+            this.resumeData.phone = formatted;
+        },
         validateName(event) {
-      let value = event.target.value;
-      value = value.replace(/[^А-Яа-яЁёA-Za-z\s-]/g, ''); // Разрешаем буквы, пробел и дефис
-      value = value.replace(/-{2,}/g, '-'); // Убираем двойные дефисы
-      value = value.replace(/^\-|\-$/g, ''); // Убираем дефисы в начале и конце
-      this.resumeData.name = value;
+            let value = event.target.value;
+            value = value.replace(/[^А-Яа-яЁёA-Za-z\s-]/g, ''); // Разрешаем буквы, пробел и дефис
+            value = value.replace(/-{2,}/g, '-'); // Убираем двойные дефисы
+            value = value.replace(/^\-|\-$/g, ''); // Убираем дефисы в начале и конце
+            this.resumeData.name = value;
+        }
     }
-    }
-    };
+};
 </script>
 
 <style scoped>
