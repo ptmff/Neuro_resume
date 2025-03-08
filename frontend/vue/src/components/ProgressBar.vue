@@ -55,7 +55,7 @@ export default {
     
 <style scoped>
 
-/* Прогресс-бар */
+
 .progress-steps {
     display: flex;
     justify-content: space-between;
@@ -84,26 +84,26 @@ export default {
     margin-bottom: 8px;
     color: #8b5e3c;
     font-size: 1.2rem;
-    position: relative; /* Добавлено для позиционирования псевдоэлемента */
+    position: relative; 
     transition: all 1.2s;
 }
 
 
 
-/* Псевдоэлемент для меньшего кружочка */
+
 .step-icon::after {
     content: '';
-    width: 30px; /* Размер меньшего кружочка */
-    height: 30px; /* Размер меньшего кружочка */
+    width: 30px; 
+    height: 30px; 
     border-radius: 50%;
-    background-color: rgba(139, 94, 60, 0.8); /* Темный цвет */
-    position: absolute; /* Позиционирование относительно родителя */
-    transition: opacity 0.3s; /* Плавный переход */
-    opacity: 0; /* Скрыт по умолчанию */
+    background-color: rgba(139, 94, 60, 0.8); 
+    position: absolute; 
+    transition: opacity 0.3s; 
+    opacity: 0; 
 }
 
 .step-icon:hover::after {
-    opacity: 1; /* Показать при наведении */
+    opacity: 1;
 }
 
 .step.active .step-icon {
@@ -133,4 +133,28 @@ export default {
     transition: all 1.2s;
   }
 
+  @media (max-width: 768px) {
+    .progress-steps {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .step {
+      flex-direction: row;
+      width: 100%;
+    }
+    
+    .step-icon {
+      margin-right: 15px;
+      margin-bottom: 0;
+    }
+    
+    .step-line {
+      width: 3px;
+      height: 20px;
+      margin: 15px 0;
+      margin-left: 25px;
+      top: 0;
+    }
+  }
 </style>
