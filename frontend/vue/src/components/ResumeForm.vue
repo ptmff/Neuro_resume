@@ -23,7 +23,7 @@
                 label="Телефон"
                 type="tel"
                 v-model="resumeData.phone"
-                placeholder="+7 (999) 999 99-99"
+                placeholder="+7 (999) 999-99-99"
                 required
                 @input="formatPhone"
             />
@@ -60,7 +60,7 @@
             />
             <div class="d-flex justify-content-between mt-4">
                 <button type="button" class="btn btn-outline-secondary" @click="$emit('prev-step')">Назад</button>
-                <button type="button" class="btn" @click="$emit('next-step')">Далее</button>            </div>        </form>
+                <button type="button" class="btn">Далее</button>            </div>        </form>
     </div>
 </template>
   

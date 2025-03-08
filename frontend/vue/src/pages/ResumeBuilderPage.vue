@@ -101,10 +101,34 @@ export default {
         behavior: 'smooth'
       })
     },
+    isValidEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  },
+
+  isValidPhone(phone) {
+    const re = /^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/; 
+    return re.test(phone);
+  },
 
   
   nextStep() {
       if (this.currentStep < 4) {
+        if (this.currentStep === 1) {
+
+        const isFormValid = this.resumeData.name &&
+                            this.isValidEmail(this.resumeData.email) &&
+                            this.isValidPhone(this.resumeData.phone) &&
+                            this.resumeData.location &&
+                            this.resumeData.profession &&
+                            this.resumeData.education &&
+                            this.resumeData.experience &&
+                            this.resumeData.skills;
+        if (!isFormValid) {
+          alert("Некоторые поля заполнены неверно")
+          return; 
+        }
+      }
         this.currentStep++;
         this.scrollToTop();
       }
@@ -125,11 +149,9 @@ export default {
     if (!email) {
     alert('Пожалуйста, введите email работодателя.');
     return;
+    }
     alert('Email успешно проверен: ' + email);
-  }
-      // Логика отправки email работодателю
-      
-      // Здесь вы можете добавить код для отправки email
+
     },
     createNewResume() {
       this.resumeData = {
@@ -145,7 +167,7 @@ export default {
       this.currentStep = 1;
     },
     updateEmployerEmail(email) {
-      this.employerEmail = email; // Обновление email работодателя
+      this.employerEmail = email;
     },
   }  
   
