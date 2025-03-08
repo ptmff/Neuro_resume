@@ -1,6 +1,6 @@
 <template>
     <div class="container mt-5">
-        <h2 class="title mb-5" >Создать резюме</h2>
+        <h2 class="title mb-5" >Заполните данные</h2>
         <form @submit.prevent="$emit('next-step')">
             <div class="row">
                 <FormField class="col-md-6"
@@ -72,8 +72,9 @@
                 required
             />
             <div class="d-flex justify-content-between mt-4">
-                <button type="button" class="btn btn-outline-secondary" @click="$emit('prev-step')">Назад</button>
-                <button type="button" class="btn">Далее</button>            </div>        </form>
+                <button type="button" class="btn btn-outline-secondary" disabled>Назад</button>
+                <button type="submit" class="btn">Далее</button>            </div>        
+        </form>
     </div>
 </template>
   
