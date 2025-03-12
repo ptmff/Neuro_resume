@@ -55,6 +55,26 @@ const sendMessage = () => {
   background: white;
   border-radius: 5px;
 }
+.message {
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 5px;
+  max-width: 80%;
+}
+.bot {
+  background-color: #fdeadb;
+  text-align: left;
+}
+.user {
+  background-color: #fad8be;
+  color: #8b5e3c;
+  text-align: right;
+  margin-left: auto;
+}
+.input-box {
+  display: flex;
+  gap: 10px;
+}
 input {
   flex: 1;
   padding: 10px;
