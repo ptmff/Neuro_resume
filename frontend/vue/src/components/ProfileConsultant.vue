@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="input-box">
-      <input v-model="userInput" type="text" placeholder="Задайте вопрос..." @keyup.enter="sendMessage" />
+      <input v-model="userInput" type="text" placeholder="Задайте вопрос..." @keyup.enter="sendMessage" class="input-message"/>
       <button @click="sendMessage">Отправить</button>
     </div>
   </div>
@@ -34,3 +34,44 @@ const sendMessage = () => {
   userInput.value = '';
 };
 </script>
+
+<style scoped>
+.ai-consultant {
+  max-width: 970px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #fcf0e7;
+  background-color: #fcf0e7;
+  border-radius: 10px;
+  text-align: center;
+  color: #8b5e3c;
+}
+.chat-box {
+  height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: white;
+  border-radius: 5px;
+}
+input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #8b5e3c;
+}
+button {
+  padding: 10px 15px;
+  border: none;
+  background-color: #a67c52;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #8b5e3c;
+}
+</style>

@@ -38,6 +38,7 @@ const editProfile = () => alert('Редактирование профиля');
   background-color: #fcf0e7;
   margin: 0 280px;
   border-radius: 30px;
+  margin-top: 10px;
 }
 .avatar {
   width: 200px;
