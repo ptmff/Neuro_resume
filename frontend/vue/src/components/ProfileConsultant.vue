@@ -12,3 +12,25 @@
     </div>
   </div>
 </template>
+
+  
+<script setup>
+import { ref } from 'vue';
+
+const messages = ref([
+  { text: 'Привет! Я ваш ИИ-консультант. Чем могу помочь?', type: 'bot' }
+]);
+const userInput = ref('');
+
+const sendMessage = () => {
+  if (userInput.value.trim() === '') return;
+  
+  messages.value.push({ text: userInput.value, type: 'user' });
+  
+  setTimeout(() => {
+    messages.value.push({ text: 'Спасибо за ваш вопрос! Я обрабатываю ваш запрос...', type: 'bot' });
+  }, 1000);
+  
+  userInput.value = '';
+};
+</script>
