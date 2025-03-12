@@ -1,6 +1,6 @@
 <template>
-  <h2>Мои резюме</h2>
   <div class="resume-container">
+    <h2 class="vertical-title">Мои резюме</h2>
     <div v-if="resumes.length" class="resume-list">
       <div v-for="resume in resumes" :key="resume.id" class="resume-card">
         <div class="resume-info">
@@ -40,4 +40,26 @@ const statusClass = (status) => {
   };
 };
 </script>
-  
+
+<style scoped>
+.resume-container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  color: #744b29;
+}
+.vertical-title {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  margin-right: 20px;
+  font-size: 48px;
+  font-weight: bold;
+}
+.resume-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+</style>

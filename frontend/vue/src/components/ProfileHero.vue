@@ -36,8 +36,9 @@ const editProfile = () => alert('Редактирование профиля');
   text-align: center;
   color: #744b29;
   background-color: #fcf0e7;
-  margin: 0 200px;
+  margin: 0 280px;
   border-radius: 30px;
+  margin-bottom: 30px;
 }
 .avatar {
   width: 200px;
