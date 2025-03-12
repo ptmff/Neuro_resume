@@ -1,7 +1,15 @@
 <template>
-    <div class="page">
-      <h1>Профиль</h1>
-      <p>Ваши данные и настройки.</p>
-    </div>
-  </template>
+  <div class="page">
+    <MyComponent/>
+  </div>
+</template>
   
+<script>
+import MyComponent from '../components/ProfileHero.vue'; // Убедитесь, что путь правильный
+
+export default {
+  components: {
+    MyComponent,
+  },
+};
+</script>
