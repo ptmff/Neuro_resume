@@ -1,15 +1,18 @@
 <template>
   <div class="page">
-    <MyComponent/>
+    <ProfileHero/>
+    <ProfileResumesList/>
   </div>
 </template>
   
 <script>
-import MyComponent from '../components/ProfileHero.vue'; // Убедитесь, что путь правильный
+import ProfileHero from '../components/ProfileHero.vue'; 
+import ProfileResumesList from '../components/ProfileResumesList.vue'; 
 
 export default {
   components: {
-    MyComponent,
+    ProfileHero,
+    ProfileResumesList,
   },
 };
 </script>
