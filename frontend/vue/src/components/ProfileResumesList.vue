@@ -57,7 +57,7 @@ const statusClass = (status) => {
   margin: 0;
   margin-right: 20px;
   padding: 20px;
-  padding-right: 24px;
+  padding-right: 26px;
   padding-left: 36px;
   font-size: 44px;
   font-weight: bold;
@@ -118,7 +118,7 @@ const statusClass = (status) => {
   color: #fcf0e7;
   height: 315px;
   font-size: 70px;
-  width: 200px;
+  width: 110px;
   border-radius: 30px;
   background-color: #744b29;
   padding-bottom: 20px;
