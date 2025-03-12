@@ -44,34 +44,40 @@ const statusClass = (status) => {
 <style scoped>
 .resume-container {
   margin: 0 280px;
-  padding: 40px 80px;
+  padding: 40px 0;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   color: #744b29;
 }
 .vertical-title {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   margin: 0;
-  margin-right: 30px;
-  font-size: 48px;
+  margin-right: 20px;
+  padding: 20px;
+  padding-right: 24px;
+  padding-left: 36px;
+  font-size: 44px;
   font-weight: bold;
+  background-color: #744b29;
+  border-radius: 30px;
+  color: #fcf0e7;
 }
 .resume-list {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  margin-right: 30px;
+  margin-right: 20px;
 }
 .resume-card {
   border: 1px solid #faece1;
   background-color: #fcf0e7;
   padding: 15px;
-  border-radius: 8px;
+  border-radius: 30px;
   text-align: left;
-  width: 600px;
+  width: 700px;
   height: 150px;
 }
 .resume-info {
@@ -89,5 +95,41 @@ const statusClass = (status) => {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+.edit-btn, .delete-btn, .create-btn {
+  cursor: pointer;
+  transition: background 0.3s;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+.edit-btn {
+  background-color: #a67c52;
+  color: white;
+}
+.delete-btn {
+  background-color: #744b29;
+  color: white;
+}
+.create-btn {
+  background-color: #c4a484;
+  color: #fcf0e7;
+  height: 315px;
+  font-size: 70px;
+  width: 200px;
+  border-radius: 30px;
+  background-color: #744b29;
+  padding-bottom: 20px;
+}
+.edit-btn:hover {
+  background-color: #8d5c36;
+}
+.delete-btn:hover {
+  background-color: #8d5c36;
+}
+.create-btn:hover {
+  background-color: #8d5c36;
 }
 </style>
