@@ -17,7 +17,7 @@
   const user = ref({
     name: 'Иван Иванов',
     profession: 'Фронтенд-разработчик',
-    email: 'ivan@example.com',
+    email: 'ivanov123ivan@example.com',
     avatar: 'https://images.icon-icons.com/1999/PNG/512/avatar_man_people_person_profile_user_icon_123385.png',
   });
   
@@ -43,5 +43,36 @@
   width: 200px;
   height: 200px;
   border-radius: 50%;
+}
+.profile-details {
+  display: flex;
+  flex-direction: column;
+}
+.name {
+    font-size: 50px;
+    margin-bottom: 10px;
+}
+.email {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+.profession {
+  font-weight: bold;
+  color: #744b29;
+  font-size: 24px;
+  margin-bottom: 10;
+}
+.edit-button {
+  background-color: #744b29;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-size: 24px;
+}
+.edit-button:hover {
+  background-color: #997555;
 }
 </style>
