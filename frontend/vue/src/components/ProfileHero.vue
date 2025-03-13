@@ -56,14 +56,16 @@ const editProfile = () => alert('Редактирование профиля');
 .name {
     font-size: 50px;
     margin-bottom: 10px;
+    color: #795337;
 }
 .email {
     font-size: 20px;
     margin-bottom: 10px;
+    color: #666
 }
 .profession {
   font-weight: bold;
-  color: #744b29;
+  color: #8b5e3c;
   font-size: 24px;
   margin-bottom: 10;
 }

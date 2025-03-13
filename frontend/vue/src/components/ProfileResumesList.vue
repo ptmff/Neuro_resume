@@ -20,7 +20,9 @@
     </div>
     <p v-else>У вас нет созданных резюме.</p>
     <div class="create-btn">
-      <button class="create-btnn" @click="createResume">+</button>
+      <router-link class="nav-link" to="/resume-builder">
+        <button class="create-btnn" @click="createResume">+</button>
+      </router-link>
     </div>
   </div>
 </template>

@@ -40,8 +40,7 @@ const sendMessage = () => {
   width: 60%;
   margin: auto;
   padding: 20px;
-  border: 1px solid #fcf0e7;
-  background-color: #fcf0e7;
+  background-color: #f9f5f0;
   border-radius: 10px;
   text-align: center;
   color: #8b5e3c;
@@ -62,11 +61,11 @@ const sendMessage = () => {
   max-width: 80%;
 }
 .bot {
-  background-color: #fdeadb;
+  background-color: #f9f5f0;
   text-align: left;
 }
 .user {
-  background-color: #fad8be;
+  background-color: #fde9d9;
   color: #8b5e3c;
   text-align: right;
   margin-left: auto;
