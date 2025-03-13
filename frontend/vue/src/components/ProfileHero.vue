@@ -31,12 +31,13 @@ const editProfile = () => alert('Редактирование профиля');
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 150px;
+  gap: 25%;
   padding: 40px 80px;
   text-align: center;
   color: #744b29;
   background-color: #fcf0e7;
-  margin: 0 280px;
+  width: 60%;
+  margin: auto;
   border-radius: 30px;
   margin-top: 10px;
 }

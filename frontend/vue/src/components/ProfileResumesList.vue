@@ -1,6 +1,8 @@
 <template>
   <div class="resume-container">
-    <h2 class="vertical-title">Мои резюме</h2>
+    <div class="vertical-title">
+      <p class="vertical-titlee">Мои резюме</p>
+    </div>
     <div v-if="resumes.length" class="resume-list">
       <div v-for="resume in resumes" :key="resume.id" class="resume-card">
         <div class="resume-info">
@@ -17,7 +19,9 @@
       </div>
     </div>
     <p v-else>У вас нет созданных резюме.</p>
-    <button class="create-btn" @click="createResume">+</button>
+    <div class="create-btn">
+      <button class="create-btnn" @click="createResume">+</button>
+    </div>
   </div>
 </template>
 
@@ -56,10 +60,7 @@ const statusClass = (status) => {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   margin: 0;
-  margin-right: 20px;
-  padding: 15px;
-  padding-right: 2%;
-  padding-left: 2%;
+  margin-right: 2.5%;
   font-size: 44px;
   font-weight: bold;
   background-color: #744b29;
@@ -67,12 +68,18 @@ const statusClass = (status) => {
   color: #fcf0e7;
   width: 10%;
   height: 315px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.vertical-titlee {
+  margin: 0;
 }
 .resume-list {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  margin-right: 20px;
+  margin-right: 2.5%;
   width: 75%;
 }
 .resume-card {
@@ -124,7 +131,15 @@ const statusClass = (status) => {
   width: 10%;
   border-radius: 30px;
   background-color: #744b29;
-  padding-bottom: 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.create-btnn {
+  background: none;
+  border: none;
+  color: #fcf0e7;
+  margin: 0;
 }
 .edit-btn:hover {
   background-color: #8d5c36;

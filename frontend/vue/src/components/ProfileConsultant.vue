@@ -37,7 +37,7 @@ const sendMessage = () => {
 
 <style scoped>
 .ai-consultant {
-  max-width: 970px;
+  width: 60%;
   margin: auto;
   padding: 20px;
   border: 1px solid #fcf0e7;
