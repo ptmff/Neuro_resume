@@ -43,7 +43,8 @@ const statusClass = (status) => {
 
 <style scoped>
 .resume-container {
-  margin: 0 280px;
+  width: 60%;
+  margin: auto;
   padding: 40px 0;
   display: flex;
   flex-direction: row;
@@ -56,20 +57,23 @@ const statusClass = (status) => {
   transform: rotate(180deg);
   margin: 0;
   margin-right: 20px;
-  padding: 20px;
-  padding-right: 26px;
-  padding-left: 36px;
+  padding: 15px;
+  padding-right: 2%;
+  padding-left: 2%;
   font-size: 44px;
   font-weight: bold;
   background-color: #744b29;
   border-radius: 30px;
   color: #fcf0e7;
+  width: 10%;
+  height: 315px;
 }
 .resume-list {
   display: flex;
   flex-direction: column;
   gap: 15px;
   margin-right: 20px;
+  width: 75%;
 }
 .resume-card {
   border: 1px solid #faece1;
@@ -77,7 +81,6 @@ const statusClass = (status) => {
   padding: 15px;
   border-radius: 30px;
   text-align: left;
-  width: 700px;
   height: 150px;
 }
 .resume-info {
@@ -118,7 +121,7 @@ const statusClass = (status) => {
   color: #fcf0e7;
   height: 315px;
   font-size: 70px;
-  width: 110px;
+  width: 10%;
   border-radius: 30px;
   background-color: #744b29;
   padding-bottom: 20px;

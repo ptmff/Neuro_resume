@@ -41,9 +41,11 @@ const editProfile = () => alert('Редактирование профиля');
   margin-top: 10px;
 }
 .avatar {
-  width: 200px;
-  height: 200px;
+  width: 210px;
+  height: 210px;
   border-radius: 50%;
+  border: 2px solid #744b29;
+  padding: 5px;
 }
 .profile-details {
   display: flex;
