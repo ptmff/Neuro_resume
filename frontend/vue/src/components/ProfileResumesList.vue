@@ -8,7 +8,7 @@
         <div class="resume-info">
           <div>
             <h3>{{ resume.title }}</h3>
-            <p>Дата создания: {{ resume.date }}</p>
+            <p class="date">Дата создания: {{ resume.date }}</p>
             <p :class="statusClass(resume.status)">Статус: {{ resume.status }}</p>
           </div>
           <div class="buttons">
@@ -63,9 +63,9 @@ const statusClass = (status) => {
   margin-right: 2.5%;
   font-size: 44px;
   font-weight: bold;
-  background-color: #744b29;
+  background-color: #8b5e3c;
   border-radius: 30px;
-  color: #fcf0e7;
+  color: #f9f5f0;
   width: 10%;
   height: 315px;
   display: flex;
@@ -83,8 +83,7 @@ const statusClass = (status) => {
   width: 75%;
 }
 .resume-card {
-  border: 1px solid #faece1;
-  background-color: #fcf0e7;
+  background-color: #f9f5f0;
   padding: 15px;
   border-radius: 30px;
   text-align: left;
@@ -95,11 +94,14 @@ const statusClass = (status) => {
   justify-content: space-between;
   align-items: center;
 }
+.date {
+  color: #666;
+}
 .published {
-  color: #643d1e;
+  color: #5e5957;
 }
 .draft {
-  color: #a87d5a;
+  color: #968d8a;
 }
 .buttons {
   display: flex;
@@ -116,21 +118,21 @@ const statusClass = (status) => {
   font-size: 16px;
 }
 .edit-btn {
-  background-color: #a67c52;
-  color: white;
+  background-color: #a57f62;
+  color: #f9f5f0;
 }
 .delete-btn {
-  background-color: #744b29;
-  color: white;
+  background-color: #8b5e3c;
+  color: #f9f5f0;
 }
 .create-btn {
   background-color: #c4a484;
-  color: #fcf0e7;
+  color: #f9f5f0;
   height: 315px;
   font-size: 70px;
   width: 10%;
   border-radius: 30px;
-  background-color: #744b29;
+  background-color: #8b5e3c;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -138,16 +140,16 @@ const statusClass = (status) => {
 .create-btnn {
   background: none;
   border: none;
-  color: #fcf0e7;
+  color: #f9f5f0;
   margin: 0;
 }
 .edit-btn:hover {
-  background-color: #8d5c36;
+  background-color: #8b664a;
 }
 .delete-btn:hover {
-  background-color: #8d5c36;
+  background-color: #af805b;
 }
 .create-btn:hover {
-  background-color: #8d5c36;
+  background-color: #af805b;
 }
 </style>

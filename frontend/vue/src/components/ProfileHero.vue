@@ -35,7 +35,7 @@ const editProfile = () => alert('Редактирование профиля');
   padding: 40px 80px;
   text-align: center;
   color: #744b29;
-  background-color: #fcf0e7;
+  background-color: #f9f5f0;
   width: 60%;
   margin: auto;
   border-radius: 30px;
@@ -45,7 +45,8 @@ const editProfile = () => alert('Редактирование профиля');
   width: 210px;
   height: 210px;
   border-radius: 50%;
-  border: 2px solid #744b29;
+  /* border: 2px solid #744b29; */
+  box-shadow: 3px 5px 10px #8b5e3c;
   padding: 5px;
 }
 .profile-details {
@@ -67,7 +68,7 @@ const editProfile = () => alert('Редактирование профиля');
   margin-bottom: 10;
 }
 .edit-button {
-  background-color: #744b29;
+  background-color: #8b5e3c;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -77,6 +78,6 @@ const editProfile = () => alert('Редактирование профиля');
   font-size: 24px;
 }
 .edit-button:hover {
-  background-color: #997555;
+  background-color: #af805b;
 }
 </style>
