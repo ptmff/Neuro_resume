@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v9.0": {
       "back/1.0.0": {
         "dependencies": {
+          "HtmlAgilityPack": "1.12.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.3",
           "Microsoft.AspNetCore.OpenApi": "9.0.2",
           "Microsoft.EntityFrameworkCore.Design": "9.0.3",
@@ -19,6 +20,14 @@
         },
         "runtime": {
           "back.dll": {}
+        }
+      },
+      "HtmlAgilityPack/1.12.0": {
+        "runtime": {
+          "lib/net8.0/HtmlAgilityPack.dll": {
+            "assemblyVersion": "1.12.0.0",
+            "fileVersion": "1.12.0.0"
+          }
         }
       },
       "Humanizer.Core/2.14.1": {
@@ -852,6 +861,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "HtmlAgilityPack/1.12.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-VHtVZmfoYhQyA/POvZRLuTpCz1zhzIDrdYRJIRV73e9wKAzjW71biYNOHOWx8MxEX3TE4TWVfx1QDRoZcj2AWw==",
+      "path": "htmlagilitypack/1.12.0",
+      "hashPath": "htmlagilitypack.1.12.0.nupkg.sha512"
     },
     "Humanizer.Core/2.14.1": {
       "type": "package",
