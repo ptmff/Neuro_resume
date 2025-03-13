@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using back.Data;
 using Microsoft.OpenApi.Models;
+using back.Services; 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
+
+// Регистрация VacancyService с HttpClient
+builder.Services.AddHttpClient<VacancyService>();
 
 // Остальные сервисы...
 builder.Services.AddControllers();
