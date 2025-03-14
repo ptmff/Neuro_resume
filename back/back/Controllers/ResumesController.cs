@@ -31,11 +31,18 @@ public class ResumesController : ControllerBase
 
     // POST: api/resumes
     [HttpPost]
-    public async Task<ActionResult<Resume>> PostResume(Resume resume)
+    public async Task<ActionResult<Resume>> PostResume(ResumeDto resumeDto)
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        resume.UserId = userId;
-        
+        var resume = new Resume
+        {
+            Title = resumeDto.Title,
+            Date = resumeDto.Date,
+            Job = resumeDto.Job,
+            Skills = resumeDto.Skills,
+            UserId = userId
+        };
+
         _context.Resumes.Add(resume);
         await _context.SaveChangesAsync();
 
