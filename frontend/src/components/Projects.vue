@@ -1,19 +1,18 @@
 <template>
-  <section id="projects" class="max-w-6xl mt-16 mx-auto px-10">
+  <section id="projects" class="max-w-6xl mt-16 mx-auto px-10 overflow-x-hidden">
     <h2 class="text-5xl font-bold text-[var(--text-light)] font-acorn mb-12">Как это работает?</h2>
     <div class="grid gap-12 masonry-grid">
       <template v-for="(project, index) in projects" :key="index">
         <div
           :ref="el => projectRefs[index] = el"
-          class="relative p-8 rounded-3xl shadow-2xl text-[var(--text-light)] transition-all duration-300 group hover:scale-105 hover:shadow-3xl overflow-hidden opacity-0"
+          class="project-card group hover:scale-105 hover:shadow-3xl"
           :class="getSizeClass(index)"
           :style="{ background: project.bgColor }"
         >
-          <!-- Заголовок -->
           <h3 class="text-2xl font-bold font-gt">{{ project.title }}</h3>
           <p class="font-semibold">{{ project.description }}</p>
 
-          <!-- Фоновая иконка (до наведения) -->
+          <!-- Фоновая иконка -->
           <div class="absolute bottom-[-20px] right-[-20px] text-[var(--icons-bfr-hover)] transition-all duration-300 group-hover:opacity-100 group-hover:bottom-6 group-hover:right-6 group-hover:text-[var(--text-light)]">
             <i :class="`${project.icon} text-8xl`"></i>
           </div>
@@ -46,15 +45,12 @@ const updateWindowWidth = () => {
 
 onMounted(() => {
   window.addEventListener("resize", updateWindowWidth);
-  
+
   projectRefs.value.forEach((element, index) => {
-    const xStart = index % 2 === 0 ? -50 : 50; // Reduced animation distance
-    
-    gsap.fromTo(element,
-      {
-        x: xStart,
-        opacity: 0
-      },
+    const xStart = index % 2 === 0 ? -50 : 50;
+    gsap.fromTo(
+      element,
+      { x: xStart, opacity: 0 },
       {
         x: 0,
         opacity: 1,
@@ -97,9 +93,14 @@ const getSizeClass = computed(() => (index) => {
   gap: 60px;
 }
 
-.group:hover .icon-animation {
-  transform: rotate(10deg) scale(1.2);
-  transition: transform 0.3s ease-in-out;
+.project-card {
+  position: relative;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  color: var(--text-light);
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
 }
 
 @media (max-width: 950px) {
