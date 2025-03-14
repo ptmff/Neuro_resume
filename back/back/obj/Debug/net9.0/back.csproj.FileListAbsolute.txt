@@ -450,3 +450,4 @@ C:\Users\Денис\Desktop\университет\2_sem\SPO\Neuro_resume\back\b
 C:\Users\Денис\Desktop\университет\2_sem\SPO\Neuro_resume\back\back\obj\Debug\net9.0\back.pdb
 C:\Users\Денис\Desktop\университет\2_sem\SPO\Neuro_resume\back\back\obj\Debug\net9.0\back.genruntimeconfig.cache
 C:\Users\Денис\Desktop\университет\2_sem\SPO\Neuro_resume\back\back\obj\Debug\net9.0\ref\back.dll
+C:\Users\Денис\Desktop\университет\2_sem\SPO\Neuro_resume\back\back\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
