@@ -34,11 +34,11 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 
-import JobParallaxBackground from '@/components/JobAnalysis/JobParallaxBackground.vue'
-import JobInputPanel from '@/components/JobAnalysis/JobInputPanel.vue'
-import JobAnalysisVisualizer from '@/components/JobAnalysis/JobAnalysisVisualizer.vue'
-import JobAnalysisResult from '@/components/JobAnalysis/JobAnalysisResult.vue'
-import ExtendedFooter from '@/components/JobAnalysis/ExtendedFooter.vue'
+import JobParallaxBackground from '@/components/JobAnalysisComps/JobParallaxBackground.vue'
+import JobInputPanel from '@/components/JobAnalysisComps/JobInputPanel.vue'
+import JobAnalysisVisualizer from '@/components/JobAnalysisComps/JobAnalysisVisualizer.vue'
+import JobAnalysisResult from '@/components/JobAnalysisComps/JobAnalysisResult.vue'
+import ExtendedFooter from '@/components/JobAnalysisComps/ExtendedFooter.vue'
 
 const props = defineProps({
   phase: String,

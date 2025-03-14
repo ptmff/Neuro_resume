@@ -21,11 +21,11 @@
 </template>
 
 <script setup>
-import ProfileHeader from '@/components/ProfilePageV2/ProfileHeader.vue'
-import ResumeModuleList from '@/components/ProfilePageV2/ResumeModuleList.vue'
-import SkillsFlow from '@/components/ProfilePageV2/SkillsFlow.vue'
-import NeuroAssistant from '@/components/ProfilePageV2/NeuroAssistant.vue'
-import ProfileStats from '@/components/ProfilePageV2/ProfileStats.vue'
+import ProfileHeader from '@/components/ProfilePageComps/ProfileHeader.vue'
+import ResumeModuleList from '@/components/ProfilePageComps/ResumeModuleList.vue'
+import SkillsFlow from '@/components/ProfilePageComps/SkillsFlow.vue'
+import NeuroAssistant from '@/components/ProfilePageComps/NeuroAssistant.vue'
+import ProfileStats from '@/components/ProfilePageComps/ProfileStats.vue'
 </script>
 
 <style scoped></style>

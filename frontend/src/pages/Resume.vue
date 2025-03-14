@@ -38,12 +38,13 @@
 </template>
 
 <script>
-import ResumeForm from '../components/ResumeForm.vue'
-import ProgressBar from '../components/ProgressBar.vue'
-import ResumePreview from '../components/ResumePreview.vue'
-import TemplateSelection from '../components/TemplateSelection.vue'
-import AiOptimization from '../components/AiOptimization.vue'
-import DownloadOptions from '../components/DownloadOptions.vue'
+//frontend\src\components\ResumeComps\DownloadOptions.vue
+import ResumeForm from '../components/ResumeComps/ResumeForm.vue'
+import ProgressBar from '../components/ResumeComps/ProgressBar.vue'
+import ResumePreview from '../components/ResumeComps/ResumePreview.vue'
+import TemplateSelection from '../components/ResumeComps/TemplateSelection.vue'
+import AiOptimization from '../components/ResumeComps/AiOptimization.vue'
+import DownloadOptions from '../components/ResumeComps/DownloadOptions.vue'
 
 export default {
   components: {

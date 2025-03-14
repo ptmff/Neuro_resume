@@ -1,8 +1,8 @@
 <script setup>
-import Advantages from '../components/Advantages.vue'
-import Hero from '../components/Hero.vue'
-import PreviewSec from '../components/PreviewSec.vue'
-import Projects from '../components/Projects.vue'
+import Advantages from '../components/HeroComps/Advantages.vue'
+import Hero from '../components/HeroComps/Hero.vue'
+import PreviewSec from '../components/HeroComps/PreviewSec.vue'
+import Projects from '../components/HeroComps/Projects.vue'
 </script>
 
 <template>
