@@ -76,7 +76,7 @@ const startAnalysis = () => {
   props.setPhase('visualizing')
   setTimeout(() => {
     props.setPhase('result')
-  }, 100)
+  }, 4000)
 }
 </script>
 
