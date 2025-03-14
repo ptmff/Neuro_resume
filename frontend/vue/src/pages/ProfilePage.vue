@@ -1,7 +1,21 @@
 <template>
-    <div class="page">
-      <h1>Профиль</h1>
-      <p>Ваши данные и настройки.</p>
-    </div>
-  </template>
+  <div class="page">
+    <ProfileHero/>
+    <ProfileResumesList/>
+    <ProfileConsultant/>
+  </div>
+</template>
   
+<script>
+import ProfileHero from '../components/ProfileHero.vue'; 
+import ProfileResumesList from '../components/ProfileResumesList.vue'; 
+import ProfileConsultant from '../components/ProfileConsultant.vue'; 
+
+export default {
+  components: {
+    ProfileHero,
+    ProfileResumesList,
+    ProfileConsultant,
+  },
+};
+</script>
