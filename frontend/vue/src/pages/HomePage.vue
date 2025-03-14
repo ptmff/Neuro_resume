@@ -11,6 +11,7 @@ import HeroSection from "../components/HeroSection.vue";
 import FunctionalSection from "../components/FunctionalSection.vue";
 import WorkLogic from "../components/WorkLogic.vue";
 
+
 export default {
   components: {
     HeroSection,
