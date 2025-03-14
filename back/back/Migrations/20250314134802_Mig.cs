@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace back.Migrations
 {
     /// <inheritdoc />
-    public partial class Migrations : Migration
+    public partial class Mig : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -38,7 +38,7 @@ namespace back.Migrations
                     Title = table.Column<string>(type: "text", nullable: false),
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Job = table.Column<string>(type: "text", nullable: false),
-                    Skills = table.Column<List<string>>(type: "text[]", nullable: false)
+                    Skills = table.Column<List<string>>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -38,9 +38,9 @@ namespace back.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.PrimitiveCollection<List<string>>("Skills")
+                    b.Property<List<string>>("Skills")
                         .IsRequired()
-                        .HasColumnType("text[]");
+                        .HasColumnType("jsonb");
 
                     b.Property<string>("Title")
                         .IsRequired()
