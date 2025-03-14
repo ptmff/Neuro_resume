@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using back.Data;
 using System.Text;
+using back.Models;
 
 namespace back.Controllers;
 
