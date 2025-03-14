@@ -1,12 +1,11 @@
 {
-    "name": "neuroresume-backend",
-    "type": "module",
-    "version": "1.0.0",
-    "main": "server.js",
-    "dependencies": {
-      "express": "^4.18.2",
-      "cors": "^2.8.5",
-      "fs-extra": "^11.1.1"
-    }
+  "name": "neuroresume-backend",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "fs-extra": "^11.1.1"
   }
-  
+}

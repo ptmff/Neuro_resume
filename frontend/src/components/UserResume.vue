@@ -11,11 +11,11 @@ const addResume = () => {
   router.push('/resume')
 }
 
-const editResume = (id) => {
+const editResume = id => {
   router.push({ path: '/resume', query: { id } })
 }
 
-const deleteResume = async (id) => {
+const deleteResume = async id => {
   // Удаляем из стейта
   store.allResumes = store.allResumes.filter(r => r.id !== id)
   store.profile.resumes = store.profile.resumes.filter(rid => rid !== id)
@@ -23,12 +23,12 @@ const deleteResume = async (id) => {
   try {
     // Обновляем profile.json
     await api.patch('/profile', {
-      resumes: store.profile.resumes
+      resumes: store.profile.resumes,
     })
 
     // Обновляем resumes.json
     await api.patch('/resumes', {
-      resumes: store.allResumes
+      resumes: store.allResumes,
     })
   } catch (err) {
     console.error('Ошибка при сохранении:', err)
@@ -43,8 +43,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="store.profile" class="bg-[var(--background-section)] bg-opacity-30 backdrop-blur-xl p-8 rounded-3xl border border-white/10">
-    <h2 class="text-4xl font-bold bg-gradient-to-r from-[var(--text-secondary)] to-[var(--text-light)] bg-clip-text text-transparent mb-8">
+  <div
+    v-if="store.profile"
+    class="bg-[var(--background-section)] bg-opacity-30 backdrop-blur-xl p-8 rounded-3xl border border-white/10"
+  >
+    <h2
+      class="text-4xl font-bold bg-gradient-to-r from-[var(--text-secondary)] to-[var(--text-light)] bg-clip-text text-transparent mb-8"
+    >
       Ваши резюме
     </h2>
 
@@ -54,7 +59,9 @@ onMounted(() => {
         :key="resume.id"
         class="resume-card group relative overflow-hidden"
       >
-        <div class="absolute inset-0 bg-gradient-to-r from-[var(--neon-purple)] to-[var(--neon-blue)] opacity-20 group-hover:opacity-30 transition-all duration-300"></div>
+        <div
+          class="absolute inset-0 bg-gradient-to-r from-[var(--neon-purple)] to-[var(--neon-blue)] opacity-20 group-hover:opacity-30 transition-all duration-300"
+        ></div>
         <div class="relative p-6 flex items-center justify-between">
           <div>
             <h3 class="text-xl font-bold text-[var(--text-light)]">{{ resume.title }}</h3>
@@ -63,7 +70,11 @@ onMounted(() => {
           <div class="flex gap-3 items-center">
             <button
               @click="store.setMainResume(resume.id)"
-              :class="resume.id === store.profile.mainResumeId ? 'text-[var(--background-cta)]' : 'text-gray-400'"
+              :class="
+                resume.id === store.profile.mainResumeId
+                  ? 'text-[var(--background-cta)]'
+                  : 'text-gray-400'
+              "
               class="transition-colors duration-200"
               title="Сделать основным"
             >
@@ -85,14 +96,15 @@ onMounted(() => {
         </div>
       </div>
 
-      <div
-        class="resume-card group cursor-pointer"
-        @click="addResume"
-      >
-        <div class="absolute inset-0 bg-gradient-to-r from-[var(--neon-purple)] to-[var(--neon-blue)] opacity-10 group-hover:opacity-20 transition-all duration-300"></div>
+      <div class="resume-card group cursor-pointer" @click="addResume">
+        <div
+          class="absolute inset-0 bg-gradient-to-r from-[var(--neon-purple)] to-[var(--neon-blue)] opacity-10 group-hover:opacity-20 transition-all duration-300"
+        ></div>
         <div class="relative p-6 flex items-center justify-center">
           <div class="text-center">
-            <i class="fas fa-plus text-4xl text-[var(--text-light)] mb-2 group-hover:scale-110 transition-transform duration-300"></i>
+            <i
+              class="fas fa-plus text-4xl text-[var(--text-light)] mb-2 group-hover:scale-110 transition-transform duration-300"
+            ></i>
             <p class="text-[var(--text-light)]">Создать новое резюме</p>
           </div>
         </div>
@@ -100,9 +112,7 @@ onMounted(() => {
     </div>
   </div>
 
-  <div v-else class="text-center text-[var(--text-secondary)] py-8 text-lg">
-    Загрузка данных...
-  </div>
+  <div v-else class="text-center text-[var(--text-secondary)] py-8 text-lg">Загрузка данных...</div>
 </template>
 
 <style scoped>

@@ -1,5 +1,7 @@
 <template>
-  <section class="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-[var(--background-main)]">
+  <section
+    class="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-[var(--background-main)]"
+  >
     <!-- Фоновое видео -->
     <video
       :src="footage"
@@ -20,7 +22,10 @@
     <div class="absolute top-0 left-0 w-full h-full bg-[var(--background-fade)]"></div>
 
     <!-- Контент Hero (заголовок и кнопка) -->
-    <div ref="contentRef" class="relative z-10 flex flex-col items-center justify-center text-center opacity-0">
+    <div
+      ref="contentRef"
+      class="relative z-10 flex flex-col items-center justify-center text-center opacity-0"
+    >
       <div class="max-w-2xl px-4">
         <h1 ref="titleRef" class="text-5xl md:text-6xl font-bold mb-6 text-[var(--text-light)]">
           Neuro.Resume
@@ -47,86 +52,104 @@
       </div>
     </div>
   </section>
-</template>  
+</template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
-import gsap from 'gsap';
+import { ref, onMounted, onUnmounted } from 'vue'
+import gsap from 'gsap'
 import footage from '@/assets/video/footage1.mp4'
 
-const videoRef = ref(null);
-const contentRef = ref(null);
-const titleRef = ref(null);
-const subtitleRef = ref(null);
-const buttonRef = ref(null);
-const buttonTextRef = ref(null);
+const videoRef = ref(null)
+const contentRef = ref(null)
+const titleRef = ref(null)
+const subtitleRef = ref(null)
+const buttonRef = ref(null)
+const buttonTextRef = ref(null)
 
 onMounted(() => {
-  const video = videoRef.value;
+  const video = videoRef.value
 
   const handleTimeUpdate = () => {
     if (video.currentTime >= video.duration - 0.5) {
-      const remainingTime = video.duration - video.currentTime;
-      const slowdownFactor = Math.max(0.1, remainingTime / 0.5);
-      video.playbackRate = slowdownFactor;
+      const remainingTime = video.duration - video.currentTime
+      const slowdownFactor = Math.max(0.1, remainingTime / 0.5)
+      video.playbackRate = slowdownFactor
 
       if (video.currentTime >= video.duration - 0.1) {
-        video.currentTime = 0;
-        video.playbackRate = 1;
+        video.currentTime = 0
+        video.playbackRate = 1
       }
     }
-  };
+  }
 
   video.addEventListener('loadedmetadata', () => {
-    video.play();
-  });
+    video.play()
+  })
 
-  video.addEventListener('timeupdate', handleTimeUpdate);
+  video.addEventListener('timeupdate', handleTimeUpdate)
 
   // GSAP анимация появления
   const tl = gsap.timeline({
-    defaults: { ease: "power3.out" }
-  });
-
-  tl.to(contentRef.value, { 
-    opacity: 1, 
-    duration: 0.5 
+    defaults: { ease: 'power3.out' },
   })
-  .from(titleRef.value, { 
-    y: 50, 
-    autoAlpha: 0,
-    duration: 0.8
-  }, "-=0.3")
-  .from(subtitleRef.value, { 
-    y: 30, 
-    autoAlpha: 0,
-    duration: 0.8
-  }, "-=0.5")
-  .fromTo(buttonRef.value, {
-    x: 100,
-    autoAlpha: 0,
-    scale: 0.8
-  }, {
-    x: 0,
-    autoAlpha: 1,
-    scale: 1,
-    duration: 0.8
-  }, "-=0.4")
-  .fromTo(buttonTextRef.value, {
-    x: -100,
-    autoAlpha: 0
-  }, {
-    x: 0,
-    autoAlpha: 1,
-    duration: 0.8
-  }, "-=0.8");
+
+  tl.to(contentRef.value, {
+    opacity: 1,
+    duration: 0.5,
+  })
+    .from(
+      titleRef.value,
+      {
+        y: 50,
+        autoAlpha: 0,
+        duration: 0.8,
+      },
+      '-=0.3'
+    )
+    .from(
+      subtitleRef.value,
+      {
+        y: 30,
+        autoAlpha: 0,
+        duration: 0.8,
+      },
+      '-=0.5'
+    )
+    .fromTo(
+      buttonRef.value,
+      {
+        x: 100,
+        autoAlpha: 0,
+        scale: 0.8,
+      },
+      {
+        x: 0,
+        autoAlpha: 1,
+        scale: 1,
+        duration: 0.8,
+      },
+      '-=0.4'
+    )
+    .fromTo(
+      buttonTextRef.value,
+      {
+        x: -100,
+        autoAlpha: 0,
+      },
+      {
+        x: 0,
+        autoAlpha: 1,
+        duration: 0.8,
+      },
+      '-=0.8'
+    )
 
   // Удаляем обработчики при размонтировании
   onUnmounted(() => {
-    video.removeEventListener('timeupdate', handleTimeUpdate);
-    tl.kill();
-  });
-});
+    video.removeEventListener('timeupdate', handleTimeUpdate)
+    tl.kill()
+  })
+})
 </script>
 
 <style scoped>
@@ -140,7 +163,7 @@ onMounted(() => {
   bottom: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, #0B0B24 98%);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, #0b0b24 98%);
   pointer-events: none;
 }
 </style>

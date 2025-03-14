@@ -8,10 +8,12 @@ const app = express()
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const dataPath = path.join(__dirname, 'data')
 
-app.use(cors({
-  origin: 'http://localhost:5173',
-  credentials: true
-}))
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  })
+)
 app.use(express.json())
 
 const distPath = path.join(__dirname, '../dist')
@@ -33,7 +35,7 @@ app.patch('/api/profile', async (req, res) => {
 
   const updatedProfile = {
     ...currentProfile,
-    ...req.body
+    ...req.body,
   }
 
   console.log('PATCH /api/profile body:', req.body)

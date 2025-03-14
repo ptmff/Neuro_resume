@@ -42,13 +42,13 @@ import ExtendedFooter from '@/components/JobAnalysis/ExtendedFooter.vue'
 
 const props = defineProps({
   phase: String,
-  setPhase: Function
+  setPhase: Function,
 })
 
 const showFooter = ref(false)
 const triggered = ref(false)
 
-const handleWheel = (event) => {
+const handleWheel = event => {
   if (!triggered.value && event.deltaY > 0 && props.phase === 'input') {
     triggered.value = true
     showFooter.value = true
@@ -64,13 +64,16 @@ onUnmounted(() => {
   window.removeEventListener('wheel', handleWheel)
 })
 
-watch(() => props.phase, (newPhase) => {
-  if (newPhase === 'result' || newPhase === 'visualizing') {
-    showFooter.value = false
-    triggered.value = false
-    window.scrollTo({ top: 0 })
+watch(
+  () => props.phase,
+  newPhase => {
+    if (newPhase === 'result' || newPhase === 'visualizing') {
+      showFooter.value = false
+      triggered.value = false
+      window.scrollTo({ top: 0 })
+    }
   }
-})
+)
 
 const startAnalysis = () => {
   props.setPhase('visualizing')

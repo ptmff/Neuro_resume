@@ -3,8 +3,5 @@
   "name": "Александр аааа55",
   "email": "alex@example.ru",
   "mainResumeId": 2,
-  "resumes": [
-    1,
-    2
-  ]
+  "resumes": [1, 2]
 }

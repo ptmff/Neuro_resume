@@ -2,7 +2,10 @@
   <nav
     ref="navRef"
     class="navbar max-w-[700px] w-full flex justify-center fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-3xl transition-all duration-300"
-    :class="{ 'bg-[var(--primary-dark)]/50 backdrop-blur-2xl shadow-lg': isScrolled, 'bg-transparent': !isScrolled }"
+    :class="{
+      'bg-[var(--primary-dark)]/50 backdrop-blur-2xl shadow-lg': isScrolled,
+      'bg-transparent': !isScrolled,
+    }"
   >
     <ul class="relative flex font-medium text-[var(--text-light)]" ref="navList">
       <!-- Индикатор -->
@@ -17,7 +20,7 @@
         class="relative cursor-pointer rounded-lg transition-all duration-300 z-10"
         :class="{
           'text-[var(--text-light)]': activeIndex === index,
-          'text-[var(--text-light)]/70 hover:text-[var(--text-light)]': activeIndex !== index
+          'text-[var(--text-light)]/70 hover:text-[var(--text-light)]': activeIndex !== index,
         }"
         @click="navigate(link.path, index)"
       >
@@ -63,7 +66,7 @@ const indicatorStyle = ref({
   left: '0px',
   width: '0px',
   top: '0px',
-  height: '40px'
+  height: '40px',
 })
 
 const updateIndicator = () => {
@@ -75,8 +78,8 @@ const updateIndicator = () => {
       indicatorStyle.value = {
         left: offsetLeft + 'px',
         width: clientWidth + 'px',
-        top: (offsetTop + clientHeight / 2 - indicatorHeight / 2) + 'px',
-        height: indicatorHeight + 'px'
+        top: offsetTop + clientHeight / 2 - indicatorHeight / 2 + 'px',
+        height: indicatorHeight + 'px',
       }
     }
   })
@@ -145,7 +148,10 @@ li {
 
 .indicator {
   position: absolute;
-  transition: left 0.3s ease-in-out, width 0.3s ease-in-out, top 0.3s ease-in-out;
+  transition:
+    left 0.3s ease-in-out,
+    width 0.3s ease-in-out,
+    top 0.3s ease-in-out;
   border-radius: 9999px;
   z-index: 0;
 }

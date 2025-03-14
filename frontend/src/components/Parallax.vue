@@ -1,8 +1,5 @@
 <template>
-  <div
-    ref="container"
-    class="absolute inset-0 overflow-hidden select-none"
-  >
+  <div ref="container" class="absolute inset-0 overflow-hidden select-none">
     <img
       v-for="(layer, index) in layers"
       :key="index"
@@ -40,16 +37,25 @@ const mouse = ref({ x: 0, y: 0 })
 const isReady = ref(false)
 
 const icons = [
-  ai, brain, brush, bubble, clockCode, cloudCode,
-  code, cpu, cpu2, device, dna, gear, pencil, ruler, sparkles
+  ai,
+  brain,
+  brush,
+  bubble,
+  clockCode,
+  cloudCode,
+  code,
+  cpu,
+  cpu2,
+  device,
+  dna,
+  gear,
+  pencil,
+  ruler,
+  sparkles,
 ]
 
 // Вместо text-цвета — задаём filter (можно задать кастомные классы)
-const colorFilters = [
-  'filter-violet',
-  'filter-cyan',
-  'filter-pink'
-]
+const colorFilters = ['filter-violet', 'filter-cyan', 'filter-pink']
 
 const getRandomIcon = () => {
   const index = Math.floor(Math.random() * icons.length)
@@ -73,7 +79,7 @@ const layers = Array.from({ length: 40 }, () => {
     size,
     opacity,
     rotation,
-    color
+    color,
   }
 })
 
@@ -85,7 +91,7 @@ onUnmounted(() => {
   window.removeEventListener('mousemove', handleMouse)
 })
 
-const handleMouse = (e) => {
+const handleMouse = e => {
   if (!container.value) return
   const { width, height, left, top } = container.value.getBoundingClientRect()
   const sensitivity = 0.2
@@ -93,7 +99,7 @@ const handleMouse = (e) => {
   mouse.value.y = (e.clientY - top - height / 2) / (height * sensitivity)
 }
 
-const getStyle = (layer) => {
+const getStyle = layer => {
   const x = (mouse.value.x || 0) * layer.speed
   const y = (mouse.value.y || 0) * layer.speed
   return {
@@ -101,7 +107,7 @@ const getStyle = (layer) => {
     top: `${layer.top}%`,
     left: `${layer.left}%`,
     width: `${layer.size}px`,
-    opacity: layer.opacity
+    opacity: layer.opacity,
   }
 }
 </script>

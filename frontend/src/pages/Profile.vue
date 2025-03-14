@@ -1,8 +1,8 @@
 <script setup>
-import ProfileCard from '../components/ProfileCard.vue';
-import UserResume from '../components/UserResume.vue';
-import { onMounted } from 'vue';
-import gsap from 'gsap';
+import ProfileCard from '../components/ProfileCard.vue'
+import UserResume from '../components/UserResume.vue'
+import { onMounted } from 'vue'
+import gsap from 'gsap'
 
 onMounted(() => {
   gsap.from('.profile-container > *', {
@@ -10,9 +10,9 @@ onMounted(() => {
     opacity: 0,
     duration: 0.8,
     stagger: 0.2,
-    ease: 'power3.out'
-  });
-});
+    ease: 'power3.out',
+  })
+})
 </script>
 
 <template>

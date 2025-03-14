@@ -1,12 +1,12 @@
 <script setup>
 import Parallax from '@/components/Parallax.vue'
-import NavBar from "./components/NavBar.vue";
-import Footer from "./components/Footer.vue";
-import { RouterView, useRoute } from "vue-router";
+import NavBar from './components/NavBar.vue'
+import Footer from './components/Footer.vue'
+import { RouterView, useRoute } from 'vue-router'
 import { ref, computed } from 'vue'
 
 const phase = ref('input')
-const setPhase = (value) => {
+const setPhase = value => {
   phase.value = value
 }
 
@@ -22,10 +22,7 @@ const route = useRoute()
 
     <RouterView v-slot="{ Component, route }">
       <transition mode="out-in">
-        <component
-          :is="Component"
-          v-bind="route.path === '/analyse' ? { phase, setPhase } : {}"
-        />
+        <component :is="Component" v-bind="route.path === '/analyse' ? { phase, setPhase } : {}" />
       </transition>
     </RouterView>
 
@@ -33,12 +30,13 @@ const route = useRoute()
   </div>
 </template>
 
-
 <style scoped>
-.v-enter-active, .v-leave-active {
+.v-enter-active,
+.v-leave-active {
   transition: opacity 0.3s ease;
 }
-.v-enter-from, .v-leave-to {
+.v-enter-from,
+.v-leave-to {
   opacity: 0;
 }
 </style>
