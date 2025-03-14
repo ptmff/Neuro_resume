@@ -2,12 +2,14 @@
   <section class="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-[var(--background-main)]">
     <!-- Фоновое видео -->
     <video
+      :src="footage"
       ref="videoRef"
-      class="absolute top-0 left-0 w-full h-full object-cover filter blur-xl"
+      class="absolute top-0 left-0 w-full h-full object-cover filter blur-xl rotate-180"
       muted
       playsinline
+      autoplay
+      loop
     >
-      <source src="../assets/video/footage2.mp4" type="video/mp4" />
       Ваш браузер не поддерживает видео.
     </video>
 
@@ -50,6 +52,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import gsap from 'gsap';
+import footage from '@/assets/video/footage1.mp4'
 
 const videoRef = ref(null);
 const contentRef = ref(null);
