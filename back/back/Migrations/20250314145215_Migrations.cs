@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -38,7 +37,7 @@ namespace back.Migrations
                     Title = table.Column<string>(type: "text", nullable: false),
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Job = table.Column<string>(type: "text", nullable: false),
-                    Skills = table.Column<List<string>>(type: "jsonb", nullable: false)
+                    Skills = table.Column<string>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>
                 {

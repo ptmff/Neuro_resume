@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using back.Models;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Text.Json;
 
 namespace back.Data
 {
@@ -23,6 +25,14 @@ namespace back.Data
             modelBuilder.Entity<Resume>()
                 .Property(r => r.Skills)
                 .HasColumnType("jsonb");
+
+            modelBuilder.Entity<Resume>()
+        .Property(r => r.Skills)
+        .HasColumnType("jsonb")
+        .HasConversion(
+            new ValueConverter<List<string>, string>(
+                v => JsonSerializer.Serialize(v, new JsonSerializerOptions()),
+                v => JsonSerializer.Deserialize<List<string>>(v, new JsonSerializerOptions())!));
         }
     }
 }
