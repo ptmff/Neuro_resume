@@ -41,7 +41,7 @@ namespace back.Helpers
         }
 
         // Асинхронная функция для получения чистой информации о вакансии
-        public static async Task<string> ParseVacancyText(string url)
+        public static async Task<string> ParseVacancyText(string url, HttpClient httpClient)
         {
             string normalizedUrl = NormalizeUrl(url);
             if (normalizedUrl == null)
@@ -51,7 +51,6 @@ namespace back.Helpers
 
             try
             {
-                using var httpClient = new HttpClient();
                 // Устанавливаем заголовок User-Agent
                 httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
