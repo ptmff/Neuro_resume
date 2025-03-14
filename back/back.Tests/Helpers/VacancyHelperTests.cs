@@ -7,6 +7,21 @@ namespace back.Tests.Helpers
         [Theory]
         [InlineData("https://hh.ru/vacancy/117843700?from=main&utm_source=headhunter&utm_medium=rainbow_catalog&utm_campaign=vacancy_of_the_day_to", "https://hh.ru/vacancy/117843700")]
         [InlineData("https://hh.ru/vacancy/87661340?from=main&utm_source=headhunter&utm_medium=rainbow_catalog&utm_campaign=vacancy_of_the_day_to", "https://hh.ru/vacancy/87661340")]
+        [InlineData("https://hh.ru/vacancy/118344273?query=c%23&hhtmFrom=vacancy_search_list", "https://hh.ru/vacancy/118344273")]
+        [InlineData("https://hh.ru/vacancy/118113283?query=c%23&hhtmFrom=vacancy_search_list", "https://hh.ru/vacancy/118113283")]
+        [InlineData("https://hh.ru/vacancy/117479724?query=c%23&hhtmFrom=vacancy_search_list", "https://hh.ru/vacancy/117479724")]
+        // [InlineData("", "")]
+        // [InlineData("", "")]
+        // [InlineData("", "")]
+        // [InlineData("", "")]
+        // [InlineData("", "")]
+        // [InlineData("", "")]
+        // [InlineData("", "")]
+        // [InlineData("", "")]
+        // [InlineData("", "")]
+        // [InlineData("", "")]
+        // [InlineData("", "")]
+        // [InlineData("", "")]
         public void NormalizeUrl_ValidVacancyUrl_ReturnsNormalizedUrl(string input, string expected)
         {
             // Act
