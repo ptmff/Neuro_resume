@@ -197,7 +197,6 @@ export default {
         skills: ''
       };
       this.currentStep = 1;
-      this.selectedTemplate = null;
     },
     updateEmployerEmail(email) {
       this.employerEmail = email;

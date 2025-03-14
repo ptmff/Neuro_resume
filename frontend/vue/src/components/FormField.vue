@@ -1,31 +1,33 @@
 <template>
-  <div class="mb-4">
-    <label :for="id" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">{{ label }}</label>
+  <div class="mb-3">
+    <label :for="id" class="form-label">{{ label }}</label>
     <input
-      v-if="type !== 'textarea'"
+      v-if="type === 'text' || type === 'email' || type === 'tel'"
       :type="type"
+      class="form-control"
       :id="id"
       :value="modelValue"
       @input="$emit('update:modelValue', $event.target.value)"
       :required="required"
       :placeholder="placeholder"
-      class="w-full bg-[var(--background-section)] bg-opacity-50 border border-white/10 rounded-xl px-4 py-3 text-[var(--text-light)] focus:outline-none focus:border-[var(--text-secondary)] transition-all duration-300"
+
     />
     <textarea
-      v-else
+      v-if="type === 'textarea'"
+      class="form-control"
       :id="id"
       :value="modelValue"
       @input="$emit('update:modelValue', $event.target.value)"
       :required="required"
       :placeholder="placeholder"
       rows="3"
-      class="w-full bg-[var(--background-section)] bg-opacity-50 border border-white/10 rounded-xl px-4 py-3 text-[var(--text-light)] focus:outline-none focus:border-[var(--text-secondary)] transition-all duration-300"
     ></textarea>
   </div>
 </template>
 
-<script setup>
-defineProps({
+<script>
+export default {
+props: {
   id: {
     type: String,
     required: true
@@ -46,12 +48,24 @@ defineProps({
     type: Boolean,
     default: false
   },
-  placeholder: {
-    type: String,
-    default: ""
+  placeholder:{
+      type: String,
+      default: ""
   }
-})
-
-defineEmits(['update:modelValue'])
+},
+data() {
+  return {
+    isFocused: false // Состояние фокуса
+  };
+}
+};
 </script>
 
+<style scoped>
+
+.form-control:focus {
+box-shadow: 0 0 0 0.2rem rgba(139, 94, 60, 0.25); /* Коричневая тень при фокусе */
+border-color: #8b5e3c;
+}
+
+</style>

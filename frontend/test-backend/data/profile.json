@@ -1,0 +1,10 @@
+{
+  "id": 1,
+  "name": "Александр аааа55",
+  "email": "alex@example.ru",
+  "mainResumeId": 1,
+  "resumes": [
+    1,
+    2
+  ]
+}
