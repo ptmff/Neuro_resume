@@ -67,7 +67,7 @@ onUnmounted(() => {
 watch(() => props.phase, (newPhase) => {
   if (newPhase === 'result' || newPhase === 'visualizing') {
     showFooter.value = false
-    triggered = false
+    triggered.value = false
     window.scrollTo({ top: 0 })
   }
 })
