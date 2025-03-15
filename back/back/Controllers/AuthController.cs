@@ -14,64 +14,79 @@ namespace back.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly AppDbContext _context;
-    private readonly IConfiguration _configuration;
+    private readonly IAuthService _authService;
 
-    public AuthController(AppDbContext context, IConfiguration configuration)
+    public AuthController(IAuthService authService)
     {
-        _context = context;
-        _configuration = configuration;
+        _authService = authService;
     }
 
     [HttpPost("register")]
     public async Task<ActionResult<User>> Register(UserRegisterDto request)
     {
-        if (await _context.Users.AnyAsync(u => u.Email == request.Email))
-            return BadRequest("User already exists");
-
-        CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
-
-        var user = new User
-        {
-            Email = request.Email,
-            PasswordHash = passwordHash,
-            PasswordSalt = passwordSalt
-        };
-
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-
-        return Ok(user);
+        var result = await _authService.RegisterUserAsync(request);
+        return result.Match<ActionResult>(
+            user => Ok(user),
+            error => BadRequest(error)
+        );
     }
 
     [HttpPost("login")]
     public async Task<ActionResult<string>> Login(UserLoginDto request)
     {
-        var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Email == request.Email);
-
-        if (user == null || !VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
-            return BadRequest("Invalid credentials");
-
-        var token = CreateToken(user);
-        return Ok(token);
+        var result = await _authService.LoginUserAsync(request);
+        return result.Match<ActionResult>(
+            token => Ok(token),
+            error => BadRequest(error)
+        );
     }
+}
 
-    private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+// Новые сервисы и интерфейсы
+public interface IPasswordService
+{
+    void CreatePasswordHash(string password, out byte[] hash, out byte[] salt);
+    bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt);
+}
+
+public interface ITokenService
+{
+    string CreateToken(User user);
+}
+
+public interface IAuthService
+{
+    Task<Result<User>> RegisterUserAsync(UserRegisterDto request);
+    Task<Result<string>> LoginUserAsync(UserLoginDto request);
+}
+
+public class PasswordService : IPasswordService
+{
+    public void CreatePasswordHash(string password, out byte[] hash, out byte[] salt)
     {
         using var hmac = new HMACSHA512();
-        passwordSalt = hmac.Key;
-        passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+        salt = hmac.Key;
+        hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
     }
 
-    private bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
+    public bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
     {
         using var hmac = new HMACSHA512(storedSalt);
         var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
         return computedHash.SequenceEqual(storedHash);
     }
+}
 
-    private string CreateToken(User user)
+public class TokenService : ITokenService
+{
+    private readonly IConfiguration _configuration;
+
+    public TokenService(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
+    public string CreateToken(User user)
     {
         var claims = new List<Claim>
         {
@@ -97,4 +112,73 @@ public class AuthController : ControllerBase
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
+}
+
+public class AuthService : IAuthService
+{
+    private readonly AppDbContext _context;
+    private readonly IPasswordService _passwordService;
+    private readonly ITokenService _tokenService;
+
+    public AuthService(
+        AppDbContext context,
+        IPasswordService passwordService,
+        ITokenService tokenService)
+    {
+        _context = context;
+        _passwordService = passwordService;
+        _tokenService = tokenService;
+    }
+
+    public async Task<Result<User>> RegisterUserAsync(UserRegisterDto request)
+    {
+        if (await _context.Users.AnyAsync(u => u.Email == request.Email))
+            return Result<User>.Failure("User already exists");
+
+        _passwordService.CreatePasswordHash(request.Password, 
+            out byte[] hash, out byte[] salt);
+
+        var user = new User
+        {
+            Email = request.Email,
+            PasswordHash = hash,
+            PasswordSalt = salt
+        };
+
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+
+        return Result<User>.Success(user);
+    }
+
+    public async Task<Result<string>> LoginUserAsync(UserLoginDto request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Email == request.Email);
+
+        if (user == null || !_passwordService.VerifyPasswordHash(
+            request.Password, user.PasswordHash, user.PasswordSalt))
+        {
+            return Result<string>.Failure("Invalid credentials");
+        }
+
+        return Result<string>.Success(_tokenService.CreateToken(user));
+    }
+}
+
+// Вспомогательный класс для обработки результатов
+public class Result<T>
+{
+    public T Value { get; }
+    public string Error { get; }
+    public bool IsSuccess { get; }
+
+    private Result(T value) { Value = value; IsSuccess = true; }
+    private Result(string error) { Error = error; IsSuccess = false; }
+
+    public static Result<T> Success(T value) => new Result<T>(value);
+    public static Result<T> Failure(string error) => new Result<T>(error);
+
+    public TResult Match<TResult>(Func<T, TResult> success, Func<string, TResult> failure)
+        => IsSuccess ? success(Value!) : failure(Error);
 }

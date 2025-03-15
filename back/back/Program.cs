@@ -5,11 +5,16 @@ using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using back.Data;
 using Microsoft.OpenApi.Models;
+using back.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Logging.AddConsole();
 
