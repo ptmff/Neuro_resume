@@ -1,9 +1,11 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace back.Models;
 
 [Owned]
+
 public class Resume
 {
     public int Id { get; set; }
@@ -15,9 +17,11 @@ public class Resume
     [Column(TypeName = "jsonb")]
     public List<string> Skills { get; set; }
     
+    [JsonIgnore]
     [ForeignKey("UserId")]
     public User User { get; set; }
 }
+
 
 public class ResumeDto
 {

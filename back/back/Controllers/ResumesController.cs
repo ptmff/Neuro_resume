@@ -51,14 +51,9 @@ public class ResumesController : ControllerBase
 
     // PUT: api/resumes/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutResume(int id, Resume resume)
+    public async Task<IActionResult> PutResume(int id, ResumeDto resumeDto)
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        
-        if (id != resume.Id)
-        {
-            return BadRequest();
-        }
 
         var existingResume = await _context.Resumes.FindAsync(id);
         if (existingResume == null)
@@ -71,10 +66,10 @@ public class ResumesController : ControllerBase
             return Unauthorized();
         }
 
-        existingResume.Title = resume.Title;
-        existingResume.Date = resume.Date;
-        existingResume.Job = resume.Job;
-        existingResume.Skills = resume.Skills;
+        existingResume.Title = resumeDto.Title;
+        existingResume.Date = resumeDto.Date;
+        existingResume.Job = resumeDto.Job;
+        existingResume.Skills = resumeDto.Skills;
 
         _context.Entry(existingResume).State = EntityState.Modified;
 
@@ -96,6 +91,7 @@ public class ResumesController : ControllerBase
 
         return NoContent();
     }
+
 
     // DELETE: api/resumes/5
     [HttpDelete("{id}")]
