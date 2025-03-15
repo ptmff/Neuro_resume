@@ -4,15 +4,55 @@
       "id": 1,
       "title": "Резюме для Frontend",
       "date": "2024-03-10",
-      "job": "Фронтенд-разработчик",
-      "skills": ["Vue.js", "JavaScript", "Tailwind CSS", "GSAP"]
+      "city": "Обнинск",
+      "job": "Frontend-разработчик",
+      "experience": [
+        {
+          "company": "Google",
+          "position": "Frontend-разработчик",
+          "startDate": "2023-01",
+          "endDate": "2024-03",
+          "description": "Разработка интерфейсов на Vue, интеграция с REST API"
+        }
+      ],
+      "education": [
+        {
+          "institution": "MIREA",
+          "degree": "Бакалавр",
+          "field": "Информатика и вычислительная техника",
+          "startYear": 2019,
+          "endYear": 2023
+        }
+      ],
+      "skills": ["VueJS", "REST API", "Vite", "Pinia"],
+      "template": "default"
     },
     {
       "id": 2,
       "title": "Резюме для PM",
       "date": "2024-02-05",
+      "city": "Москва",
       "job": "Проджект-менеджер",
-      "skills": ["Agile", "Scrum", "Jira", "Коммуникация"]
+      "experience": [
+        {
+          "company": "Яндекс",
+          "position": "PM",
+          "startDate": "2022-01",
+          "endDate": "2024-02",
+          "description": "Управление продуктовой командой, внедрение Scrum"
+        }
+      ],
+      "education": [
+        {
+          "institution": "MIREA",
+          "degree": "Бакалавр",
+          "field": "Информатика и вычислительная техника",
+          "startYear": 2019,
+          "endYear": 2023
+        }
+      ],
+      "skills": ["Agile", "Scrum", "Jira", "Коммуникация"],
+      "template": "classic"
     }
   ]
 }

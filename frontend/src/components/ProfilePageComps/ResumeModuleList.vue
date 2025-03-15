@@ -1,32 +1,34 @@
 <template>
   <section class="flex flex-col gap-6">
-    <!-- Блок заголовка -->
+    <!-- Заголовок -->
     <div>
       <h2 class="text-xl sm:text-2xl font-bold text-white">Мои резюме</h2>
       <p class="text-sm text-white/60">Управляй всеми своими резюме в одном месте</p>
     </div>
 
-    <!-- Список резюме -->
-    <div class="flex flex-col gap-4">
+    <!-- Список -->
+    <div v-if="userResumes.length" class="flex flex-col gap-3">
       <div
-        v-for="resume in store.allResumes.filter(r => store.profile?.resumes?.includes(r.id))"
+        v-for="resume in userResumes"
         :key="resume.id"
-        class="relative group bg-gradient-to-r from-violet-800/30 to-indigo-800/30 border border-white/10 rounded-xl px-4 py-3 flex items-center justify-between hover:shadow-lg transition-shadow"
+        class="flex justify-between items-center bg-white/5 hover:bg-white/10 transition border border-white/10 rounded-xl px-4 py-3"
       >
         <div>
-          <h3 class="text-white font-semibold text-base sm:text-lg">
+          <h3 class="text-white font-semibold text-base sm:text-lg flex items-center gap-2">
             {{ resume.title }}
-            <span v-if="resume.id === store.profile.mainResumeId" class="ml-2 text-violet-400"
-              >★</span
+            <span
+              v-if="resume.id === profileStore.profile?.mainResumeId"
+              class="text-violet-400 text-base"
             >
+              ★
+            </span>
           </h3>
           <p class="text-xs text-white/50 mt-1">{{ resume.date }}</p>
         </div>
 
-        <!-- Действия -->
         <div class="flex items-center gap-2">
           <button
-            @click="store.setMainResume(resume.id)"
+            @click="setAsMain(resume.id)"
             class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition"
             title="Сделать основным"
           >
@@ -35,53 +37,77 @@
           <button
             @click="editResume(resume)"
             class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition"
+            title="Редактировать"
           >
             <i class="fas fa-edit text-white text-sm"></i>
           </button>
           <button
-            @click="store.deleteResume(resume.id)"
+            @click="deleteResume(resume.id)"
             class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition"
+            title="Удалить"
           >
             <i class="fas fa-trash text-pink-400 text-sm"></i>
           </button>
         </div>
       </div>
 
-      <!-- Добавить новое резюме -->
       <div
-        class="bg-gradient-to-r from-violet-800/20 to-indigo-800/20 border border-dashed border-white/10 rounded-xl px-4 py-6 flex flex-col items-center justify-center text-white hover:bg-white/5 transition cursor-pointer"
+        class="bg-white/5 hover:bg-white/10 border border-dashed border-white/10 rounded-xl px-4 py-6 flex flex-col items-center justify-center text-white transition cursor-pointer"
         @click="addResume"
       >
-        <i class="fas fa-plus text-xl mb-2"></i>
+        <i class="fas fa-plus text-xl mb-1"></i>
         <span class="text-sm">Создать новое резюме</span>
       </div>
+    </div>
+
+    <!-- Пока ничего нет -->
+    <div v-else class="text-white/50 text-sm">
+      Загрузка резюме или резюме отсутствуют.
     </div>
   </section>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProfileStore } from '@/stores/profile'
+import { useResumeStore } from '@/stores/resumes'
 
-const store = useProfileStore()
+const profileStore = useProfileStore()
+const resumeStore = useResumeStore()
 const router = useRouter()
 
+const userResumes = computed(() => {
+  const profile = profileStore.profile
+  if (!profile) return []
+  return resumeStore.resumes.filter(r => profile.resumes.includes(r.id))
+})
+
 const editResume = resume => {
-  store.setResumeForEdit(resume)
+  resumeStore.setResumeForEdit(resume)
   router.push('/resume')
 }
 
 const addResume = () => {
-  store.setResumeForEdit(null)
+  resumeStore.setResumeForEdit(null)
   router.push('/resume')
 }
 
-onMounted(() => {
-  if (!store.profile) {
-    store.fetchProfile()
-  }
+const setAsMain = async id => {
+  await profileStore.setMainResume(id)
+}
+
+const deleteResume = async id => {
+  await resumeStore.deleteResume(id)
+}
+
+onMounted(async () => {
+  await Promise.all([
+    profileStore.fetchProfile(),
+    resumeStore.fetchResumes()
+  ])
 })
+
 </script>
 
 <style scoped></style>

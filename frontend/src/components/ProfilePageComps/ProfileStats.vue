@@ -17,24 +17,27 @@
 <script setup>
 import { computed } from 'vue'
 import { useProfileStore } from '@/stores/profile'
+import { useResumeStore } from '@/stores/resumes'
 
-const store = useProfileStore()
-const resumeCount = computed(() => store.profile?.resumes?.length || 0)
+const profileStore = useProfileStore()
+const resumeStore = useResumeStore()
+
+const resumeCount = computed(() => profileStore.profile?.resumes?.length || 0)
 
 const totalSkills = computed(() =>
-  store.allResumes.reduce((acc, r) => acc + (r.skills?.length || 0), 0)
+  resumeStore.resumes.reduce((acc, r) => acc + (r.skills?.length || 0), 0)
 )
 
-const hasMainResume = computed(() => !!store.profile?.mainResumeId)
+const hasMainResume = computed(() => !!profileStore.profile?.mainResumeId)
 
 const mainResumeLabel = computed(() => {
-  return store.profile?.mainResumeId ? `#${store.profile.mainResumeId}` : 'Нет'
+  return profileStore.profile?.mainResumeId ? `#${profileStore.profile.mainResumeId}` : 'Нет'
 })
 
 const profileCompletion = computed(() => {
   let score = 0
-  if (store.profile?.name) score += 1
-  if (store.profile?.email) score += 1
+  if (profileStore.profile?.name) score += 1
+  if (profileStore.profile?.email) score += 1
   if (resumeCount.value > 0) score += 1
   if (hasMainResume.value) score += 1
   return Math.round((score / 4) * 100) + '%'
