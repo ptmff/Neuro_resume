@@ -167,14 +167,59 @@ public class AuthService : IAuthService
 }
 
 // Вспомогательный класс для обработки результатов
+// public class Result<T>
+// {
+//     public T Value { get; }
+//     public string Error { get; }
+//     public bool IsSuccess { get; }
+
+//     private Result(T value) { Value = value; IsSuccess = true; }
+//     private Result(string error) { Error = error; IsSuccess = false; }
+
+//     public static Result<T> Success(T value) => new Result<T>(value);
+//     public static Result<T> Failure(string error) => new Result<T>(error);
+
+//     public TResult Match<TResult>(Func<T, TResult> success, Func<string, TResult> failure)
+//         => IsSuccess ? success(Value!) : failure(Error);
+// }
+
+// Необобщенный класс Result для операций без возвращаемого значения
+public class Result
+{
+    public string Error { get; }
+    public bool IsSuccess { get; }
+
+    private Result(bool isSuccess, string error)
+    {
+        IsSuccess = isSuccess;
+        Error = error;
+    }
+
+    public static Result Success() => new Result(true, null);
+    public static Result Failure(string error) => new Result(false, error);
+
+    public TResult Match<TResult>(Func<TResult> success, Func<string, TResult> failure)
+        => IsSuccess ? success() : failure(Error);
+}
+
+// Обобщенная версия Result<T>
 public class Result<T>
 {
     public T Value { get; }
     public string Error { get; }
     public bool IsSuccess { get; }
 
-    private Result(T value) { Value = value; IsSuccess = true; }
-    private Result(string error) { Error = error; IsSuccess = false; }
+    private Result(T value)
+    {
+        Value = value;
+        IsSuccess = true;
+    }
+
+    private Result(string error)
+    {
+        Error = error;
+        IsSuccess = false;
+    }
 
     public static Result<T> Success(T value) => new Result<T>(value);
     public static Result<T> Failure(string error) => new Result<T>(error);

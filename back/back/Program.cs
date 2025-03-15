@@ -16,6 +16,10 @@ builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
+builder.Services.AddScoped<IResumeService, ResumeService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserContext, UserContext>();
+
 builder.Logging.AddConsole();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
