@@ -19,10 +19,10 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useProfileStore } from '@/stores/profile'
+import { useResumeStore } from '@/stores/resumes'
 
-const store = useProfileStore()
-const skills = computed(() => store.mainResume?.skills || [])
+const resumeStore = useResumeStore()
+const skills = computed(() => resumeStore.mainResume?.skills || [])
 </script>
 
 <style scoped></style>

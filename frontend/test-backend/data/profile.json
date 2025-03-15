@@ -1,7 +1,21 @@
 {
   "id": 1,
-  "name": "Александр аааа55",
-  "email": "alex@example.ru",
-  "mainResumeId": 2,
-  "resumes": [1, 2]
+  "name": "Георгий Рудницкий-Антипов",
+  "email": "huntergeorgod@gmail.com",
+  "phone": "+7 (910) 597-47-23",
+  "city": "Обнинск",
+  "education": [
+    {
+      "institution": "MIREA",
+      "degree": "Бакалавр",
+      "field": "Информатика и вычислительная техника",
+      "startYear": 2019,
+      "endYear": 2023
+    }
+  ],
+  "mainResumeId": 1,
+  "resumes": [
+    1,
+    2
+  ]
 }
