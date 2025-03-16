@@ -1,83 +1,72 @@
 <template>
-  <div
-    class="bg-[var(--background-section)] bg-opacity-30 backdrop-blur-xl p-8 rounded-3xl border border-white/10"
-  >
-    <h2
-      class="text-4xl font-bold bg-gradient-to-r from-[var(--text-secondary)] to-[var(--text-light)] bg-clip-text text-transparent mb-8"
-    >
+  <div class="bg-[var(--background-section)] bg-opacity-30 backdrop-blur-xl p-8 rounded-3xl border border-white/10">
+    <h2 class="text-4xl font-bold bg-gradient-to-r from-[var(--text-secondary)] to-[var(--text-light)] bg-clip-text text-transparent mb-8">
       Заполните данные
     </h2>
-    <form @submit.prevent="$emit('next-step')">
+
+    <!-- 📋 Форма -->
+    <form @submit.prevent="convertDataAndNext">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FormField
-          id="name"
-          label="Имя и Фамилия"
-          v-model="resumeData.name"
-          placeholder="Имя Фамилия"
-          required
-          @input="validateName"
-        />
-        <FormField
-          id="email"
-          label="Email"
-          type="email"
-          v-model="resumeData.email"
-          placeholder="name@example.com"
+          id="title"
+          label="Название резюме"
+          v-model="resumeData.title"
+          placeholder="Например: Резюме для Frontend"
           required
         />
         <FormField
-          id="phone"
-          label="Телефон"
-          type="tel"
-          v-model="resumeData.phone"
-          placeholder="+7 (999) 999-99-99"
-          required
-          @input="formatPhone"
-        />
-        <FormField
-          id="location"
+          id="city"
           label="Город"
-          v-model="resumeData.location"
+          v-model="resumeData.city"
           placeholder="Москва"
+          required
+        />
+        <FormField
+          id="job"
+          label="Профессия"
+          v-model="resumeData.job"
+          placeholder="Frontend-разработчик"
           required
         />
       </div>
 
-      <FormField
-        id="profession"
-        label="Профессия"
-        v-model="resumeData.profession"
-        placeholder="Профессия"
-        required
-        class="mt-6"
-      />
-      <FormField
-        id="education"
-        label="Образование"
-        type="textarea"
-        v-model="resumeData.education"
-        placeholder="Например: МГУ, Факультет информатики, 2015-2019"
-        required
-        class="mt-6"
-      />
-      <FormField
-        id="experience"
-        label="Опыт работы"
-        type="textarea"
-        v-model="resumeData.experience"
-        placeholder="Опишите ваш опыт работы, должности и обязанности"
-        required
-        class="mt-6"
-      />
-      <FormField
-        id="skills"
-        label="Навыки"
-        type="textarea"
-        v-model="resumeData.skills"
-        placeholder="Перечислите ваши профессиональные навыки"
-        required
-        class="mt-6"
-      />
+      <!-- 🧠 Опыт работы -->
+      <div class="mt-6">
+        <label class="block text-sm text-white/70 mb-2">Опыт работы</label>
+        <div v-for="(exp, index) in experience" :key="index" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <FormField v-model="exp.company" label="Компания" :id="`company-${index}`" />
+          <FormField v-model="exp.position" label="Должность" :id="`position-${index}`" />
+          <FormField v-model="exp.startDate" label="Дата начала" type="month" :id="`start-${index}`" />
+          <FormField v-model="exp.endDate" label="Дата окончания" type="month" :id="`end-${index}`" />
+          <FormField v-model="exp.description" label="Описание" type="textarea" :id="`desc-${index}`" class="md:col-span-2" />
+        </div>
+        <button type="button" class="btn btn-secondary" @click="addExperience">+ Добавить опыт</button>
+      </div>
+
+      <!-- 💡 Навыки -->
+      <div class="mt-6">
+        <label for="skillInput" class="block text-sm text-white/70 mb-2">Навыки</label>
+        <input
+          id="skillInput"
+          v-model="newSkill"
+          @keydown.enter.prevent="addSkill"
+          @keydown="handleComma"
+          placeholder="Введите навык и нажмите Enter или запятую"
+          class="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-violet-500"
+        />
+        <div class="flex flex-wrap gap-2 mt-3">
+          <span
+            v-for="(skill, index) in skills"
+            :key="index"
+            class="px-4 py-1 rounded-full bg-gradient-to-r from-[var(--neon-purple)] to-[var(--neon-blue)] text-white text-sm"
+          >
+            {{ skill }}
+            <button class="ml-2 text-white/60 hover:text-white" @click.prevent="removeSkill(index)">×</button>
+          </span>
+        </div>
+      </div>
+
+      <!-- 🔘 Кнопки -->
       <div class="flex justify-between mt-8">
         <button type="button" class="btn btn-secondary" disabled>Назад</button>
         <button type="submit" class="btn btn-primary">Далее</button>
@@ -85,48 +74,61 @@
     </form>
   </div>
 </template>
+
 <script>
 import FormField from './FormField.vue'
 
 export default {
-  components: {
-    FormField,
-  },
+  components: { FormField },
   props: {
     resumeData: {
       type: Object,
-      required: true,
-    },
+      required: true
+    }
   },
-  emits: ['next-step'],
+  emits: ['next-step', 'update:modelValue'],
+  data() {
+    return {
+      experience: this.resumeData.experience || [],
+      skills: this.resumeData.skills || [],
+      newSkill: ''
+    }
+  },
   methods: {
-    formatPhone(event) {
-      let value = event.target.value.replace(/\D/g, '') // Убираем всё, кроме цифр
-
-      if (value.startsWith('8')) {
-        value = '7' + value.slice(1)
-      }
-
-      if (value.length > 11) {
-        value = value.slice(0, 11) // Ограничение 11 цифр
-      }
-
-      let formatted = '+7 '
-      if (value.length > 1) formatted += `(${value.slice(1, 4)}`
-      if (value.length > 4) formatted += `) ${value.slice(4, 7)}`
-      if (value.length > 7) formatted += `-${value.slice(7, 9)}`
-      if (value.length > 9) formatted += `-${value.slice(9, 11)}`
-
-      this.resumeData.phone = formatted
+    addExperience() {
+      this.experience.push({
+        company: '',
+        position: '',
+        startDate: '',
+        endDate: '',
+        description: ''
+      })
     },
-    validateName(event) {
-      let value = event.target.value
-      value = value.replace(/[^А-Яа-яЁёA-Za-z\s-]/g, '') // Разрешаем буквы, пробел и дефис
-      value = value.replace(/-{2,}/g, '-') // Убираем двойные дефисы
-      value = value.replace(/^\-|\-$/g, '') // Убираем дефисы в начале и конце
-      this.resumeData.name = value
+    addSkill() {
+      const skill = this.newSkill.trim()
+      if (skill && !this.skills.includes(skill)) {
+        this.skills.push(skill)
+      }
+      this.newSkill = ''
     },
-  },
+    removeSkill(index) {
+      this.skills.splice(index, 1)
+    },
+    convertDataAndNext() {
+      this.resumeData.experience = this.experience
+      this.resumeData.skills = this.skills
+      this.resumeData.date = new Date().toISOString().slice(0, 10)
+
+      this.$emit('update:modelValue', this.resumeData)
+      this.$emit('next-step')
+    },
+    handleComma(event) {
+      if (event.key === ',') {
+        event.preventDefault()
+        this.addSkill()
+      }
+    }
+  }
 }
 </script>
 
@@ -134,11 +136,9 @@ export default {
 .btn {
   @apply px-6 py-3 font-semibold rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--neon-purple)];
 }
-
 .btn-primary {
   @apply bg-gradient-to-r from-[var(--neon-purple)] to-[var(--neon-blue)] text-white;
 }
-
 .btn-secondary {
   @apply bg-[var(--background-section)] bg-opacity-50 text-[var(--text-light)];
 }
