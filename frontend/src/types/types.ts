@@ -39,7 +39,7 @@ export interface UserProfile {
   phone?: string
   city?: string
   education?: Education[]
-  mainResumeId: number
+  mainResumeId: number | null
   resumes: number[]
   photo?: string
 }

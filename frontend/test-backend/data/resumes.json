@@ -15,16 +15,35 @@
           "description": "Разработка интерфейсов на Vue, интеграция с REST API"
         }
       ],
-      "skills": ["VueJS", "REST API", "Vite", "Pinia"],
+      "skills": [
+        "VueJS",
+        "REST API",
+        "Vite",
+        "Pinia"
+      ],
       "template": "default"
     },
     {
       "id": 2,
-      "title": "Резюме для PM",
-      "date": "2024-02-05",
+      "title": "Резюме для Пиу-пиу-пиуу",
+      "date": "2025-03-16",
       "city": "Москва",
       "job": "Проджект-менеджер",
       "experience": [
+        {
+          "company": "VK",
+          "position": "teamlead",
+          "startDate": "2017-02",
+          "endDate": "2019-01",
+          "description": "всех пиздил палкой по жопе"
+        },
+        {
+          "company": "Google",
+          "position": "Frontend",
+          "startDate": "2019-02",
+          "endDate": "2021-04",
+          "description": "fffffff"
+        },
         {
           "company": "Яндекс",
           "position": "PM",
@@ -33,8 +52,34 @@
           "description": "Управление продуктовой командой, внедрение Scrum"
         }
       ],
-      "skills": ["Agile", "Scrum", "Jira", "Коммуникация"],
-      "template": "classic"
+      "skills": [
+        "Agile",
+        "Scrum",
+        "Jira",
+        "Коммуникация",
+        "абрикос"
+      ],
+      "template": "профессиональный"
+    },
+    {
+      "title": "1742148183339",
+      "city": "1742148183339",
+      "job": "1742148183339",
+      "experience": [
+        {
+          "company": "1742148183339",
+          "position": "1742148183339",
+          "startDate": "0003-02",
+          "endDate": "0004-03",
+          "description": "1742148183339"
+        }
+      ],
+      "skills": [
+        "1742148183339"
+      ],
+      "template": "профессиональный",
+      "date": "2025-03-16",
+      "id": 1742148334331
     }
   ]
 }

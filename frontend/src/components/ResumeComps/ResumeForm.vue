@@ -7,39 +7,40 @@
     <form @submit.prevent="convertDataAndNext">
       <!-- 📌 Основные поля -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <FormField
-          id="title"
-          label="Название резюме"
-          v-model="resumeData.title"
-          placeholder="Например: Резюме для Frontend"
-          required
-        />
-        <FormField
-          id="city"
-          label="Город"
-          v-model="resumeData.city"
-          placeholder="Москва"
-          required
-        />
-        <FormField
-          id="job"
-          label="Профессия"
-          v-model="resumeData.job"
-          placeholder="Frontend-разработчик"
-          required
-        />
+        <FormField id="title" label="Название резюме" v-model="resumeData.title" placeholder="Например: Резюме для Frontend" required />
+        <FormField id="city" label="Город" v-model="resumeData.city" placeholder="Москва" required />
+        <FormField id="job" label="Профессия" v-model="resumeData.job" placeholder="Frontend-разработчик" required />
       </div>
 
       <!-- 🧠 Опыт работы -->
       <div class="mt-6">
         <label class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Опыт работы</label>
-        <div v-for="(exp, index) in experience" :key="index" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <FormField v-model="exp.company" label="Компания" :id="`company-${index}`" />
-          <FormField v-model="exp.position" label="Должность" :id="`position-${index}`" />
-          <FormField v-model="exp.startDate" label="Дата начала" type="month" :id="`start-${index}`" />
-          <FormField v-model="exp.endDate" label="Дата окончания" type="month" :id="`end-${index}`" />
-          <FormField v-model="exp.description" label="Описание" type="textarea" :id="`desc-${index}`" class="md:col-span-2" />
-        </div>
+        <draggable v-model="experience" group="experience" item-key="id" handle=".drag-handle">
+          <template #item="{ element, index }">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 relative bg-[var(--background-section)] rounded-xl p-4 border border-white/10">
+              <div class="absolute left-2 top-0 bottom-0 w-3 flex items-center justify-center cursor-move drag-handle z-10 gap-1">
+                <div class="w-1 h-20 bg-gradient-to-b from-[var(--neon-purple)] to-[var(--neon-blue)] rounded-full"></div>
+                <div class="w-1 h-20 bg-gradient-to-b from-[var(--neon-purple)] to-[var(--neon-blue)] rounded-full"></div>
+              </div>
+              <div class="w-full md:col-span-2 pl-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField v-model="element.company" label="Компания" :id="`company-${index}`" />
+                  <FormField v-model="element.position" label="Должность" :id="`position-${index}`" />
+                  <FormField v-model="element.startDate" label="Дата начала" type="month" :id="`start-${index}`" />
+                  <FormField v-model="element.endDate" label="Дата окончания" type="month" :id="`end-${index}`" />
+                  <FormField v-model="element.description" label="Описание" type="textarea" :id="`desc-${index}`" class="md:col-span-2" />
+                </div>
+                <button
+                  type="button"
+                  class="absolute top-2 right-2 text-xs text-red-400 hover:text-red-200 transition"
+                  @click="removeExperience(index)"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          </template>
+        </draggable>
         <button type="button" class="btn btn-secondary" @click="addExperience">+ Добавить опыт</button>
       </div>
 
@@ -67,8 +68,7 @@
       </div>
 
       <!-- 🔘 Кнопки -->
-      <div class="flex justify-between mt-8">
-        <button type="button" class="btn btn-secondary" disabled>Назад</button>
+      <div class="flex justify-end mt-8">
         <button type="submit" class="btn btn-primary">Далее</button>
       </div>
     </form>
@@ -76,8 +76,8 @@
 </template>
 
 <script setup>
-import { ref, computed, toRefs } from 'vue'
-import { useResumeStore } from '@/stores/resumesStore'
+import { ref } from 'vue'
+import draggable from 'vuedraggable'
 import FormField from './FormField.vue'
 
 const props = defineProps({
@@ -89,14 +89,10 @@ const props = defineProps({
 
 const emit = defineEmits(['next-step', 'update:modelValue'])
 
-const resumeStore = useResumeStore()
-
-// Локальные реактивные копии
 const experience = ref([...props.resumeData.experience ?? []])
 const skills = ref([...props.resumeData.skills ?? []])
 const newSkill = ref('')
 
-// Методы
 const addExperience = () => {
   experience.value.push({
     company: '',
@@ -107,16 +103,22 @@ const addExperience = () => {
   })
 }
 
+const removeExperience = (index) => {
+  experience.value.splice(index, 1)
+}
+
 const addSkill = () => {
   const skill = newSkill.value.trim()
   if (skill && !skills.value.includes(skill)) {
     skills.value.push(skill)
+    syncDataToPreview()
   }
   newSkill.value = ''
 }
 
 const removeSkill = (index) => {
   skills.value.splice(index, 1)
+  syncDataToPreview()
 }
 
 const handleComma = (event) => {
@@ -126,20 +128,15 @@ const handleComma = (event) => {
   }
 }
 
-const convertDataAndNext = async () => {
+const syncDataToPreview = () => {
   props.resumeData.experience = experience.value
   props.resumeData.skills = skills.value
-  props.resumeData.date = new Date().toISOString().slice(0, 10)
-
   emit('update:modelValue', props.resumeData)
+}
 
-  if (props.resumeData.id) {
-    await resumeStore.updateResume(props.resumeData)
-  } else {
-    const newId = Date.now()
-    await resumeStore.addResume({ ...props.resumeData, id: newId, template: 'default' })
-  }
-
+const convertDataAndNext = () => {
+  syncDataToPreview()
+  props.resumeData.date = new Date().toISOString().slice(0, 10)
   emit('next-step')
 }
 </script>

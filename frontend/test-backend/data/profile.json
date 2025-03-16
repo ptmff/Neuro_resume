@@ -4,7 +4,7 @@
   "email": "huntergeorgod@gmail.com",
   "phone": "+7 (910) 597-47-23",
   "city": "Обнинск",
-  "photo": "/public/cube3.png",
+  "photo": "/cube3.png",
   "education": [
     {
       "institution": "MIREA",
@@ -14,9 +14,10 @@
       "endYear": 2023
     }
   ],
-  "mainResumeId": 2,
+  "mainResumeId": 1,
   "resumes": [
     1,
-    2
+    2,
+    1742148334331
   ]
 }

@@ -1,4 +1,3 @@
-//profileStore.ts
 import api from "@/api"
 import { Profile } from "@/types/types"
 import { defineStore } from "pinia"
@@ -13,20 +12,19 @@ export const useProfileStore = defineStore('profile', () => {
     try {
       const profileRes = await api.get('/profile')
       const raw = profileRes.data
-  
+
       // Проверка на корректность поля resumes
       if (!Array.isArray(raw.resumes)) {
         console.warn('[profileStore] Некорректный формат данных: поле "resumes" не массив ID')
         raw.resumes = []
       }
-  
+
       profile.value = raw
       console.log('[profileStore] profile:', profile.value)
     } catch (err) {
       console.error('Ошибка при загрузке профиля:', err)
     }
   }
-  
 
   const setMainResume = async (id: number) => {
     try {
@@ -60,6 +58,20 @@ export const useProfileStore = defineStore('profile', () => {
     }
   }
 
+  const addResumeId = async (id: number) => {
+    if (!profile.value) return
+  
+    const updatedResumes = [...profile.value.resumes, id]
+  
+    try {
+      await updateProfile({ resumes: updatedResumes })
+      profile.value.resumes = updatedResumes
+    } catch (err) {
+      console.error('Ошибка при добавлении id резюме в профиль:', err)
+    }
+  }
+  
+
   return {
     profile,
     fetchProfile,
@@ -68,6 +80,7 @@ export const useProfileStore = defineStore('profile', () => {
     isEditing,
     editedProfile,
     startEdit,
-    saveProfile
+    saveProfile,
+    addResumeId // ⬅️ Новый метод
   }
 })

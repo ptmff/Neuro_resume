@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useResumeStore } from '@/stores/resumesStore'
 
 import ResumeForm from '../components/ResumeComps/ResumeForm.vue'
@@ -48,13 +48,16 @@ import DownloadOptions from '../components/ResumeComps/DownloadOptions.vue'
 
 const resumeStore = useResumeStore()
 
-const resumeData = computed(() => resumeStore.resumeToEdit || {
-  title: '',
-  city: '',
-  job: '',
-  experience: [],
-  skills: [],
-})
+const resumeData = computed(() =>
+  resumeStore.resumeToEdit || {
+    title: '',
+    city: '',
+    job: '',
+    experience: [],
+    skills: [],
+    template: ''
+  }
+)
 
 const employerEmail = ref('')
 const currentStep = ref(1)
@@ -78,6 +81,26 @@ const currentStepComponent = computed(() => {
     default: return null
   }
 })
+
+// 💡 Автосинхронизация шаблона с selectedTemplate
+watch(
+  () => resumeData.value.template,
+  (newTemplate) => {
+    const index = templates.findIndex(t => t.name.toLowerCase() === newTemplate?.toLowerCase())
+    if (index !== -1) {
+      selectedTemplate.value = index
+    }
+  },
+  { immediate: true }
+)
+
+const isEditing = computed(() => !!resumeData.value.id)
+
+const selectTemplate = (index) => {
+  selectedTemplate.value = index
+  resumeData.value.template = templates[index].name.toLowerCase()
+  resumeStore.setResumeForEdit({ ...resumeData.value })
+}
 
 const nextStep = () => {
   if (currentStep.value === 1) {
@@ -120,7 +143,8 @@ const createNewResume = () => {
     city: '',
     job: '',
     experience: [],
-    skills: []
+    skills: [],
+    template: ''
   })
   currentStep.value = 1
 }

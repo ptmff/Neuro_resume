@@ -104,7 +104,23 @@ const setAsMain = async (id: number) => {
 // Удалить резюме
 const deleteResume = async (id: number) => {
   await resumeStore.deleteResume(id)
+  if (profile.value?.resumes.includes(id)) {
+    const updatedResumes = profile.value.resumes.filter(rid => rid !== id)
+    await profileStore.updateProfile({ resumes: updatedResumes })
+
+    // Если удалённое резюме было основным — сбрасываем mainResumeId
+    if (profile.value.mainResumeId === id) {
+      await profileStore.updateProfile({ mainResumeId: null })
+    }
+
+    // Обновляем локально
+    profile.value.resumes = updatedResumes
+    if (profile.value.mainResumeId === id) {
+      profile.value.mainResumeId = null
+    }
+  }
 }
+
 
 // Загрузка данных при монтировании
 onMounted(async () => {
