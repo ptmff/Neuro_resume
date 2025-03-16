@@ -1,0 +1,23 @@
+{
+  "id": 1,
+  "name": "Георгий Рудницкий-Антипов",
+  "email": "huntergeorgod@gmail.com",
+  "phone": "+7 (910) 597-47-23",
+  "city": "Обнинск",
+  "photo": "/cube3.png",
+  "education": [
+    {
+      "institution": "MIREA",
+      "degree": "Бакалавр",
+      "field": "Информатика и вычислительная техника",
+      "startYear": 2019,
+      "endYear": 2023
+    }
+  ],
+  "mainResumeId": 2,
+  "resumes": [
+    1,
+    2,
+    1742149153043
+  ]
+}

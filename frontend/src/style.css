@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* 🌌 Основные цвета (темные и футуристические) */
+  --primary-dark: #0a0f1d; /* Глубокий тёмно-синий, фон сайта */
+  --primary-light: #2b3a67; /* Приглушенный холодный синий */
+  --accent: #9d00ff; /* Неоновый фиолетовый */
+  --secondary-dark: #161b33; /* Почти чёрный с холодным подтоном */
+  --secondary-light: #7289da; /* Мягкий пастельный синий, фоновые блоки */
+
+  /* ✨ Текст */
+  --text-main: #e0e6f8; /* Светло-голубой, основной текст */
+  --text-mainless: rgba(255, 255, 255, 0.6);
+  --text-secondary: #c77dff; /* Фиолетовый для акцентных текстов */
+  --text-light: #ffffff; /* Чисто белый */
+  --icons-bfr-hover: rgba(255, 255, 255, 0.3); /* Иконки до наведения, слегка прозрачные */
+
+  /* 🌆 Фоны */
+  --background-main: #0a0a1f; /* Глубокий тёмный фон */
+  --background-section: #161b33; /* Темный, но с оттенком синего */
+  --background-cta: #9d00ff; /* Кнопки и важные элементы */
+  --background-highlight: #2b3a67; /* Выделенные элементы */
+  --background-indicator: rgba(255, 255, 255, 0.2); /* Индикатор навбара */
+
+  /* 🌠 Градиенты (неоновые эффекты) */
+  --gradient-primary: linear-gradient(135deg, #9d00ff, #00e5ff); /* Фиолетово-бирюзовый */
+  --gradient-card: linear-gradient(135deg, rgba(157, 0, 255, 0.2), rgba(0, 229, 255, 0.2));
+
+  /* 💡 Дополнительные */
+  --neon-blue: #00e5ff; /* Неоновый бирюзовый */
+  --neon-purple: #9d00ff; /* Неоновый фиолетовый */
+  --shadow: rgba(0, 0, 0, 0.3);
+  --highlight: rgba(255, 255, 255, 0.15);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--background-main);
+  overflow-x: hidden;
+}
+
+#app {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.gradient-page {
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 10, 31, 1) 0%,
+    rgba(14, 14, 44, 1) 75%,
+    rgb(27, 4, 78) 100%
+  );
+}

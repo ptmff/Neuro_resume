@@ -1,0 +1,94 @@
+{
+  "resumes": [
+    {
+      "id": 1,
+      "title": "Резюме для Frontend",
+      "date": "2024-03-10",
+      "city": "Обнинск",
+      "job": "Frontend-разработчик",
+      "experience": [
+        {
+          "company": "Google",
+          "position": "Frontend-разработчик",
+          "startDate": "2023-01",
+          "endDate": "2024-03",
+          "description": "Разработка интерфейсов на Vue, интеграция с REST API"
+        }
+      ],
+      "skills": [
+        "VueJS",
+        "REST API",
+        "Vite",
+        "Pinia"
+      ],
+      "template": "default"
+    },
+    {
+      "id": 2,
+      "title": "Резюме для Пиу-пиу-пиуу",
+      "date": "2025-03-16",
+      "city": "Москва",
+      "job": "Проджект-менеджер",
+      "experience": [
+        {
+          "company": "VK",
+          "position": "teamlead",
+          "startDate": "2017-02",
+          "endDate": "2019-01",
+          "description": "всех пиздил палкой по жопе"
+        },
+        {
+          "company": "Google",
+          "position": "Frontend",
+          "startDate": "2019-02",
+          "endDate": "2021-04",
+          "description": "fffffff"
+        },
+        {
+          "company": "Яндекс",
+          "position": "PM",
+          "startDate": "2022-01",
+          "endDate": "2024-02",
+          "description": "Управление продуктовой командой, внедрение Scrum"
+        }
+      ],
+      "skills": [
+        "Agile",
+        "Scrum",
+        "Jira",
+        "Коммуникация",
+        "абрикос"
+      ],
+      "template": "профессиональный"
+    },
+    {
+      "title": "test555555555",
+      "city": "test5",
+      "job": "test",
+      "experience": [
+        {
+          "company": "test",
+          "position": "test",
+          "startDate": "2005-05",
+          "endDate": "2025-03",
+          "description": "test"
+        },
+        {
+          "company": "test1",
+          "position": "test1",
+          "startDate": "2007-07",
+          "endDate": "2007-09",
+          "description": "test1"
+        }
+      ],
+      "skills": [
+        "test",
+        "test1",
+        "test3"
+      ],
+      "template": "технический",
+      "date": "2025-03-16",
+      "id": 1742149153043
+    }
+  ]
+}
