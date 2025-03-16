@@ -62,24 +62,33 @@
       "template": "профессиональный"
     },
     {
-      "title": "1742148183339",
-      "city": "1742148183339",
-      "job": "1742148183339",
+      "title": "test555555555",
+      "city": "test5",
+      "job": "test",
       "experience": [
         {
-          "company": "1742148183339",
-          "position": "1742148183339",
-          "startDate": "0003-02",
-          "endDate": "0004-03",
-          "description": "1742148183339"
+          "company": "test",
+          "position": "test",
+          "startDate": "2005-05",
+          "endDate": "2025-03",
+          "description": "test"
+        },
+        {
+          "company": "test1",
+          "position": "test1",
+          "startDate": "2007-07",
+          "endDate": "2007-09",
+          "description": "test1"
         }
       ],
       "skills": [
-        "1742148183339"
+        "test",
+        "test1",
+        "test3"
       ],
-      "template": "профессиональный",
+      "template": "технический",
       "date": "2025-03-16",
-      "id": 1742148334331
+      "id": 1742149153043
     }
   ]
 }

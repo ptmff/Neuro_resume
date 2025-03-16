@@ -76,7 +76,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import draggable from 'vuedraggable'
 import FormField from './FormField.vue'
 
@@ -93,6 +93,19 @@ const experience = ref([...props.resumeData.experience ?? []])
 const skills = ref([...props.resumeData.skills ?? []])
 const newSkill = ref('')
 
+// 📌 Обновление preview
+const syncDataToPreview = () => {
+  props.resumeData.experience = experience.value
+  props.resumeData.skills = skills.value
+  emit('update:modelValue', props.resumeData)
+}
+
+// Авто-слежение за перемещением опыта
+watch(experience, () => {
+  syncDataToPreview()
+}, { deep: true })
+
+// Методы
 const addExperience = () => {
   experience.value.push({
     company: '',
@@ -128,18 +141,14 @@ const handleComma = (event) => {
   }
 }
 
-const syncDataToPreview = () => {
-  props.resumeData.experience = experience.value
-  props.resumeData.skills = skills.value
-  emit('update:modelValue', props.resumeData)
-}
-
+// 🚀 Далее
 const convertDataAndNext = () => {
   syncDataToPreview()
   props.resumeData.date = new Date().toISOString().slice(0, 10)
   emit('next-step')
 }
 </script>
+
 
 <style scoped>
 .btn {
