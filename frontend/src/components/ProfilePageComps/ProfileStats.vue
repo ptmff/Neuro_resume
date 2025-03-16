@@ -14,32 +14,34 @@
   </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
-import { useProfileStore } from '@/stores/profile'
-import { useResumeStore } from '@/stores/resumes'
+import { useProfileStore } from '@/stores/profileStore'
+import { useResumeStore } from '@/stores/resumesStore'
 
 const profileStore = useProfileStore()
 const resumeStore = useResumeStore()
 
-const resumeCount = computed(() => profileStore.profile?.resumes?.length || 0)
+const resumeCount = computed(() => profileStore.profile?.resumes.length ?? 0)
 
 const totalSkills = computed(() =>
-  resumeStore.resumes.reduce((acc, r) => acc + (r.skills?.length || 0), 0)
+  resumeStore.resumes.reduce((acc, resume) => acc + (resume.skills?.length ?? 0), 0)
 )
 
 const hasMainResume = computed(() => !!profileStore.profile?.mainResumeId)
 
-const mainResumeLabel = computed(() => {
-  return profileStore.profile?.mainResumeId ? `#${profileStore.profile.mainResumeId}` : 'Нет'
-})
+const mainResumeLabel = computed(() =>
+  profileStore.profile?.mainResumeId ? `#${profileStore.profile.mainResumeId}` : 'Нет'
+)
 
 const profileCompletion = computed(() => {
   let score = 0
-  if (profileStore.profile?.name) score += 1
-  if (profileStore.profile?.email) score += 1
-  if (resumeCount.value > 0) score += 1
-  if (hasMainResume.value) score += 1
+  const p = profileStore.profile
+  if (!p) return '0%'
+  if (p.name) score++
+  if (p.email) score++
+  if (resumeCount.value > 0) score++
+  if (hasMainResume.value) score++
   return Math.round((score / 4) * 100) + '%'
 })
 
@@ -47,8 +49,6 @@ const stats = computed(() => [
   { label: 'Создано резюме', value: resumeCount.value },
   { label: 'Указано навыков', value: totalSkills.value },
   { label: 'Основное резюме', value: mainResumeLabel.value },
-  { label: 'Заполненность профиля', value: profileCompletion.value },
+  { label: 'Заполненность профиля', value: profileCompletion.value }
 ])
 </script>
-
-<style scoped></style>

@@ -1,6 +1,6 @@
-//profile.ts
+//profileStore.ts
 import api from "@/api"
-import { Profile } from "@/types/profile"
+import { Profile } from "@/types/types"
 import { defineStore } from "pinia"
 import { ref } from "vue"
 
@@ -12,12 +12,21 @@ export const useProfileStore = defineStore('profile', () => {
   const fetchProfile = async () => {
     try {
       const profileRes = await api.get('/profile')
-      profile.value = profileRes.data
+      const raw = profileRes.data
+  
+      // Проверка на корректность поля resumes
+      if (!Array.isArray(raw.resumes)) {
+        console.warn('[profileStore] Некорректный формат данных: поле "resumes" не массив ID')
+        raw.resumes = []
+      }
+  
+      profile.value = raw
       console.log('[profileStore] profile:', profile.value)
     } catch (err) {
       console.error('Ошибка при загрузке профиля:', err)
     }
   }
+  
 
   const setMainResume = async (id: number) => {
     try {

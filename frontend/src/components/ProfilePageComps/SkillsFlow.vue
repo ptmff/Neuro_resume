@@ -17,12 +17,11 @@
   </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
-import { useResumeStore } from '@/stores/resumes'
+import { useResumeStore } from '@/stores/resumesStore'
 
 const resumeStore = useResumeStore()
-const skills = computed(() => resumeStore.mainResume?.skills || [])
-</script>
 
-<style scoped></style>
+const skills = computed(() => resumeStore.mainResume?.skills ?? [])
+</script>

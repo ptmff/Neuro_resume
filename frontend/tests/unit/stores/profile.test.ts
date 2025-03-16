@@ -1,7 +1,7 @@
 import { setActivePinia, createPinia } from 'pinia'
 import { useProfileStore } from '@/stores/profile'
 import { vi, describe, it, expect, beforeEach } from 'vitest'
-import type { Profile } from '@/types/profile'
+import type { Profile } from '@/types/types'
 import api from '@/api'
 
 // Типизация mock'а API
