@@ -4,8 +4,8 @@
       Заполните данные
     </h2>
 
-    <!-- 📋 Форма -->
     <form @submit.prevent="convertDataAndNext">
+      <!-- 📌 Основные поля -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FormField
           id="title"
@@ -32,7 +32,7 @@
 
       <!-- 🧠 Опыт работы -->
       <div class="mt-6">
-        <label class="block text-sm text-white/70 mb-2">Опыт работы</label>
+        <label class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Опыт работы</label>
         <div v-for="(exp, index) in experience" :key="index" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <FormField v-model="exp.company" label="Компания" :id="`company-${index}`" />
           <FormField v-model="exp.position" label="Должность" :id="`position-${index}`" />
@@ -45,14 +45,14 @@
 
       <!-- 💡 Навыки -->
       <div class="mt-6">
-        <label for="skillInput" class="block text-sm text-white/70 mb-2">Навыки</label>
+        <label for="skillInput" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Навыки</label>
         <input
           id="skillInput"
           v-model="newSkill"
           @keydown.enter.prevent="addSkill"
           @keydown="handleComma"
           placeholder="Введите навык и нажмите Enter или запятую"
-          class="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-violet-500"
+          class="w-full bg-[var(--background-section)] border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-violet-500"
         />
         <div class="flex flex-wrap gap-2 mt-3">
           <span
@@ -75,60 +75,72 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, toRefs } from 'vue'
+import { useResumeStore } from '@/stores/resumesStore'
 import FormField from './FormField.vue'
 
-export default {
-  components: { FormField },
-  props: {
-    resumeData: {
-      type: Object,
-      required: true
-    }
-  },
-  emits: ['next-step', 'update:modelValue'],
-  data() {
-    return {
-      experience: this.resumeData.experience || [],
-      skills: this.resumeData.skills || [],
-      newSkill: ''
-    }
-  },
-  methods: {
-    addExperience() {
-      this.experience.push({
-        company: '',
-        position: '',
-        startDate: '',
-        endDate: '',
-        description: ''
-      })
-    },
-    addSkill() {
-      const skill = this.newSkill.trim()
-      if (skill && !this.skills.includes(skill)) {
-        this.skills.push(skill)
-      }
-      this.newSkill = ''
-    },
-    removeSkill(index) {
-      this.skills.splice(index, 1)
-    },
-    convertDataAndNext() {
-      this.resumeData.experience = this.experience
-      this.resumeData.skills = this.skills
-      this.resumeData.date = new Date().toISOString().slice(0, 10)
-
-      this.$emit('update:modelValue', this.resumeData)
-      this.$emit('next-step')
-    },
-    handleComma(event) {
-      if (event.key === ',') {
-        event.preventDefault()
-        this.addSkill()
-      }
-    }
+const props = defineProps({
+  resumeData: {
+    type: Object,
+    required: true
   }
+})
+
+const emit = defineEmits(['next-step', 'update:modelValue'])
+
+const resumeStore = useResumeStore()
+
+// Локальные реактивные копии
+const experience = ref([...props.resumeData.experience ?? []])
+const skills = ref([...props.resumeData.skills ?? []])
+const newSkill = ref('')
+
+// Методы
+const addExperience = () => {
+  experience.value.push({
+    company: '',
+    position: '',
+    startDate: '',
+    endDate: '',
+    description: ''
+  })
+}
+
+const addSkill = () => {
+  const skill = newSkill.value.trim()
+  if (skill && !skills.value.includes(skill)) {
+    skills.value.push(skill)
+  }
+  newSkill.value = ''
+}
+
+const removeSkill = (index) => {
+  skills.value.splice(index, 1)
+}
+
+const handleComma = (event) => {
+  if (event.key === ',') {
+    event.preventDefault()
+    addSkill()
+  }
+}
+
+const convertDataAndNext = async () => {
+  props.resumeData.experience = experience.value
+  props.resumeData.skills = skills.value
+  props.resumeData.date = new Date().toISOString().slice(0, 10)
+
+  emit('update:modelValue', props.resumeData)
+
+  if (props.resumeData.id) {
+    await resumeStore.updateResume(props.resumeData)
+  } else {
+    const newId = Date.now()
+    await resumeStore.addResume({ ...props.resumeData, id: newId, template: 'default' })
+  }
+
+  emit('next-step')
 }
 </script>
 
