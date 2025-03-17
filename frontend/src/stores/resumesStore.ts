@@ -8,66 +8,66 @@ export const useResumeStore = defineStore('resumes', () => {
   const resumes = ref<Resume[]>([])
   const resumeToEdit = ref<Resume | null>(null)
 
-  // Загрузка всех резюме
   const fetchResumes = async () => {
     try {
-      const response = await api.get('/api/resumes')
-      const raw = response.data
-
-      console.log('[resumesStore] raw response:', raw)
-
-      if (!Array.isArray(raw)) {
-        console.warn('[resumesStore] Некорректный формат данных: ожидался массив')
-        resumes.value = []
-        return
-      }
-
-      resumes.value = raw
+      const { data } = await api.get('resumes')
+      resumes.value = Array.isArray(data) ? data : []
     } catch (err) {
       console.error('[resumesStore] Ошибка при загрузке резюме:', err)
     }
   }
 
-  // Резюме, выбранное для редактирования
   const setResumeForEdit = (resume: Resume | null) => {
     resumeToEdit.value = resume
   }
 
-  // Основное резюме
   const mainResume = computed(() => {
-    const profileStore = useProfileStore()
-    const profile = profileStore.profile
-
-    if (!profile || !Array.isArray(resumes.value)) return null
-    return resumes.value.find(r => r.id === profile.mainResumeId) || null
+    const profile = useProfileStore().profile
+    return profile ? resumes.value.find(r => r.id === profile.mainResumeId) || null : null
   })
 
-  // Добавление
-  const addResume = async (newResume: Omit<Resume, 'id'>) => {
+  const normalizeDates = (experience: Resume['experience']) => {
+    return experience.map(exp => ({
+      ...exp,
+      startDate: exp.startDate,
+      endDate: exp.endDate
+    }))
+  }
+
+  const addResume = async (resume: Resume | Omit<Resume, 'id'>) => {
     try {
-      const response = await api.post('/api/resumes', newResume)
-      const created = response.data
-      resumes.value.push(created)
+      // Удаляем id, если он есть
+      const { id: _, ...resumeWithoutId } = resume as Resume // принудительно считаем, что id может быть
+      const formatted = {
+        ...resumeWithoutId,
+        experience: normalizeDates(resume.experience)
+      }
+  
+      const { data } = await api.post('resumes', formatted)
+      resumes.value.push(data)
     } catch (err) {
       console.error('[resumesStore] Ошибка при добавлении резюме:', err)
     }
-  }
+  }  
 
-  // Обновление
-  const updateResume = async (updatedResume: Resume) => {
+
+  const updateResume = async (resume: Resume) => {
     try {
-      await api.put(`/api/resumes/${updatedResume.id}`, updatedResume)
-      const index = resumes.value.findIndex(r => r.id === updatedResume.id)
-      if (index !== -1) resumes.value[index] = updatedResume
+      const formatted = {
+        ...resume,
+        experience: normalizeDates(resume.experience)
+      }
+      await api.put(`resumes/${resume.id}`, formatted)
+      const index = resumes.value.findIndex(r => r.id === resume.id)
+      if (index !== -1) resumes.value[index] = formatted
     } catch (err) {
       console.error('[resumesStore] Ошибка при обновлении резюме:', err)
     }
   }
 
-  // Удаление
   const deleteResume = async (id: number) => {
     try {
-      await api.delete(`/api/resumes/${id}`)
+      await api.delete(`resumes/${id}`)
       resumes.value = resumes.value.filter(r => r.id !== id)
     } catch (err) {
       console.error('[resumesStore] Ошибка при удалении резюме:', err)

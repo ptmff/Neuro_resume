@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using back.Data;
+using back.DTOs;
+using back.Mappers;
 using System.Text;
 using back.Models;
 
@@ -142,7 +144,13 @@ public class AuthService : IAuthService
         {
             Email = request.Email,
             PasswordHash = hash,
-            PasswordSalt = salt
+            PasswordSalt = salt,
+            Name = request.Name,
+            Phone = request.Phone,
+            City = request.City,
+            Photo = "",
+            Education = new List<Education>(),
+            Resumes = new List<Resume>()
         };
 
         _context.Users.Add(user);

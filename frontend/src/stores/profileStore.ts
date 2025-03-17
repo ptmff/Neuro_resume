@@ -10,7 +10,7 @@ export const useProfileStore = defineStore('profile', () => {
 
   const fetchProfile = async () => {
     try {
-      const profileRes = await api.get('/api/profile')
+      const profileRes = await api.get('user/profile');
       const raw = profileRes.data
 
       // Проверка на корректность поля resumes
@@ -28,7 +28,7 @@ export const useProfileStore = defineStore('profile', () => {
 
   const setMainResume = async (id: number) => {
     try {
-      await api.patch('/api/profile', { mainResumeId: id })
+      await api.patch('profile', { mainResumeId: id })
       if (profile.value) profile.value.mainResumeId = id
     } catch (err) {
       console.error('Ошибка при обновлении главного резюме:', err)
@@ -51,7 +51,7 @@ export const useProfileStore = defineStore('profile', () => {
 
   const updateProfile = async (updatedData: Partial<Profile>) => {
     try {
-      await api.patch('/api/profile', updatedData)
+      await api.patch('profile', updatedData)
       if (profile.value) profile.value = { ...profile.value, ...updatedData }
     } catch (err) {
       console.error('Ошибка при обновлении профиля:', err)

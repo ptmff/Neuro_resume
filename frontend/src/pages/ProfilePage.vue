@@ -26,6 +26,17 @@ import ResumeModuleList from '@/components/ProfilePageComps/ResumeModuleList.vue
 import SkillsFlow from '@/components/ProfilePageComps/SkillsFlow.vue'
 import NeuroAssistant from '@/components/ProfilePageComps/NeuroAssistant.vue'
 import ProfileStats from '@/components/ProfilePageComps/ProfileStats.vue'
+import api from '@/api';
+import { onMounted, ref } from 'vue';
+import { useProfileStore } from '@/stores/profileStore'
+const profileStore = useProfileStore()
+const profile = profileStore.profile
+
+onMounted(async () => {
+  const res = await api.get('user/profile');
+  const data = res.data; 
+  profile.value = res.data;
+});
 </script>
 
 <style scoped></style>

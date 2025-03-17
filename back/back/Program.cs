@@ -1,17 +1,42 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
+using System.Text;
 using back.Data;
 using back.Controllers;
+using Npgsql;
 
+// ✅ Правильная поддержка jsonb в Npgsql 8+ (EnableDynamicJson)
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Подключение БД
+// 👇 Добавляем настройку для маршрутизации
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
+
+
+// 📦 Настраиваем DataSource с поддержкой динамического JSON
+var dataSourceBuilder = new NpgsqlDataSourceBuilder(
+    builder.Configuration.GetConnectionString("DefaultConnection")!
+);
+dataSourceBuilder.EnableDynamicJson(); // Важно!
+var dataSource = dataSourceBuilder.Build();
+
+//razreshenie frontu
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+// ✅ Подключаем БД через dataSource
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(dataSource));
 
 // 2. Сервисы
 builder.Services.AddScoped<IPasswordService, PasswordService>();
@@ -36,7 +61,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
         };
     });
 
@@ -90,18 +115,18 @@ if (app.Environment.IsDevelopment())
 }
 
 // 7. HTTPS + Auth
+app.UseCors("AllowFrontend");
+app.UseRouting();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
 // 8. Фронт (SPA) из dist
-// !!! ЯВНЫЙ путь к фронту !!!
 var distPath = @"E:\GeneralNeuro\frontend\dist";
 
 if (!Directory.Exists(distPath))
     throw new DirectoryNotFoundException($"dist not found at: {distPath}");
 
-// 📦 Настройка для отдачи фронта
 app.UseDefaultFiles(new DefaultFilesOptions
 {
     FileProvider = new PhysicalFileProvider(distPath),
@@ -114,7 +139,6 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = ""
 });
 
-// 🔁 SPA fallback
 app.MapFallbackToFile("index.html", new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(distPath)

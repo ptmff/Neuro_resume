@@ -3,16 +3,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using back.Data;
+using back.DTOs;
 using back.Models;
+using back.Mappers;
 
 namespace back.Controllers;
 
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-
-
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/resumes")]
 [Authorize]
 public class ResumesController : ControllerBase
 {
@@ -35,7 +33,8 @@ public class ResumesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Resume>> PostResume(ResumeDto resumeDto)
+    [HttpPost]
+    public async Task<ActionResult<Resume>> PostResume([FromBody] ResumeDto resumeDto)
     {
         var result = await _resumeService.CreateResume(_userContext.UserId, resumeDto);
         return result.ToActionResultCreated(nameof(GetResumes), r => r.Id);
@@ -54,15 +53,21 @@ public class ResumesController : ControllerBase
         var result = await _resumeService.DeleteResume(_userContext.UserId, id);
         return result.ToActionResult();
     }
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Resume>> GetResume(int id)
+    {
+        var result = await _resumeService.GetResumeById(_userContext.UserId, id);
+        return result.ToActionResult();
+    }
 }
 
-// Новые интерфейсы и сервисы
 public interface IResumeService
 {
     Task<Result<IEnumerable<Resume>>> GetUserResumes(int userId);
     Task<Result<Resume>> CreateResume(int userId, ResumeDto dto);
     Task<Result> UpdateResume(int userId, int resumeId, ResumeDto dto);
     Task<Result> DeleteResume(int userId, int resumeId);
+    Task<Result<Resume>> GetResumeById(int userId, int resumeId);
 }
 
 public interface IUserContext
@@ -112,9 +117,12 @@ public class ResumeService : IResumeService
         var resume = new Resume
         {
             Title = dto.Title,
-            Date = dto.Date,
+            Date = DateTime.UtcNow,
             Job = dto.Job,
             Skills = dto.Skills,
+            City = dto.City,
+            Template = dto.Template,
+            Experience = dto.Experience?.Select(e => e.ToModel()).ToList(),
             UserId = userId
         };
 
@@ -126,7 +134,7 @@ public class ResumeService : IResumeService
 
     public async Task<Result> UpdateResume(int userId, int resumeId, ResumeDto dto)
     {
-        var resume = await _context.Resumes.FindAsync(resumeId);
+        var resume = await _context.Resumes.Include(r => r.Experience).FirstOrDefaultAsync(r => r.Id == resumeId);
         if (resume == null) return Result.Failure("Resume not found");
         if (resume.UserId != userId) return Result.Failure("Forbidden");
 
@@ -134,6 +142,9 @@ public class ResumeService : IResumeService
         resume.Date = dto.Date;
         resume.Job = dto.Job;
         resume.Skills = dto.Skills;
+        resume.City = dto.City;
+        resume.Template = dto.Template;
+        resume.Experience = dto.Experience?.Select(e => e.ToModel()).ToList();
 
         await _context.SaveChangesAsync();
         return Result.Success();
@@ -149,9 +160,23 @@ public class ResumeService : IResumeService
         await _context.SaveChangesAsync();
         return Result.Success();
     }
+
+    public async Task<Result<Resume>> GetResumeById(int userId, int resumeId)
+    {
+        var resume = await _context.Resumes
+            .Include(r => r.Experience)
+            .FirstOrDefaultAsync(r => r.Id == resumeId);
+
+        if (resume == null)
+            return Result<Resume>.Failure("Resume not found");
+
+        if (resume.UserId != userId)
+            return Result<Resume>.Failure("Forbidden");
+
+        return Result<Resume>.Success(resume);
+    }
 }
 
-// Расширения для преобразования Result в ActionResult
 public static class ResultExtensions
 {
     public static ActionResult ToActionResult(this Result result)
