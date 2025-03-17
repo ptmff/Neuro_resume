@@ -117,7 +117,7 @@ public class ResumeService : IResumeService
         var resume = new Resume
         {
             Title = dto.Title,
-            Date = DateTime.UtcNow,
+            Date = dto.Date,
             Job = dto.Job,
             Skills = dto.Skills,
             City = dto.City,
