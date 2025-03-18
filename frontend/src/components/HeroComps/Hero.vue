@@ -57,7 +57,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
-import footage from '@/assets/video/footage1.mp4'
+import footage from '@/assets/video/footage2.mp4'
 
 const videoRef = ref(null)
 const contentRef = ref(null)

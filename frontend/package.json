@@ -34,6 +34,7 @@
     "@types/eslint": "^9.6.1",
     "@types/testing-library__jest-dom": "^5.14.9",
     "@types/testing-library__vue": "^5.0.0",
+    "@types/three": "^0.174.0",
     "@typescript-eslint/eslint-plugin": "^8.26.1",
     "@typescript-eslint/parser": "^8.26.1",
     "@vitejs/plugin-vue": "^5.2.1",

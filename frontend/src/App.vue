@@ -49,7 +49,7 @@ const isLoading = computed(() => appStore.isAppLoading)
       </RouterView>
 
       <Footer
-        v-if="!(route.path === '/analyse' && (phase === 'visualizing' || phase === 'input'))"
+        v-if="!(route.path === '/analyse')"
       />
     </div>
   </template>

@@ -1,85 +1,63 @@
 <template>
-  <div class="relative min-h-screen overflow-hidden">
-    <!-- 🎆 Фон -->
-    <JobParallaxBackground />
-
-    <!-- 💬 Центр: Ввод -->
-    <section
-      v-if="props.phase === 'input'"
-      class="min-h-screen flex flex-col justify-center items-center relative z-10"
+  <div class="relative w-full h-screen overflow-hidden">
+    <!-- 🌌 Фоновое видео -->
+    <video
+      :src="footage"
+      ref="videoRef"
+      class="absolute top-0 left-0 w-full h-full object-cover filter blur-xl rotate-180"
+      muted
+      playsinline
+      autoplay
+      loop
     >
-      <JobInputPanel @start-analysis="startAnalysis" />
+      Ваш браузер не поддерживает видео.
+    </video>
 
-      <!-- 👇 Подсказка прокрутки -->
-      <div
-        class="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/60 text-sm text-center animate-bounce"
-        v-if="!showFooter"
-      >
-        <i class="fas fa-arrow-down text-lg mb-1 block"></i>
-        <span>Прокрути вниз</span>
-      </div>
-    </section>
+    <!-- 🧊 Статичный верхний слой -->
+    <StaticIntroSection :fadeOut="scrolled" :phase="props.phase" />
+
+    <!-- 🧭 Подсказка скролла -->
+    <HintArrow :visible="!scrolled && props.phase === 'input'" />
+
+    <!-- 🚪 Наслаивающийся слой: инпут + футер -->
+    <ScrollContainer
+      v-if="props.phase === 'input'"
+      @scrolled="handleScroll"
+      @start="startAnalysis"
+    />
 
     <!-- ⚙️ Анимация анализа -->
     <div class="relative z-10">
       <JobAnalysisVisualizer v-if="props.phase === 'visualizing'" />
       <JobAnalysisResult v-if="props.phase === 'result'" />
     </div>
-
-    <!-- 📜 Расширенный футер -->
-    <ExtendedFooter v-if="triggered && props.phase === 'input'" :visible="showFooter" />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue'
-
-import JobParallaxBackground from '@/components/JobAnalysisComps/JobParallaxBackground.vue'
-import JobInputPanel from '@/components/JobAnalysisComps/JobInputPanel.vue'
+import { ref } from 'vue'
+import footage from '@/assets/video/footage2.mp4'
+import StaticIntroSection from '@/components/JobAnalysisComps/test/StaticIntroSection.vue'
+import ScrollContainer from '@/components/JobAnalysisComps/test/ScrollContainer.vue'
 import JobAnalysisVisualizer from '@/components/JobAnalysisComps/JobAnalysisVisualizer.vue'
 import JobAnalysisResult from '@/components/JobAnalysisComps/JobAnalysisResult.vue'
-import ExtendedFooter from '@/components/JobAnalysisComps/ExtendedFooter.vue'
 
 const props = defineProps({
   phase: String,
-  setPhase: Function,
+  setPhase: Function
 })
 
-const showFooter = ref(false)
-const triggered = ref(false)
+const scrolled = ref(false)
 
-const handleWheel = event => {
-  if (!triggered.value && event.deltaY > 0 && props.phase === 'input') {
-    triggered.value = true
-    showFooter.value = true
-  }
+function handleScroll() {
+  scrolled.value = true
 }
 
-onMounted(() => {
-  props.setPhase('input')
-  window.addEventListener('wheel', handleWheel, { passive: true })
-})
-
-onUnmounted(() => {
-  window.removeEventListener('wheel', handleWheel)
-})
-
-watch(
-  () => props.phase,
-  newPhase => {
-    if (newPhase === 'result' || newPhase === 'visualizing') {
-      showFooter.value = false
-      triggered.value = false
-      window.scrollTo({ top: 0 })
-    }
-  }
-)
-
-const startAnalysis = () => {
+function startAnalysis(url) {
   props.setPhase('visualizing')
   setTimeout(() => {
     props.setPhase('result')
-  }, 4000)
+  }, 4500)
 }
 </script>
 

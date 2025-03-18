@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import JobCore from './JobAnalysisVisualizer/JobCore.vue'
+import JobCore from './JobAnalysisVisualizer/JobAnalysisScene.vue'
 import FloatingWords from './JobAnalysisVisualizer/FloatingWords.vue'
 import SkillLinkMap from './JobAnalysisVisualizer/SkillLinkMap.vue'
 import LoadingPulse from './LoadingPulse.vue'
