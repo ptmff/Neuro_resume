@@ -3,10 +3,10 @@
     <div
       v-for="(card, index) in insights"
       :key="index"
-      class="bg-white/5 border border-white/10 p-5 rounded-xl hover:shadow-lg transition duration-300 backdrop-blur-md"
+      class="bg-[var(--background-overlay)] border border-[var(--background-pale)] p-5 rounded-xl hover:shadow-lg transition duration-300 backdrop-blur-md"
     >
-      <h3 class="text-lg font-semibold text-white mb-2">{{ card.title }}</h3>
-      <p class="text-sm text-white/70">{{ card.description }}</p>
+      <h3 class="text-lg font-semibold text-[var(--text-light)] mb-2">{{ card.title }}</h3>
+      <p class="text-sm text-[var(--text-mainless)]">{{ card.description }}</p>
     </div>
   </div>
 </template>

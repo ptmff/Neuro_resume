@@ -6,7 +6,7 @@
       ></div>
     </div>
     <div
-      class="relative z-10 px-4 py-2 text-white text-sm tracking-wide uppercase bg-[var(--background-section)] border border-white/10 rounded-full shadow-md"
+      class="relative z-10 px-4 py-2 text-[var(--text-light)] text-sm tracking-wide uppercase bg-[var(--background-section)] border border-[var(--background-pale)] rounded-full shadow-md"
     >
       Анализ завершён
     </div>

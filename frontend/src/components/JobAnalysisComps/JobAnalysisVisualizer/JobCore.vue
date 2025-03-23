@@ -16,7 +16,7 @@
     <div
       class="relative z-10 w-24 h-24 rounded-full bg-gradient-to-br from-purple-600 to-indigo-600 shadow-xl flex items-center justify-center"
     >
-      <i class="fas fa-brain text-white text-3xl"></i>
+      <i class="fas fa-brain text-[var(--text-light)] text-3xl"></i>
     </div>
   </div>
 </template>

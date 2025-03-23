@@ -8,7 +8,7 @@
     <!-- 🔷 Блюр-фон при скролле -->
     <div
       class="fixed inset-0 z-[-1] transition duration-300 pointer-events-none"
-      :class="{ 'backdrop-blur-md bg-black/40': scrolledEnough }"
+      :class="{ 'backdrop-blur-md bg-[var(--shadow)]': scrolledEnough }"
     ></div>
 
     <!-- 🧱 Заглушка для прокрутки -->
