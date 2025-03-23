@@ -7,7 +7,7 @@
     </button>
 
     <button
-      class="px-6 py-3 rounded-full bg-[var(--highlight)] hover:bg-[var(--icons-bfr-hover)] text-[var(--text-light)] font-semibold transition-all shadow-md"
+      class="px-6 py-3 rounded-full bg-[var(--background-pale)] hover:bg-[var(--background-indicator)] text-[var(--text-light)] font-semibold transition-all shadow-md"
     >
       Добавить навык
     </button>

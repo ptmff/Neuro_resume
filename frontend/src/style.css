@@ -37,6 +37,7 @@
   --background-cta: #9d00ff; /* Кнопки и важные элементы */
   --background-cta-hover: #6700a7; /* Кнопки и важные элементы при наведении*/
   --background-highlight: #2b3a67; /* Выделенные элементы */
+  --background-pale: rgba(255, 255, 255, 0.1);
   --background-indicator: rgba(255, 255, 255, 0.2); /* Индикатор навбара */
   --background-overlay: rgba(255, 255, 255, 0.05); /* Оверлей для превью и инсайт кардс */
 

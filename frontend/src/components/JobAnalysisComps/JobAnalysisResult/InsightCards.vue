@@ -3,7 +3,7 @@
     <div
       v-for="(card, index) in insights"
       :key="index"
-      class="bg-[var(--background-overlay)] border border-[var(--highlight)] p-5 rounded-xl hover:shadow-lg transition duration-300 backdrop-blur-md"
+      class="bg-[var(--background-overlay)] border border-[var(--background-pale)] p-5 rounded-xl hover:shadow-lg transition duration-300 backdrop-blur-md"
     >
       <h3 class="text-lg font-semibold text-[var(--text-light)] mb-2">{{ card.title }}</h3>
       <p class="text-sm text-[var(--text-mainless)]">{{ card.description }}</p>

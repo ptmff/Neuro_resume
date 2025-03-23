@@ -40,7 +40,7 @@
           Настроить стиль
         </button>
         <button
-          class="bg-[var(--highlight)] hover:bg-[var(--icons-bfr-hover)] text-[var(--text-light)] font-medium py-2 px-6 rounded-full transition"
+          class="bg-[var(--background-pale)] hover:bg-[var(--background-indicator)] text-[var(--text-light)] font-medium py-2 px-6 rounded-full transition"
         >
           Изменить содержимое
         </button>
