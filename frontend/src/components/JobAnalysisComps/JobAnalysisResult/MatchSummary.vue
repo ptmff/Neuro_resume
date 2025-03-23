@@ -54,7 +54,7 @@
 import { computed } from 'vue'
 
 // Заглушка — позже данные будут приходить из анализа
-const matchPercent = 76
+const matchPercent = 69
 const matchedSkills = 15
 const missingSkills = 5
 

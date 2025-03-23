@@ -36,9 +36,9 @@
 
 <script setup>
 import { ref } from 'vue'
-import footage from '@/assets/video/footage2.mp4'
-import StaticIntroSection from '@/components/JobAnalysisComps/test/StaticIntroSection.vue'
-import ScrollContainer from '@/components/JobAnalysisComps/test/ScrollContainer.vue'
+import footage from '@/assets/video/footage1.mp4'
+import StaticIntroSection from '@/components/JobAnalysisComps/JobInputSection/StaticIntroSection.vue'
+import ScrollContainer from '@/components/JobAnalysisComps/JobInputSection/ScrollContainer.vue'
 import JobAnalysisVisualizer from '@/components/JobAnalysisComps/JobAnalysisVisualizer.vue'
 import JobAnalysisResult from '@/components/JobAnalysisComps/JobAnalysisResult.vue'
 
