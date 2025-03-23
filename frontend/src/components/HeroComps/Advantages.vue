@@ -1,7 +1,7 @@
 <template>
   <section class="w-full py-20 px-6 md:px-12">
     <div class="max-w-6xl mx-auto">
-      <h2 class="text-3xl md:text-4xl font-bold text-white mb-12 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold text-[var(--text-light)] mb-12 text-center">
         Почему Neuro.Resume?
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-10 overflow-hidden">
@@ -16,13 +16,13 @@
           ]"
         >
           <div
-            class="w-12 h-12 flex-shrink-0 bg-violet-500/20 rounded-xl flex items-center justify-center"
+            class="w-12 h-12 flex-shrink-0 bg-[var(--icons-bg-adventages)] rounded-xl flex items-center justify-center"
           >
-            <component :is="item.icon" class="text-violet-400 w-6 h-6" />
+            <component :is="item.icon" class="text-[var(--text-secondary)] w-6 h-6" />
           </div>
           <div class="break-words min-w-0">
-            <h3 class="text-lg font-semibold text-white">{{ item.title }}</h3>
-            <p class="text-white/70 text-sm mt-1">{{ item.desc }}</p>
+            <h3 class="text-lg font-semibold text-[var(--text-light)]">{{ item.title }}</h3>
+            <p class="text-[var(--text-mainless)] text-sm mt-1">{{ item.desc }}</p>
           </div>
         </div>
       </div>
