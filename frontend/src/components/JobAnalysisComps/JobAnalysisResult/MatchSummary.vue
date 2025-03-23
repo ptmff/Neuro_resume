@@ -39,7 +39,7 @@
       </div>
     </div>
 
-    <div class="text-[var(--text-mainless)] text-sm">
+    <div class="text-[var(--text-subdued)] text-sm">
       <p>
         <strong>{{ matchedSkills }}</strong> подходящих навыков
       </p>

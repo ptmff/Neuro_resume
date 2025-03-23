@@ -3,7 +3,7 @@
     <span
       v-for="(word, index) in floatingWords"
       :key="index"
-      class="absolute text-white/80 text-sm font-medium whitespace-nowrap opacity-0 animate-float"
+      class="absolute text-[var(--text-subdued)] text-sm font-medium whitespace-nowrap opacity-0 animate-float"
       :style="getStyle(word)"
     >
       {{ word.text }}
