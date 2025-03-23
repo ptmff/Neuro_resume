@@ -10,7 +10,7 @@
       </p>
 
       <div
-        class="relative bg-[var(--preview-overlay)] backdrop-blur-sm border border-[var(--highlight)] rounded-2xl overflow-hidden shadow-xl w-full max-w-4xl mx-auto"
+        class="relative bg-[var(--background-overlay)] backdrop-blur-sm border border-[var(--highlight)] rounded-2xl overflow-hidden shadow-xl w-full max-w-4xl mx-auto"
       >
         <div
           class="bg-gradient-to-r from-purple-600/20 to-indigo-600/20 h-[500px] flex items-center justify-center text-[var(--text-mainless)] text-xl"
