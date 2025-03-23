@@ -1,19 +1,19 @@
 <template>
   <section class="w-full py-24 px-6 md:px-12" data-aos="fade-up" data-aos-duration="1200">
     <div class="max-w-6xl mx-auto text-center">
-      <h2 class="text-3xl md:text-4xl font-bold text-white mb-8">
+      <h2 class="text-3xl md:text-4xl font-bold text-[var(--text-light)] mb-8">
         Посмотри, как будет выглядеть твоё резюме
       </h2>
-      <p class="text-white/60 mb-10 max-w-2xl mx-auto">
+      <p class="text-[var(--text-mainless)] mb-10 max-w-2xl mx-auto">
         Оцените результат до загрузки — превью в реальном времени помогает точно настроить стиль и
         содержание.
       </p>
 
       <div
-        class="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden shadow-xl w-full max-w-4xl mx-auto"
+        class="relative bg-[var(--preview-overlay)] backdrop-blur-sm border border-[var(--highlight)] rounded-2xl overflow-hidden shadow-xl w-full max-w-4xl mx-auto"
       >
         <div
-          class="bg-gradient-to-r from-purple-600/20 to-indigo-600/20 h-[500px] flex items-center justify-center text-white/50 text-xl"
+          class="bg-gradient-to-r from-purple-600/20 to-indigo-600/20 h-[500px] flex items-center justify-center text-[var(--text-mainless)] text-xl"
         >
           <span
             >📄 [Здесь будет превью резюме, мы правада его сделаем, честно, поверьте нам. Оно не
@@ -35,12 +35,12 @@
 
       <div class="flex justify-center gap-4 mt-10">
         <button
-          class="bg-violet-600 hover:bg-violet-700 text-white font-medium py-2 px-6 rounded-full transition"
+          class="bg-[var(--background-cta)] hover:bg-[var(--icons-bg-adventages)] text-[var(--text-light)] font-medium py-2 px-6 rounded-full transition"
         >
           Настроить стиль
         </button>
         <button
-          class="bg-white/10 hover:bg-white/20 text-white font-medium py-2 px-6 rounded-full transition"
+          class="bg-[var(--highlight)] hover:bg-[var(--icons-bfr-hover)] text-[var(--text-light)] font-medium py-2 px-6 rounded-full transition"
         >
           Изменить содержимое
         </button>
