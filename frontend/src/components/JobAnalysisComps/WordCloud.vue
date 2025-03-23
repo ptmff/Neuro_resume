@@ -4,7 +4,7 @@
       v-for="(word, index) in words"
       :key="index"
       :style="getStyle(word)"
-      class="absolute font-semibold text-white whitespace-nowrap select-none pointer-events-none transition-transform duration-500"
+      class="absolute font-semibold text-[var(--text-light)] whitespace-nowrap select-none pointer-events-none transition-transform duration-500"
     >
       {{ word.text }}
     </span>

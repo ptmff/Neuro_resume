@@ -15,7 +15,7 @@ defineProps({
         <h2 class="text-3xl sm:text-4xl font-bold text-[var(--text-main)] mb-4">
           Спасибо за использование Neuro.Resume!
         </h2>
-        <p class="text-white/60 max-w-xl mx-auto text-base sm:text-lg">
+        <p class="text-[var(--text-mainless)] max-w-xl mx-auto text-base sm:text-lg">
           Надеемся, что наш анализ поможет тебе найти работу мечты 💼
         </p>
       </div>
@@ -87,7 +87,7 @@ defineProps({
       </div>
 
       <!-- Нижняя подпись -->
-      <div class="mt-20 text-center text-white/40 text-sm">
+      <div class="mt-20 text-center text-[var(--icons-bfr-hover)] text-sm">
         © 2025 Neuro.Resume • Сделано с любовью и Vue
       </div>
     </div>

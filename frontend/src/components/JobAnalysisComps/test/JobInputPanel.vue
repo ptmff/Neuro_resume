@@ -12,7 +12,7 @@
         v-model="url"
         type="url"
         placeholder="https://example.com/vacancy"
-        class="w-full bg-[#111111] text-[var(--text-light)] rounded-xl py-4 pl-5 pr-14 text-lg border border-[var(--background-pale)] focus:outline-none focus:ring-2 focus:ring-[var(--background-cta)] transition"
+        class="w-full bg-[var(--background-job-analysis)] text-[var(--text-light)] rounded-xl py-4 pl-5 pr-14 text-lg border border-[var(--background-pale)] focus:outline-none focus:ring-2 focus:ring-[var(--background-cta)] transition"
         required
       />
 
