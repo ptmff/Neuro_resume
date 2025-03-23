@@ -35,7 +35,7 @@
 
       <div class="flex justify-center gap-4 mt-10">
         <button
-          class="bg-[var(--background-cta)] hover:bg-[var(--icons-bg-adventages)] text-[var(--text-light)] font-medium py-2 px-6 rounded-full transition"
+          class="bg-[var(--background-cta)] hover:bg-[var(--background-cta-hover)] text-[var(--text-light)] font-medium py-2 px-6 rounded-full transition"
         >
           Настроить стиль
         </button>
