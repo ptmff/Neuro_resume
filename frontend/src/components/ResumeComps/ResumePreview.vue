@@ -34,6 +34,12 @@
           </ul>
         </div>
 
+        <!-- О себе -->
+        <h4 class="section-heading">😎 О себе</h4>
+         <div class="mb-6 text-sm text-[var(--text-main)] space-y-1">
+          {{ resumeData?.description }}
+         </div>
+
         <!-- Опыт -->
         <div v-if="resumeData.experience?.length" class="mb-6">
           <h4 class="section-heading">💼 Опыт работы</h4>
