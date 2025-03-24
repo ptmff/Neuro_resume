@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-[var(--background-section)] bg-opacity-30 backdrop-blur-xl p-8 rounded-3xl border border-white/10"
+    class="bg-[var(--background-section)] bg-opacity-30 backdrop-blur-xl p-8 rounded-3xl border border-[var(--background-pale)]"
   >
     <h2
       class="text-4xl font-bold bg-gradient-to-r from-[var(--text-secondary)] to-[var(--text-light)] bg-clip-text text-transparent mb-8"
@@ -14,7 +14,7 @@
         <div
           class="ai-icon mr-4 bg-gradient-to-r from-[var(--neon-purple)] to-[var(--neon-blue)] p-3 rounded-full"
         >
-          <i class="fas fa-robot text-white text-2xl"></i>
+          <i class="fas fa-robot text-[var(--text-light)] text-2xl"></i>
         </div>
         <div>
           <h3 class="text-2xl font-semibold text-[var(--text-light)] mb-1">AI-анализ</h3>
@@ -28,7 +28,7 @@
         <div
           v-for="(suggestion, index) in aiSuggestions"
           :key="index"
-          class="suggestion-item p-4 rounded-xl bg-[var(--background-section)] bg-opacity-50 border border-white/10"
+          class="suggestion-item p-4 rounded-xl bg-[var(--background-section)] bg-opacity-50 border border-[var(--background-pale)]"
         >
           <h4 class="text-xl font-semibold text-[var(--text-light)] mb-2">
             {{ suggestion.title }}
@@ -67,10 +67,10 @@ defineEmits(['apply-suggestion', 'next-step', 'prev-step'])
 }
 
 .btn-primary {
-  @apply bg-gradient-to-r from-[var(--neon-purple)] to-[var(--neon-blue)] text-white;
+  @apply bg-gradient-to-r from-[var(--neon-purple)] to-[var(--neon-blue)] text-[var(--text-light)];
 }
 
 .btn-secondary {
-  @apply bg-[var(--background-section)] bg-opacity-50 text-[var(--text-light)] border border-white/10;
+  @apply bg-[var(--background-section)] bg-opacity-50 text-[var(--text-light)] border border-[var(--background-pale)];
 }
 </style>

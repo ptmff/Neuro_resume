@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-[var(--background-section)] bg-opacity-30 backdrop-blur-xl p-8 rounded-3xl border border-white/10">
+  <div class="bg-[var(--background-section)] bg-opacity-30 backdrop-blur-xl p-8 rounded-3xl border border-[var(--background-pale)]">
     <h2 class="text-4xl font-bold bg-gradient-to-r from-[var(--text-secondary)] to-[var(--text-light)] bg-clip-text text-transparent mb-8">
       Ваше резюме готово!
     </h2>
@@ -116,10 +116,10 @@ const saveResume = async () => {
 }
 
 .btn-primary {
-  @apply bg-gradient-to-r from-[var(--neon-purple)] to-[var(--neon-blue)] text-white;
+  @apply bg-gradient-to-r from-[var(--neon-purple)] to-[var(--neon-blue)] text-[var(--text-light)];
 }
 
 .btn-secondary {
-  @apply bg-[var(--background-section)] bg-opacity-50 text-[var(--text-light)] border border-white/10;
+  @apply bg-[var(--background-section)] bg-opacity-50 text-[var(--text-light)] border border-[var(--background-pale)];
 }
 </style>
