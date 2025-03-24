@@ -8,6 +8,7 @@ export const useAppStore = defineStore('app', () => {
   const isAppLoading = ref(true)
   const isAppReady = ref(false)
   const error = ref<string | null>(null)
+  const analysisResult = ref<any>(null)
 
   const initialize = async () => {
     isAppLoading.value = true
@@ -44,12 +45,46 @@ export const useAppStore = defineStore('app', () => {
     reset()
   }
 
+  const startJobAnalysis = async (JobText: string) => {
+    try {
+      const profileStore = useProfileStore()
+      const mainResumeId = profileStore.profile?.mainResumeId
+      if (!mainResumeId) {
+        throw new Error('Главное резюме не выбрано')
+      }
+
+      const resumesStore = useResumeStore()
+      const resume = resumesStore.resumes.find(r => r.id === mainResumeId)
+      if (!resume) {
+        throw new Error('Не удалось найти резюме с таким ID')
+      }
+
+      const res = await fetch('/analyse', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          JobText,
+          resume
+        }),
+      })
+
+      const result = await res.json()
+      analysisResult.value = result
+    } catch (err) {
+      console.error('[appStore] Анализ вакансии не удался:', err)
+      throw err
+    }
+  }
+
   return {
     isAppLoading,
     isAppReady,
     error,
     initialize,
     reset,
-    logout
+    logout,
+    startJobAnalysis
   }
 })

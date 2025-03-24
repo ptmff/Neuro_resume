@@ -81,6 +81,6 @@ export const useProfileStore = defineStore('profile', () => {
     editedProfile,
     startEdit,
     saveProfile,
-    addResumeId // ⬅️ Новый метод
+    addResumeId,
   }
 })

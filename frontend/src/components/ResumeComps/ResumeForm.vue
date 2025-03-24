@@ -12,6 +12,18 @@
         <FormField id="job" label="Профессия" v-model="resumeData.job" placeholder="Frontend-разработчик" required />
       </div>
 
+      <!-- Поле "О себе" -->
+       <div class="mt-6">
+        <FormField
+          id="description"
+          label="О себе (необязательно)"
+          v-model="resumeData.description"
+          type="textarea"
+          autoGrow
+          placeholder="Кратко расскажите о себе, что вас отличает"
+        />
+       </div>
+
       <!-- 🧠 Опыт работы -->
       <div class="mt-6">
         <label class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Опыт работы</label>
@@ -28,7 +40,7 @@
                   <FormField v-model="element.position" label="Должность" :id="`position-${index}`" />
                   <FormField v-model="element.startDate" label="Дата начала" type="month" :id="`start-${index}`" />
                   <FormField v-model="element.endDate" label="Дата окончания" type="month" :id="`end-${index}`" />
-                  <FormField v-model="element.description" label="Описание" type="textarea" :id="`desc-${index}`" class="md:col-span-2" />
+                  <FormField autoGrow v-model="element.description" label="Описание" type="textarea" :id="`desc-${index}`" class="md:col-span-2" />
                 </div>
                 <button
                   type="button"
@@ -91,6 +103,7 @@ const emit = defineEmits(['next-step', 'update:modelValue'])
 
 const experience = ref([...props.resumeData.experience ?? []])
 const skills = ref([...props.resumeData.skills ?? []])
+const description = ref([...props.resumeData.description ?? []])
 const newSkill = ref('')
 
 // 📌 Обновление preview
@@ -159,5 +172,15 @@ const convertDataAndNext = () => {
 }
 .btn-secondary {
   @apply bg-[var(--background-section)] bg-opacity-50 text-[var(--text-light)];
+}
+textarea::-webkit-scrollbar {
+  width: 6px;
+}
+textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+textarea::-webkit-scrollbar-thumb {
+  background-color: var(--neon-purple);
+  border-radius: 9999px;
 }
 </style>
