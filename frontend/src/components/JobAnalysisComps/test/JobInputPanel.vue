@@ -1,7 +1,48 @@
+<template>
+  <div class="w-full max-w-xl relative top-1/2">
+    <h2 class="text-center text-[var(--text-light)] text-2xl sm:text-3xl font-bold mb-8">
+      Вставь ссылку на вакансию
+    </h2>
+
+    <div class="relative">
+      <input
+        v-model="jobInput"
+        type="url"
+        placeholder="Вперёд за своим бу..."
+        @keydown.enter="analyze"
+        class="w-full bg-[var(--background-job-analysis)] text-[var(--text-light)] rounded-xl py-4 pl-5 pr-14 text-lg border border-[var(--background-pale)] focus:outline-none focus:ring-2 focus:ring-[var(--background-cta)] transition"
+        required
+      />
+
+      <!-- Появляется, когда есть текст -->
+      <button
+        v-if="jobInput.trim().length > 10 && !loading"
+        @click="analyze"
+        class="absolute top-1/2 right-2 -translate-y-1/2 bg-gradient-to-r from-violet-500 to-indigo-500 text-white p-3 rounded-lg hover:scale-105 active:scale-95 transition"
+      >
+        <i class="fas fa-arrow-right text-[var(--text-light)]"></i>
+      </button>
+
+      <!-- Если идёт загрузка -->
+      <div v-if="loading" class="absolute top-1/2 right-2 -translate-y-1/2 animate-pulse text-[var(--text-light)]">
+        🔍
+      </div>
+    </div>
+
+    <p class="text-[var(--text-mainless)] text-sm mt-4 text-center">
+      Пример: https://hh.ru/vacancy/123456
+    </p>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAppStore } from '@/stores/appStore'
+
+const emit = defineEmits<{
+  (e: 'start', url: string): void
+}>()
 
 const router = useRouter()
 const appStore = useAppStore()
@@ -15,9 +56,8 @@ const analyze = async () => {
   loading.value = true
 
   try {
-    // можно также передавать resumeId, если резюме выбрано заранее
     await appStore.startJobAnalysis(jobInput.value)
-    router.push('/job/visualizer') // или как у тебя настроено
+    emit('start', jobInput.value.trim())
   } catch (e) {
     console.error(e)
   } finally {
@@ -25,27 +65,3 @@ const analyze = async () => {
   }
 }
 </script>
-
-<template>
-  <div class="flex flex-col items-center gap-6 p-6 max-w-2xl mx-auto animate-fade-up">
-    <h1 class="text-3xl font-semibold text-center text-white">
-      Проанализируй вакансию с помощью AI
-    </h1>
-    <textarea
-      v-model="jobInput"
-      placeholder="https://hh.ru/vacancy/... или вставьте описание вакансии"
-      class="w-full min-h-[120px] rounded-xl bg-[#0e0e1a] text-white px-4 py-3 shadow-md focus:outline-none focus:ring-2 ring-cyan-400 transition"
-    />
-    <button
-      @click="analyze"
-      :disabled="loading || jobInput.length < 10"
-      class="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-50"
-    >
-      <span v-if="!loading">Начать анализ</span>
-      <span v-else class="animate-pulse">Анализируем...</span>
-    </button>
-    <p class="text-sm text-gray-400 text-center max-w-md">
-      Мы не сохраняем вашу вакансию — только анализируем.
-    </p>
-  </div>
-</template>
