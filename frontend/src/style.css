@@ -36,7 +36,7 @@
   --background-main: #0a0a1f; /* Глубокий тёмный фон */
   --background-section: #161b33; /* Темный, но с оттенком синего */
   --background-cta: #9d00ff; /* Кнопки и важные элементы */
-  --background-cta-hover: #6700a7; /* Кнопки и важные элементы при наведении*/
+  --background-cta-hover: #6700a7; /* Кнопки и важные элементы при наведении */
   --background-highlight: #2b3a67; /* Выделенные элементы */
   --background-pale: rgba(255, 255, 255, 0.1);
   --background-indicator: rgba(255, 255, 255, 0.2); /* Индикатор навбара */
