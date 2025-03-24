@@ -55,6 +55,9 @@
 
   --profile-avatar-border: rgba(199, 125, 255, 0.5);
   --profile-is-editing: #4caf50;
+
+  --progressbar-shadow: rgba(0, 255, 255, 0.5);
+  --progressbar-shadow-hover: rgba(0, 255, 255, 1);
 }
 
 body {

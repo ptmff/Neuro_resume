@@ -69,27 +69,27 @@ export default {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--background-pale);
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 8px;
-  color: #ffffff;
+  color: var(--text-light);
   font-size: 1.2rem;
   position: relative;
   transition: all 0.3s;
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  box-shadow: 0 0 10px var(--progressbar-shadow);
 }
 
 .step-icon:hover {
-  box-shadow: 0 0 20px rgba(0, 255, 255, 1); /* Увеличение неонового эффекта при наведении */
+  box-shadow: 0 0 20px var(--progressbar-shadow-hover); /* Увеличение неонового эффекта при наведении */
 }
 
 .step.active .step-icon {
   background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue));
-  color: white;
+  color: var(--text-light);
   transition: all 1.2s;
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  box-shadow: 0 0 10px var(--progressbar-shadow);
 }
 
 .step-text {
@@ -100,7 +100,7 @@ export default {
 .step-line {
   flex-grow: 1;
   height: 3px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--background-pale);
   margin: 0 10px;
   position: relative;
   top: -15px;

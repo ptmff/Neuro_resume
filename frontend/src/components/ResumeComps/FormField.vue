@@ -11,7 +11,7 @@
       @input="$emit('update:modelValue', $event.target.value)"
       :required="required"
       :placeholder="placeholder"
-      class="w-full bg-[var(--background-section)] bg-opacity-50 border border-white/10 rounded-xl px-4 py-3 text-[var(--text-light)] focus:outline-none focus:border-[var(--text-secondary)] transition-all duration-300"
+      class="w-full bg-[var(--background-section)] bg-opacity-50 border border-[var(--background-pale)] rounded-xl px-4 py-3 text-[var(--text-light)] focus:outline-none focus:border-[var(--text-secondary)] transition-all duration-300"
     />
     <textarea
       v-else
@@ -21,7 +21,7 @@
       :required="required"
       :placeholder="placeholder"
       rows="3"
-      class="w-full bg-[var(--background-section)] bg-opacity-50 border border-white/10 rounded-xl px-4 py-3 text-[var(--text-light)] focus:outline-none focus:border-[var(--text-secondary)] transition-all duration-300"
+      class="w-full bg-[var(--background-section)] bg-opacity-50 border border-[var(--background-pale)] rounded-xl px-4 py-3 text-[var(--text-light)] focus:outline-none focus:border-[var(--text-secondary)] transition-all duration-300"
     ></textarea>
   </div>
 </template>
