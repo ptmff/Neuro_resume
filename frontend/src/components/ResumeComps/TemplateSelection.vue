@@ -35,7 +35,7 @@ const select = (index) => {
 </script>
 
 <template>
-  <div class="bg-[var(--background-section)] bg-opacity-30 backdrop-blur-xl p-8 rounded-3xl border border-white/10">
+  <div class="bg-[var(--background-section)] bg-opacity-30 backdrop-blur-xl p-8 rounded-3xl border border-[var(--background-pale)]">
     <h2 class="text-4xl font-bold bg-gradient-to-r from-[var(--text-secondary)] to-[var(--text-light)] bg-clip-text text-transparent mb-8">
       Выберите стиль
     </h2>
@@ -47,7 +47,7 @@ const select = (index) => {
         class="template-card group cursor-pointer w-full max-w-[350px] mx-auto border-2 transition-all duration-300 h-[100px]"
         :class="{
           'border-[var(--neon-purple)]': selectedTemplate === index,
-          'border-white/10': selectedTemplate !== index
+          'border-[var(--background-pale)]': selectedTemplate !== index
         }"
         @click="select(index)"
       >
@@ -81,7 +81,7 @@ const select = (index) => {
   @apply px-6 py-3 font-semibold rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--neon-purple)];
 }
 .btn-primary {
-  @apply bg-gradient-to-r from-[var(--neon-purple)] to-[var(--neon-blue)] text-white;
+  @apply bg-gradient-to-r from-[var(--neon-purple)] to-[var(--neon-blue)] text-[var(--text-light)];
 }
 .btn-secondary {
   @apply bg-[var(--background-section)] bg-opacity-50 text-[var(--text-light)];

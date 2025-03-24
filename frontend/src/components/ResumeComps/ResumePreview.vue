@@ -83,7 +83,7 @@ const profile = computed(() => profileStore.profile)
 
 <style scoped>
 .preview-wrapper {
-  @apply bg-[var(--background-section)] bg-opacity-30 backdrop-blur-xl p-8 rounded-3xl border border-white/10;
+  @apply bg-[var(--background-section)] bg-opacity-30 backdrop-blur-xl p-8 rounded-3xl border border-[var(--background-pale)];
 }
 
 .resume-preview {
@@ -129,7 +129,7 @@ const profile = computed(() => profileStore.profile)
 }
 
 .skill-chip {
-  @apply px-3 py-1 rounded-full text-white text-xs font-medium flex items-center gap-1 transition transform;
+  @apply px-3 py-1 rounded-full text-[var(--text-light)] text-xs font-medium flex items-center gap-1 transition transform;
   background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
 }
 .skill-chip:hover {
