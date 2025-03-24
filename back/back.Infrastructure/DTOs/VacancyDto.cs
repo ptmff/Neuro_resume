@@ -1,4 +1,4 @@
-namespace back.DTOs;
+namespace back.Application.DTOs;
 
 public class VacancyDto
 {

@@ -1,11 +1,10 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
-namespace back.Models;
+namespace back.Domain.Entities;
 
 [Owned]
-
 public class Resume
 {
     public int Id { get; set; }
@@ -13,20 +12,9 @@ public class Resume
     public string Title { get; set; }
     public DateTime Date { get; set; }
     public string Job { get; set; }
-    
-    [Column(TypeName = "jsonb")]
     public List<string> Skills { get; set; }
-    
+
     [JsonIgnore]
     [ForeignKey("UserId")]
     public User User { get; set; }
-}
-
-
-public class ResumeDto
-{
-    public string Title { get; set; }
-    public DateTime Date { get; set; }
-    public string Job { get; set; }
-    public List<string> Skills { get; set; }
 }

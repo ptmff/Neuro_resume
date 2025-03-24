@@ -1,5 +1,5 @@
-using back.Helpers;
-using back.DTOs;
+using back.Application.DTOs;
+using back.Infrastructure.Services;
 using Xunit.Abstractions;
 
 namespace back.Tests.Helpers

@@ -1,10 +1,10 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using back.Application.DTOs;
+using back.Infrastructure.Services;
 using RichardSzalay.MockHttp;
 using Xunit;
-using back.Helpers;
-using back.DTOs;
 
 namespace back.Tests.Helpers
 {

@@ -1,13 +1,10 @@
-using System;
-using System.Net.Http;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using back.Application.DTOs;
 using HtmlAgilityPack;
-using back.DTOs;
 
-namespace back.Helpers
-{
-    public class VacancyHelper
+namespace back.Infrastructure.Services;
+
+public class VacancyHelper
     {
         public static string NormalizeUrl(string url)
         {
@@ -88,4 +85,3 @@ namespace back.Helpers
             vacancy.Description = Regex.Replace(vacancy.Description ?? string.Empty, @"\s+", " ").Trim();
         }
     }
-}
