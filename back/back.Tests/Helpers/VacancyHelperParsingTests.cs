@@ -1,5 +1,10 @@
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 using RichardSzalay.MockHttp;
+using Xunit;
 using back.Helpers;
+using back.DTOs;
 
 namespace back.Tests.Helpers
 {
@@ -10,11 +15,12 @@ namespace back.Tests.Helpers
         {
             var mockHttp = new MockHttpMessageHandler();
             mockHttp.When(normalizedUrl)
-                    .Respond("text/html", fakeHtml);
+                .Respond("text/html", fakeHtml);
             var httpClient = mockHttp.ToHttpClient();
-            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
+            // Не устанавливаем User-Agent здесь, так как он задается в методе ParseVacancyAsync
             return httpClient;
         }
+
 
         // Вспомогательный метод для построения HTML с различными полями
         private string BuildHtml(
@@ -50,7 +56,7 @@ namespace back.Tests.Helpers
 
         // Тест: все поля присутствуют
         [Fact]
-        public async Task ParseVacancyText_AllFieldsPresent_ReturnsParsedVacancyData()
+        public async Task ParseVacancyAsync_AllFieldsPresent_ReturnsParsedVacancyData()
         {
             // Arrange
             string vacancyId = "123456";
@@ -70,168 +76,163 @@ namespace back.Tests.Helpers
             var httpClient = CreateMockHttpClient(normalizedUrl, fakeHtml);
 
             // Act
-            string result = await VacancyHelper.ParseVacancyText(url, httpClient);
+            VacancyDto result = await VacancyHelper.ParseVacancyAsync(url, httpClient);
 
             // Assert
-            Assert.Contains(title, result);
-            Assert.Contains(salary, result);
-            Assert.Contains("Опыт работы: " + experience, result);
-            Assert.Contains("Занятость: " + employment, result);
-            Assert.Contains(schedule, result);
-            Assert.Contains(workingHours, result);
-            Assert.Contains(workFormat, result);
-            Assert.Contains("Описание вакансии", result);
-            Assert.Contains(description, result);
+            Assert.Equal(title, result.Title);
+            Assert.Equal(salary, result.Salary);
+            Assert.Equal(experience, result.Experience);
+            Assert.Equal(employment, result.Employment);
+            Assert.Equal(schedule, result.Schedule);
+            Assert.Equal(workingHours, result.WorkHours);
+            Assert.Equal(workFormat, result.WorkFormat);
+            Assert.Equal(description, result.Description);
         }
 
         // Тест: отсутствует заголовок вакансии
-        [Fact]
-        public async Task ParseVacancyText_TitleMissing_ReturnsDataWithoutTitle()
-        {
-            // Arrange
-            string vacancyId = "123456";
-            string url = $"hh.ru/vacancy/{vacancyId}";
-            string normalizedUrl = $"https://hh.ru/vacancy/{vacancyId}";
+[Fact]
+public async Task ParseVacancyAsync_TitleMissing_ReturnsDataWithoutTitle()
+{
+    // Arrange
+    string vacancyId = "123456";
+    string url = $"hh.ru/vacancy/{vacancyId}";
+    string normalizedUrl = $"https://hh.ru/vacancy/{vacancyId}";
 
-            // Заголовок отсутствует (null)
-            string title = null;
-            string salary = "60 000 руб.";
-            string experience = "5 лет";
-            string employment = "Частичная занятость";
-            string schedule = "Гибкий график";
-            string workingHours = "10:00 - 16:00";
-            string workFormat = "Удаленная работа";
-            string description = "Описание вакансии без заголовка";
+    // Заголовок отсутствует (null)
+    string title = null;
+    string salary = "60 000 руб.";
+    string experience = "5 лет";
+    string employment = "Частичная занятость";
+    string schedule = "Гибкий график";
+    string workingHours = "10:00 - 16:00";
+    string workFormat = "Удаленная работа";
+    string description = "Описание вакансии без заголовка";
 
-            string fakeHtml = BuildHtml(title, salary, experience, employment, schedule, workingHours, workFormat, description);
-            var httpClient = CreateMockHttpClient(normalizedUrl, fakeHtml);
+    string fakeHtml = BuildHtml(title, salary, experience, employment, schedule, workingHours, workFormat, description);
+    var httpClient = CreateMockHttpClient(normalizedUrl, fakeHtml);
 
-            // Act
-            string result = await VacancyHelper.ParseVacancyText(url, httpClient);
+    // Act
+    VacancyDto result = await VacancyHelper.ParseVacancyAsync(url, httpClient);
 
-            // Assert
-            Assert.DoesNotContain("data-qa='vacancy-title'", result);
-            Assert.Contains(salary, result);
-            Assert.Contains("Опыт работы: " + experience, result);
-            Assert.Contains("Занятость: " + employment, result);
-            Assert.Contains(schedule, result);
-            Assert.Contains(workingHours, result);
-            Assert.Contains(workFormat, result);
-            Assert.Contains("Описание вакансии", result);
-            Assert.Contains(description, result);
-        }
+    // Assert
+    Assert.True(string.IsNullOrEmpty(result.Title));
+    Assert.Equal(salary, result.Salary);
+    Assert.Equal(experience, result.Experience);
+    Assert.Equal(employment, result.Employment);
+    Assert.Equal(schedule, result.Schedule);
+    Assert.Equal(workingHours, result.WorkHours);
+    Assert.Equal(workFormat, result.WorkFormat);
+    Assert.Equal(description, result.Description);
+}
 
-        // Тест: отсутствует информация о зарплате
-        [Fact]
-        public async Task ParseVacancyText_SalaryMissing_ReturnsDataWithoutSalary()
-        {
-            // Arrange
-            string vacancyId = "654321";
-            string url = $"hh.ru/vacancy/{vacancyId}";
-            string normalizedUrl = $"https://hh.ru/vacancy/{vacancyId}";
+// Тест: отсутствует информация о зарплате
+[Fact]
+public async Task ParseVacancyAsync_SalaryMissing_ReturnsDataWithoutSalary()
+{
+    // Arrange
+    string vacancyId = "654321";
+    string url = $"hh.ru/vacancy/{vacancyId}";
+    string normalizedUrl = $"https://hh.ru/vacancy/{vacancyId}";
 
-            string title = "Вакансия без зарплаты";
-            string salary = null;
-            string experience = "2 года";
-            string employment = "Полная занятость";
-            string schedule = "Понедельник - пятница";
-            string workingHours = "9:00 - 18:00";
-            string workFormat = "Офис";
-            string description = "Описание вакансии без зарплаты";
+    string title = "Вакансия без зарплаты";
+    string salary = null;
+    string experience = "2 года";
+    string employment = "Полная занятость";
+    string schedule = "Понедельник - пятница";
+    string workingHours = "9:00 - 18:00";
+    string workFormat = "Офис";
+    string description = "Описание вакансии без зарплаты";
 
-            string fakeHtml = BuildHtml(title, salary, experience, employment, schedule, workingHours, workFormat, description);
-            var httpClient = CreateMockHttpClient(normalizedUrl, fakeHtml);
+    string fakeHtml = BuildHtml(title, salary, experience, employment, schedule, workingHours, workFormat, description);
+    var httpClient = CreateMockHttpClient(normalizedUrl, fakeHtml);
 
-            // Act
-            string result = await VacancyHelper.ParseVacancyText(url, httpClient);
+    // Act
+    VacancyDto result = await VacancyHelper.ParseVacancyAsync(url, httpClient);
 
-            // Assert
-            Assert.Contains(title, result);
-            // Проверяем, что нет числового диапазона зарплаты, свойственного зарплате
-            Assert.DoesNotContain("50 000", result);
-            Assert.Contains("Опыт работы: " + experience, result);
-            Assert.Contains("Занятость: " + employment, result);
-            Assert.Contains(schedule, result);
-            Assert.Contains(workingHours, result);
-            Assert.Contains(workFormat, result);
-            Assert.Contains("Описание вакансии", result);
-            Assert.Contains(description, result);
-        }
+    // Assert
+    Assert.Equal(title, result.Title);
+    Assert.True(string.IsNullOrEmpty(result.Salary));
+    Assert.Equal(experience, result.Experience);
+    Assert.Equal(employment, result.Employment);
+    Assert.Equal(schedule, result.Schedule);
+    Assert.Equal(workingHours, result.WorkHours);
+    Assert.Equal(workFormat, result.WorkFormat);
+    Assert.Equal(description, result.Description);
+}
 
-        // Тест: отсутствует информация об опыте
-        [Fact]
-        public async Task ParseVacancyText_ExperienceMissing_ReturnsDataWithoutExperienceLabel()
-        {
-            // Arrange
-            string vacancyId = "789012";
-            string url = $"hh.ru/vacancy/{vacancyId}";
-            string normalizedUrl = $"https://hh.ru/vacancy/{vacancyId}";
+// Тест: отсутствует информация об опыте
+[Fact]
+public async Task ParseVacancyAsync_ExperienceMissing_ReturnsDataWithoutExperience()
+{
+    // Arrange
+    string vacancyId = "789012";
+    string url = $"hh.ru/vacancy/{vacancyId}";
+    string normalizedUrl = $"https://hh.ru/vacancy/{vacancyId}";
 
-            string title = "Вакансия без опыта";
-            string salary = "40 000 руб.";
-            string experience = null;
-            string employment = "Полная занятость";
-            string schedule = "График работы: 5/2";
-            string workingHours = "8:00 - 17:00";
-            string workFormat = "Офис";
-            string description = "Описание вакансии без опыта";
+    string title = "Вакансия без опыта";
+    string salary = "40 000 руб.";
+    string experience = null;
+    string employment = "Полная занятость";
+    string schedule = "График работы: 5/2";
+    string workingHours = "8:00 - 17:00";
+    string workFormat = "Офис";
+    string description = "Описание вакансии без опыта";
 
-            string fakeHtml = BuildHtml(title, salary, experience, employment, schedule, workingHours, workFormat, description);
-            var httpClient = CreateMockHttpClient(normalizedUrl, fakeHtml);
+    string fakeHtml = BuildHtml(title, salary, experience, employment, schedule, workingHours, workFormat, description);
+    var httpClient = CreateMockHttpClient(normalizedUrl, fakeHtml);
 
-            // Act
-            string result = await VacancyHelper.ParseVacancyText(url, httpClient);
+    // Act
+    VacancyDto result = await VacancyHelper.ParseVacancyAsync(url, httpClient);
 
-            // Assert
-            Assert.Contains(title, result);
-            Assert.Contains(salary, result);
-            Assert.DoesNotContain("Опыт работы:", result);
-            Assert.Contains("Занятость: " + employment, result);
-            Assert.Contains(schedule, result);
-            Assert.Contains(workingHours, result);
-            Assert.Contains(workFormat, result);
-            Assert.Contains("Описание вакансии", result);
-            Assert.Contains(description, result);
-        }
+    // Assert
+    Assert.Equal(title, result.Title);
+    Assert.Equal(salary, result.Salary);
+    Assert.True(string.IsNullOrEmpty(result.Experience));
+    Assert.Equal(employment, result.Employment);
+    Assert.Equal(schedule, result.Schedule);
+    Assert.Equal(workingHours, result.WorkHours);
+    Assert.Equal(workFormat, result.WorkFormat);
+    Assert.Equal(description, result.Description);
+}
 
-        // Тест: отсутствует описание вакансии
-        [Fact]
-        public async Task ParseVacancyText_DescriptionMissing_ReturnsDataWithoutDescription()
-        {
-            // Arrange
-            string vacancyId = "345678";
-            string url = $"hh.ru/vacancy/{vacancyId}";
-            string normalizedUrl = $"https://hh.ru/vacancy/{vacancyId}";
+// Тест: отсутствует описание вакансии
+[Fact]
+public async Task ParseVacancyAsync_DescriptionMissing_ReturnsDataWithoutDescription()
+{
+    // Arrange
+    string vacancyId = "345678";
+    string url = $"hh.ru/vacancy/{vacancyId}";
+    string normalizedUrl = $"https://hh.ru/vacancy/{vacancyId}";
 
-            string title = "Вакансия без описания";
-            string salary = "55 000 руб.";
-            string experience = "1 год";
-            string employment = "Полная занятость";
-            string schedule = "Стандартный график";
-            string workingHours = "9:00 - 18:00";
-            string workFormat = "Офис";
-            string description = null;
+    string title = "Вакансия без описания";
+    string salary = "55 000 руб.";
+    string experience = "1 год";
+    string employment = "Полная занятость";
+    string schedule = "Стандартный график";
+    string workingHours = "9:00 - 18:00";
+    string workFormat = "Офис";
+    string description = null;
 
-            string fakeHtml = BuildHtml(title, salary, experience, employment, schedule, workingHours, workFormat, description);
-            var httpClient = CreateMockHttpClient(normalizedUrl, fakeHtml);
+    string fakeHtml = BuildHtml(title, salary, experience, employment, schedule, workingHours, workFormat, description);
+    var httpClient = CreateMockHttpClient(normalizedUrl, fakeHtml);
 
-            // Act
-            string result = await VacancyHelper.ParseVacancyText(url, httpClient);
+    // Act
+    VacancyDto result = await VacancyHelper.ParseVacancyAsync(url, httpClient);
 
-            // Assert
-            Assert.Contains(title, result);
-            Assert.Contains(salary, result);
-            Assert.Contains("Опыт работы: " + experience, result);
-            Assert.Contains("Занятость: " + employment, result);
-            Assert.Contains(schedule, result);
-            Assert.Contains(workingHours, result);
-            Assert.Contains(workFormat, result);
-            Assert.DoesNotContain("Описание вакансии", result);
-        }
+    // Assert
+    Assert.Equal(title, result.Title);
+    Assert.Equal(salary, result.Salary);
+    Assert.Equal(experience, result.Experience);
+    Assert.Equal(employment, result.Employment);
+    Assert.Equal(schedule, result.Schedule);
+    Assert.Equal(workingHours, result.WorkHours);
+    Assert.Equal(workFormat, result.WorkFormat);
+    Assert.True(string.IsNullOrEmpty(result.Description));
+}
 
         // Тест: все поля отсутствуют
         [Fact]
-        public async Task ParseVacancyText_AllFieldsMissing_ReturnsEmptyResult()
+        public async Task ParseVacancyAsync_AllFieldsMissing_ReturnsEmptyResult()
         {
             // Arrange
             string vacancyId = "000000";
@@ -243,10 +244,17 @@ namespace back.Tests.Helpers
             var httpClient = CreateMockHttpClient(normalizedUrl, fakeHtml);
 
             // Act
-            string result = await VacancyHelper.ParseVacancyText(url, httpClient);
+            VacancyDto result = await VacancyHelper.ParseVacancyAsync(url, httpClient);
 
             // Assert: если данные отсутствуют, итоговый результат должен быть пустым или почти пустым
-            Assert.True(string.IsNullOrWhiteSpace(result));
+            Assert.True(string.IsNullOrWhiteSpace(result.Title) &&
+                        string.IsNullOrWhiteSpace(result.Salary) &&
+                        string.IsNullOrWhiteSpace(result.Experience) &&
+                        string.IsNullOrWhiteSpace(result.Employment) &&
+                        string.IsNullOrWhiteSpace(result.Schedule) &&
+                        string.IsNullOrWhiteSpace(result.WorkHours) &&
+                        string.IsNullOrWhiteSpace(result.WorkFormat) &&
+                        string.IsNullOrWhiteSpace(result.Description));
         }
     }
 }
