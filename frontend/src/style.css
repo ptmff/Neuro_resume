@@ -58,6 +58,9 @@
 
   --progressbar-shadow: rgba(0, 255, 255, 0.5);
   --progressbar-shadow-hover: rgba(0, 255, 255, 1);
+
+  --resume-red: #ef5350;
+  --resume-red-hover: #ef9a9a;
 }
 
 body {
