@@ -11,7 +11,7 @@
       <div
         v-for="resume in userResumes"
         :key="resume.id"
-        class="flex justify-between items-center bg-white/5 hover:bg-white/10 transition border border-white/10 rounded-xl px-4 py-3"
+        class="flex justify-between items-center bg-[var(--background-overlay)] hover:bg-[var(--background-pale)] transition border border-[var(--background-pale)] rounded-xl px-4 py-3"
       >
         <div>
           <h3 class="text-[var(--text-light)] font-semibold text-base sm:text-lg flex items-center gap-2">
@@ -26,21 +26,21 @@
         <div class="flex items-center gap-2">
           <button
             @click="setAsMain(resume.id)"
-            class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition"
+            class="p-2 rounded-full bg-[var(--background-pale)] hover:bg-[var(--background-indicator)] transition"
             title="Сделать основным"
           >
             <i class="fas fa-star text-[var(--text-light)] text-sm"></i>
           </button>
           <button
             @click="editResume(resume)"
-            class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition"
+            class="p-2 rounded-full bg-[var(--background-pale)] hover:bg-[var(--background-indicator)] transition"
             title="Редактировать"
           >
             <i class="fas fa-edit text-[var(--text-light)] text-sm"></i>
           </button>
           <button
             @click="deleteResume(resume.id)"
-            class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition"
+            class="p-2 rounded-full bg-[var(--background-pale)] hover:bg-[var(--background-indicator)] transition"
             title="Удалить"
           >
             <i class="fas fa-trash text-[var(--background-cta)] text-sm"></i>
@@ -50,7 +50,7 @@
 
       <!-- Кнопка "Создать резюме" -->
       <div
-        class="bg-white/5 hover:bg-white/10 border border-dashed border-white/10 rounded-xl px-4 py-6 flex flex-col items-center justify-center text-[var(--text-light)] transition cursor-pointer"
+        class="bg-[var(--background-overlay)] hover:[var(--background-pale)] border border-dashed border-[var(--background-pale)] rounded-xl px-4 py-6 flex flex-col items-center justify-center text-[var(--text-light)] transition cursor-pointer"
         @click="createNewResume"
       >
         <i class="fas fa-plus text-xl mb-1"></i>

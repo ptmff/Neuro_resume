@@ -1,14 +1,14 @@
 <template>
   <section class="mt-12">
-    <h2 class="text-xl sm:text-2xl font-bold text-white mb-4">Статистика профиля</h2>
+    <h2 class="text-xl sm:text-2xl font-bold text-[var(--text-light)] mb-4">Статистика профиля</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
       <div
         v-for="(item, index) in stats"
         :key="index"
-        class="bg-white/5 border border-white/10 rounded-xl p-4 text-center"
+        class="bg-[var(--background-overlay)] border border-[var(--background-pale)] rounded-xl p-4 text-center"
       >
-        <h3 class="text-2xl font-bold text-white">{{ item.value }}</h3>
-        <p class="text-sm text-white/60 mt-1">{{ item.label }}</p>
+        <h3 class="text-2xl font-bold text-[var(--text-light)]">{{ item.value }}</h3>
+        <p class="text-sm text-[var(--text-mainless)] mt-1">{{ item.label }}</p>
       </div>
     </div>
   </section>
