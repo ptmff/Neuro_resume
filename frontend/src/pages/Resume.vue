@@ -45,6 +45,7 @@ import ResumePreview from '../components/ResumeComps/ResumePreview.vue'
 import TemplateSelection from '../components/ResumeComps/TemplateSelection.vue'
 import AiOptimization from '../components/ResumeComps/AiOptimization.vue'
 import DownloadOptions from '../components/ResumeComps/DownloadOptions.vue'
+import FinalPreview from '@/components/ResumeComps/FinalPreview.vue'
 
 const resumeStore = useResumeStore()
 
@@ -77,7 +78,8 @@ const currentStepComponent = computed(() => {
     case 1: return ResumeForm
     case 2: return TemplateSelection
     case 3: return AiOptimization
-    case 4: return DownloadOptions
+    case 4: return FinalPreview
+    case 5: return DownloadOptions
     default: return null
   }
 })
