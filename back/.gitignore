@@ -9,4 +9,4 @@ back.Infrastructure/bin
 back.Infrastructure/obj
 back.Tests/bin
 back.Tests/obj
-back.API/appsettings.json
+/back.API/appsettingsjson
