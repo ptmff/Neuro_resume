@@ -1,9 +1,0 @@
-﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d757d31d_002D22a4_002D4e8d_002D8376_002D6eef8b7f8e35/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from Solution" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;Solution /&gt;
-&lt;/SessionState&gt;</s:String>
-	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=44ef9e39_002De7b2_002D472e_002Da1ad_002D48eaf3058ec0_0023back_002ETests/@EntryIndexedValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=9756c0b8_002D98c0_002D437d_002Db38c_002D083f3a2e64b4_0023back_002EDomain/@EntryIndexedValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=9a0da089_002D6098_002D47d7_002Dbeb2_002De17983e46d4d_0023back_002EApplication/@EntryIndexedValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=ac32b03a_002D1192_002D4316_002D98af_002D63edcacd93b1_0023back_002EInfrastructure/@EntryIndexedValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=f239fec3_002D9175_002D4251_002Db506_002D3d569a545b6b_0023back_002EAPI/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
