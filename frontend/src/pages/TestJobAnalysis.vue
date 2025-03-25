@@ -16,6 +16,7 @@
   
   import JobInputPanel from '@/components/JobAnalysisComps/test/JobInputPanel.vue'
   import JobAnalysisVisualizer from '@/components/JobAnalysisComps/test/JobAnalysisVisualizer.vue'
+  import JobAnalysisResult from '@/components/JobAnalysisComps/test/JobAnalysisResult.vue'
   
   const stage = ref<'input' | 'visualizer' | 'result'>('input')
   

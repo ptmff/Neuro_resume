@@ -31,8 +31,6 @@ export const useResumeStore = defineStore('resumes', () => {
     }
   }
   
-  
-
   // Резюме, выбранное для редактирования
   const setResumeForEdit = (resume: Resume | null) => {
     resumeToEdit.value = resume
