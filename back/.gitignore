@@ -1,7 +1,6 @@
 .idea
 back.API/bin
 back.API/obj
-back.API/appsettings.json
 back.Application/bin
 back.Application/obj
 back.Domain/bin
@@ -10,4 +9,4 @@ back.Infrastructure/bin
 back.Infrastructure/obj
 back.Tests/bin
 back.Tests/obj
-back.sln.DotSettings.user
+back.API/appsettings.json
