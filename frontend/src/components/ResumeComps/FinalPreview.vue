@@ -158,7 +158,22 @@ defineEmits(['prev-step', 'next-step'])
 </script>
 
 <style scoped>
+.a4-container {
+  width: 21cm;
+  height: 29.7cm;
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
+@media (max-width: 768px) {
+  .a4-container {
+    width: 100%;
+    height: auto;
+    min-height: 500px;
+  }
+}
 
 .btn {
   @apply px-6 py-3 font-semibold rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--neon-purple)];
