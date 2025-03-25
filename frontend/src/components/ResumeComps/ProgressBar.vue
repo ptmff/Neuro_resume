@@ -24,6 +24,13 @@
       <div class="step-line" :class="{ active: currentStep >= 4 }"></div>
       <div class="step" :class="{ active: currentStep >= 4 }" @click="goToStep(4)">
         <div class="step-icon">
+          <i class="bi bi-pencil-fill"></i>
+        </div>
+        <div class="step-text">Обзор</div>
+      </div>
+      <div class="step-line" :class="{ active: currentStep >= 5 }"></div>
+      <div class="step" :class="{ active: currentStep >= 5 }" @click="goToStep(5)">
+        <div class="step-icon">
           <i class="bi bi-download"></i>
         </div>
         <div class="step-text">Скачать</div>
