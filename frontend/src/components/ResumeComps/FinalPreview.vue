@@ -97,6 +97,131 @@ const resumeContent = ref(null)
   box-shadow: 0 5px 20px rgba(0,0,0,0.1);
   position: relative;
   overflow: hidden;
-  color: black;
 }
+
+/* Шапка резюме */
+.resume-header {
+  margin-bottom: 15px;
+}
+
+.name {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 5px 0;
+}
+
+.profession {
+  font-size: 18px;
+  color: #666;
+  margin: 0 0 15px 0;
+}
+
+.contact-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #555;
+}
+
+.contact-item i {
+  color: var(--neon-purple, #9c27b0);
+}
+
+/* Разделитель */
+.resume-divider {
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-purple, #9c27b0), var(--neon-blue, #2196f3));
+  margin: 15px 0;
+}
+
+/* Основное содержимое */
+.resume-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.resume-section {
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--neon-purple, #9c27b0);
+  margin: 0 0 15px 0;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #eee;
+}
+
+/* Опыт работы */
+.experience-item {
+  margin-bottom: 15px;
+}
+
+.experience-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.company-position {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.date {
+  font-size: 14px;
+  color: #777;
+}
+
+.experience-description {
+  font-size: 14px;
+  color: #555;
+  margin: 5px 0 0 0;
+  line-height: 1.5;
+}
+
+/* Образование */
+.education-item {
+  margin-bottom: 10px;
+}
+
+.institution {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.degree, .description {
+  font-size: 14px;
+  color: #555;
+  margin: 3px 0 0 0;
+}
+
+/* Навыки */
+.skills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skill-item {
+  padding: 5px 12px;
+
+  font-size: 14px;
+  color: #555;
+}
+
 </style>
