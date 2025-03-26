@@ -3,17 +3,18 @@ namespace back.Application.DTOs;
 public class UserDto
 {
     public string Email { get; set; }
+    public string? Name { get; set; }
+    public string? Phone { get; set; }
+    public string? City { get; set; }
+}
+
+public class UserRegisterDto : UserDto
+{
     public string Password { get; set; }
 }
 
-// DTO для регистрации пользователя
-public class UserRegisterDto : UserDto
+public class UserLoginDto
 {
-    // Можно добавить дополнительные поля, если потребуется
-}
-
-// DTO для аутентификации пользователя
-public class UserLoginDto : UserDto
-{
-    // Можно добавить дополнительные поля, если потребуется
+    public string Email { get; set; }
+    public string Password { get; set; }
 }

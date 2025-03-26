@@ -37,17 +37,21 @@ public class AuthService : IAuthService
             {
                 Email = request.Email,
                 PasswordHash = hash,
-                PasswordSalt = salt
+                PasswordSalt = salt,
+                Name = request.Name,         // новое поле
+                Phone = request.Phone,       // новое поле (optional)
+                City = request.City          // новое поле (optional)
             };
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            // Преобразуем доменную модель в DTO (если требуется, здесь можно использовать маппер)
             var resultDto = new UserDto
             {
                 Email = user.Email,
-                // Пароль не передаём дальше
+                Name = user.Name,
+                Phone = user.Phone,
+                City = user.City
             };
 
             return Result<UserDto>.Success(resultDto);

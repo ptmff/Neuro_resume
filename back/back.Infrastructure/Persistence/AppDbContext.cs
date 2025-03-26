@@ -19,6 +19,19 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        
+        modelBuilder.Entity<User>()
+            .Property(u => u.Name)
+            .IsRequired(); // Name обязательное
+        
+        // Для Phone и City можно оставить как опциональные:
+        modelBuilder.Entity<User>()
+            .Property(u => u.Phone)
+            .IsRequired(false);
+
+        modelBuilder.Entity<User>()
+            .Property(u => u.City)
+            .IsRequired(false);
 
         // Связь "один-ко-многим": User - Resumes
         modelBuilder.Entity<User>()
