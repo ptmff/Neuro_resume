@@ -1,189 +1,102 @@
 <template>
-  <div class="bg-[var(--background-section)] bg-opacity-30 backdrop-blur-xl p-8 rounded-3xl border border-white/10">
-    <h2 class="text-4xl font-bold bg-gradient-to-r from-[var(--text-secondary)] to-[var(--text-light)] bg-clip-text text-transparent mb-8">
-      Ваше готовое резюме
-    </h2>
+  <div class="resume-container">
     
-    <div class="flex justify-center">
-      <div class="a4-container bg-white shadow-xl">
-        <!-- Содержимое резюме в зависимости от выбранного шаблона -->
-        <div v-if="selectedTemplate === 0" class="classic-template">
-          <div class="resume-header text-center mb-6 pt-8">
-            <h1 class="text-3xl font-bold text-gray-800">{{ resumeData.name || 'Имя Фамилия' }}</h1>
-            <p class="text-xl text-gray-600 mt-1">{{ resumeData.profession || 'Профессия' }}</p>
+    
+    <div class="a4-page" ref="resumeContent">
+      <!-- Шапка резюме -->
+      <div class="resume-header">
+        <h1 class="name">{{ resumeData.name || profile?.name || 'Имя Фамилия' }}</h1>
+        <p class="profession">{{ resumeData.job || profile?.profession || 'Профессия' }}</p>
+        
+        <div class="contact-info">
+          <div v-if="resumeData.email || profile?.email" class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <span>{{ resumeData.email || profile?.email }}</span>
           </div>
-          
-          <div class="resume-contact flex justify-center space-x-4 mb-6 text-gray-700 text-sm">
-            <p v-if="resumeData.email"><i class="fas fa-envelope mr-1"></i>{{ resumeData.email }}</p>
-            <p v-if="resumeData.phone"><i class="fas fa-phone mr-1"></i>{{ resumeData.phone }}</p>
-            <p v-if="resumeData.location"><i class="fas fa-map-marker-alt mr-1"></i>{{ resumeData.location }}</p>
+          <div v-if="resumeData.phone || profile?.phone" class="contact-item">
+            <i class="fas fa-phone"></i>
+            <span>{{ resumeData.phone || profile?.phone }}</span>
           </div>
-          
-          <div class="resume-content px-10">
-            <div class="resume-section mb-6" v-if="resumeData.education">
-              <h2 class="text-xl font-semibold text-gray-800 mb-2 border-b border-gray-300 pb-1">Образование</h2>
-              <p class="text-gray-700">{{ resumeData.education }}</p>
+          <div v-if="resumeData.city || profile?.city" class="contact-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>{{ resumeData.city || profile?.city }}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="resume-divider"></div>
+      
+      <!-- Основное содержимое -->
+      <div class="resume-body">
+        <!-- О себе -->
+        <div class="resume-section" v-if="resumeData.description">
+          <h2 class="section-title">Обо мне</h2>
+          <p class="description">{{ resumeData.description }}</p>
+        </div>
+        
+        <!-- Опыт работы -->
+        <div class="resume-section" v-if="resumeData.experience?.length">
+          <h2 class="section-title">Опыт работы</h2>
+          <div class="experience-item" v-for="(exp, i) in resumeData.experience" :key="i">
+            <div class="experience-header">
+              <h3 class="company-position">{{ exp.position }} | {{ exp.company }}</h3>
+              <span class="date">{{ exp.startDate }} – {{ exp.endDate }}</span>
             </div>
-            
-            <div class="resume-section mb-6" v-if="resumeData.experience">
-              <h2 class="text-xl font-semibold text-gray-800 mb-2 border-b border-gray-300 pb-1">Опыт работы</h2>
-              <p class="text-gray-700">{{ resumeData.experience }}</p>
-            </div>
-            
-            <div class="resume-section" v-if="resumeData.skills">
-              <h2 class="text-xl font-semibold text-gray-800 mb-2 border-b border-gray-300 pb-1">Навыки</h2>
-              <p class="text-gray-700">{{ resumeData.skills }}</p>
-            </div>
+            <p class="experience-description">{{ exp.description }}</p>
           </div>
         </div>
         
-        <div v-else-if="selectedTemplate === 1" class="modern-template">
-          <div class="flex">
-            <div class="w-1/3 bg-blue-600 text-white p-8 h-full">
-              <div class="resume-header mb-8">
-                <h1 class="text-2xl font-bold">{{ resumeData.name || 'Имя Фамилия' }}</h1>
-                <p class="text-lg mt-1">{{ resumeData.profession || 'Профессия' }}</p>
-              </div>
-              
-              <div class="resume-contact mb-8 text-sm">
-                <p v-if="resumeData.email" class="mb-2"><i class="fas fa-envelope mr-2"></i>{{ resumeData.email }}</p>
-                <p v-if="resumeData.phone" class="mb-2"><i class="fas fa-phone mr-2"></i>{{ resumeData.phone }}</p>
-                <p v-if="resumeData.location"><i class="fas fa-map-marker-alt mr-2"></i>{{ resumeData.location }}</p>
-              </div>
-              
-              <div class="resume-section" v-if="resumeData.skills">
-                <h2 class="text-lg font-semibold mb-2 border-b border-white/30 pb-1">Навыки</h2>
-                <p>{{ resumeData.skills }}</p>
-              </div>
-            </div>
-            
-            <div class="w-2/3 p-8">
-              <div class="resume-section mb-6" v-if="resumeData.education">
-                <h2 class="text-xl font-semibold text-gray-800 mb-2 border-b border-gray-300 pb-1">Образование</h2>
-                <p class="text-gray-700">{{ resumeData.education }}</p>
-              </div>
-              
-              <div class="resume-section" v-if="resumeData.experience">
-                <h2 class="text-xl font-semibold text-gray-800 mb-2 border-b border-gray-300 pb-1">Опыт работы</h2>
-                <p class="text-gray-700">{{ resumeData.experience }}</p>
-              </div>
-            </div>
+        <!-- Образование -->
+        <div class="resume-section" v-if="profile?.education?.length">
+          <h2 class="section-title">Образование</h2>
+          <div class="education-item" v-for="(edu, i) in profile.education" :key="i">
+            <h3 class="institution">{{ edu.institution }}</h3>
+            <p class="degree">{{ edu.degree }} ({{ edu.startYear }}–{{ edu.endYear }})</p>
           </div>
         </div>
         
-        <div v-else-if="selectedTemplate === 2" class="creative-template">
-          <div class="resume-header bg-gradient-to-r from-purple-600 to-pink-500 text-white p-8 text-center">
-            <h1 class="text-3xl font-bold">{{ resumeData.name || 'Имя Фамилия' }}</h1>
-            <p class="text-xl mt-1">{{ resumeData.profession || 'Профессия' }}</p>
-            
-            <div class="resume-contact flex justify-center space-x-4 mt-4 text-sm">
-              <p v-if="resumeData.email"><i class="fas fa-envelope mr-1"></i>{{ resumeData.email }}</p>
-              <p v-if="resumeData.phone"><i class="fas fa-phone mr-1"></i>{{ resumeData.phone }}</p>
-              <p v-if="resumeData.location"><i class="fas fa-map-marker-alt mr-1"></i>{{ resumeData.location }}</p>
-            </div>
-          </div>
-          
-          <div class="resume-content p-8">
-            <div class="grid grid-cols-2 gap-6">
-              <div class="resume-section" v-if="resumeData.education">
-                <h2 class="text-xl font-semibold text-gray-800 mb-2 pb-1 border-b-2 border-purple-500">Образование</h2>
-                <p class="text-gray-700">{{ resumeData.education }}</p>
-              </div>
-              
-              <div class="resume-section" v-if="resumeData.skills">
-                <h2 class="text-xl font-semibold text-gray-800 mb-2 pb-1 border-b-2 border-pink-500">Навыки</h2>
-                <p class="text-gray-700">{{ resumeData.skills }}</p>
-              </div>
-            </div>
-            
-            <div class="resume-section mt-6" v-if="resumeData.experience">
-              <h2 class="text-xl font-semibold text-gray-800 mb-2 pb-1 border-b-2 border-purple-500">Опыт работы</h2>
-              <p class="text-gray-700">{{ resumeData.experience }}</p>
-            </div>
-          </div>
-        </div>
-        
-        <div v-else class="minimal-template p-10">
-          <div class="resume-header mb-8">
-            <h1 class="text-3xl font-bold text-gray-800">{{ resumeData.name || 'Имя Фамилия' }}</h1>
-            <p class="text-xl text-gray-600 mt-1">{{ resumeData.profession || 'Профессия' }}</p>
-            
-            <div class="resume-contact flex space-x-4 mt-4 text-gray-700 text-sm">
-              <p v-if="resumeData.email"><i class="fas fa-envelope mr-1"></i>{{ resumeData.email }}</p>
-              <p v-if="resumeData.phone"><i class="fas fa-phone mr-1"></i>{{ resumeData.phone }}</p>
-              <p v-if="resumeData.location"><i class="fas fa-map-marker-alt mr-1"></i>{{ resumeData.location }}</p>
-            </div>
-          </div>
-          
-          <div class="resume-content">
-            <div class="resume-section mb-6" v-if="resumeData.education">
-              <h2 class="text-lg font-semibold text-gray-800 mb-2">Образование</h2>
-              <p class="text-gray-700">{{ resumeData.education }}</p>
-            </div>
-            
-            <div class="resume-section mb-6" v-if="resumeData.experience">
-              <h2 class="text-lg font-semibold text-gray-800 mb-2">Опыт работы</h2>
-              <p class="text-gray-700">{{ resumeData.experience }}</p>
-            </div>
-            
-            <div class="resume-section" v-if="resumeData.skills">
-              <h2 class="text-lg font-semibold text-gray-800 mb-2">Навыки</h2>
-              <p class="text-gray-700">{{ resumeData.skills }}</p>
+        <!-- Навыки -->
+        <div class="resume-section" v-if="resumeData.skills?.length">
+          <h2 class="section-title">Профессиональные навыки</h2>
+          <div class="skills-container">
+            <div class="skill-item" v-for="(skill, index) in resumeData.skills" :key="skill + index">
+              {{ skill }}
             </div>
           </div>
         </div>
       </div>
-    </div>
     
-    <div class="flex justify-between mt-8">
-      <button @click="$emit('prev-step')" class="btn btn-secondary">Назад</button>
-      <button @click="$emit('next-step')" class="btn btn-primary">Далее</button>
+
     </div>
   </div>
 </template>
 
 <script setup>
-defineProps({
-  resumeData: {
-    type: Object,
-    required: true
-  },
-  selectedTemplate: {
-    type: Number,
-    required: true
-  }
+import { ref, computed } from 'vue'
+import { useProfileStore } from '@/stores/profileStore'
+
+
+const props = defineProps({
+  resumeData: Object
 })
 
-defineEmits(['prev-step', 'next-step'])
+const profileStore = useProfileStore()
+const profile = computed(() => profileStore.profile)
+const resumeContent = ref(null)
+
+
 </script>
 
 <style scoped>
-.a4-container {
-  width: 21cm;
-  height: 29.7cm;
+.a4-page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 20mm;
   margin: 0 auto;
-  overflow: hidden;
+  background: white;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
   position: relative;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-@media (max-width: 768px) {
-  .a4-container {
-    width: 100%;
-    height: auto;
-    min-height: 500px;
-  }
-}
-
-.btn {
-  @apply px-6 py-3 font-semibold rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--neon-purple)];
-}
-
-.btn-primary {
-  @apply bg-gradient-to-r from-[var(--neon-purple)] to-[var(--neon-blue)] text-white;
-}
-
-.btn-secondary {
-  @apply bg-[var(--background-section)] bg-opacity-50 text-[var(--text-light)] border border-white/10;
+  overflow: hidden;
+  color: black;
 }
 </style>

@@ -28,7 +28,7 @@
         </div>
 
         <div class="lg:sticky lg:top-8 lg:self-start">
-          <ResumePreview :resumeData="resumeData" :selectedTemplate="selectedTemplate" />
+          <ResumePreview :resumeData="resumeData" :selectedTemplate="selectedTemplate" v-if="currentStep!=4"/>
         </div>
       </div>
     </div>
