@@ -1,3 +1,4 @@
+// server.js
 import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -7,55 +8,69 @@ import fs from 'fs-extra'
 const app = express()
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const dataPath = path.join(__dirname, 'data')
+const resumesPath = path.join(dataPath, 'resumes.json')
+const profilePath = path.join(dataPath, 'profile.json')
 
-app.use(
-  cors({
-    origin: 'http://localhost:5173',
-    credentials: true,
-  })
-)
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }))
 app.use(express.json())
 
-const distPath = path.join(__dirname, '../dist')
-app.use(express.static(distPath))
+// ---------------------- PROFILE ----------------------
 
 app.get('/api/profile', async (req, res) => {
-  const profile = await fs.readJson(path.join(dataPath, 'profile.json'))
+  const profile = await fs.readJson(profilePath)
   res.json(profile)
 })
 
-app.get('/api/resumes', async (req, res) => {
-  const resumes = await fs.readJson(path.join(dataPath, 'resumes.json'))
-  res.json(resumes.resumes)
-})
-
 app.patch('/api/profile', async (req, res) => {
-  const profilePath = path.join(dataPath, 'profile.json')
   const currentProfile = await fs.readJson(profilePath)
-
-  const updatedProfile = {
-    ...currentProfile,
-    ...req.body,
-  }
-
-  console.log('PATCH /api/profile body:', req.body)
-  console.log('Обновляем профиль:', updatedProfile)
-
+  const updatedProfile = { ...currentProfile, ...req.body }
   await fs.writeJson(profilePath, updatedProfile, { spaces: 2 })
   res.json({ message: 'Profile updated', profile: updatedProfile })
 })
 
-app.patch('/api/resumes', async (req, res) => {
-  const resumesPath = path.join(dataPath, 'resumes.json')
-  const { resumes } = req.body
+// ---------------------- RESUMES ----------------------
 
-  if (!Array.isArray(resumes)) {
-    return res.status(400).json({ message: 'Invalid format' })
-  }
-
-  await fs.writeJson(resumesPath, { resumes }, { spaces: 2 })
-  res.json({ message: 'Resumes updated', resumes })
+app.get('/api/resumes', async (req, res) => {
+  const data = await fs.readJson(resumesPath)
+  res.json(data.resumes || [])
 })
+
+app.post('/api/resumes', async (req, res) => {
+  const data = await fs.readJson(resumesPath)
+  const newResume = req.body
+  newResume.id = Date.now()
+  newResume.date = new Date().toISOString()
+
+  data.resumes.push(newResume)
+  await fs.writeJson(resumesPath, data, { spaces: 2 })
+  res.json(newResume)
+})
+
+app.put('/api/resumes/:id', async (req, res) => {
+  const data = await fs.readJson(resumesPath)
+  const id = parseInt(req.params.id)
+  const updatedResume = req.body
+  const index = data.resumes.findIndex(r => r.id === id)
+
+  if (index === -1) return res.status(404).json({ message: 'Resume not found' })
+
+  data.resumes[index] = updatedResume
+  await fs.writeJson(resumesPath, data, { spaces: 2 })
+  res.json(updatedResume)
+})
+
+app.delete('/api/resumes/:id', async (req, res) => {
+  const data = await fs.readJson(resumesPath)
+  const id = parseInt(req.params.id)
+  data.resumes = data.resumes.filter(r => r.id !== id)
+  await fs.writeJson(resumesPath, data, { spaces: 2 })
+  res.json({ message: `Resume with ID ${id} deleted` })
+})
+
+// ---------------------- FRONTEND ----------------------
+
+const distPath = path.join(__dirname, '../dist')
+app.use(express.static(distPath))
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(distPath, 'index.html'))

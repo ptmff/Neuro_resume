@@ -37,7 +37,7 @@ import { useRoute, useRouter } from 'vue-router'
 const navLinks = ref([
   { name: 'Главная', path: '/' },
   { name: 'Создать резюме', path: '/resume' },
-  { name: 'Анализ вакансий', path: '/analyse' },
+  { name: 'Анализ вакансий', path: '/test' },
   { name: 'Профиль', path: '/profile' },
 ])
 
