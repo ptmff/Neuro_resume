@@ -1,5 +1,5 @@
 <template>
-  <div class="w-[210mm]">
+  <div class="w-[210mm]" :class="{ 'dragging-active': isDragging }">
     <div class="w-[210mm] min-h-[297mm] p-[20mm] mx-auto bg-white shadow-lg relative overflow-hidden" ref="resumeContent">
       <!-- Шапка резюме (всегда фиксирована вверху) -->
       <div class="mb-4">
@@ -27,10 +27,16 @@
       <!-- Перетаскиваемые секции -->
       <div class="flex flex-col gap-5">
         <template v-for="(section, index) in sections" :key="section.id">
-          <div class="relative group resume-section" :data-section-id="section.id">
+          <div class="relative group resume-section" 
+               :data-section-id="section.id"
+               :class="{ 
+                 'dragging': draggedIndex === index, 
+                 'drag-over': dragOverIndex === index && draggedIndex !== index,
+                 'drag-after': dragOverIndex === index - 1 && draggedIndex !== index - 1 && draggedIndex > index
+               }">
             <!-- Кнопка для перетаскивания -->
             <div class="drag-handle absolute -left-8 top-1 opacity-0 group-hover:opacity-100 cursor-move text-gray-400 hover:text-gray-600 transition-opacity"
-                 @mousedown="startDrag(index)">
+                 @mousedown="startDrag($event, index)">
               <i class="fas fa-grip-vertical"></i>
             </div>
             
@@ -153,17 +159,21 @@ onBeforeUnmount(() => {
 const draggedIndex = ref(null)
 const dragOverIndex = ref(null)
 const isDragging = ref(false)
+const dragStartY = ref(0)
+const dragCurrentY = ref(0)
 
 // Начало перетаскивания
-const startDrag = (index) => {
+const startDrag = (event, index) => {
+  // Предотвращаем выделение текста
+  event.preventDefault()
+  
   draggedIndex.value = index
   isDragging.value = true
+  dragStartY.value = event.clientY
+  dragCurrentY.value = event.clientY
   
   // Добавляем класс к перетаскиваемому элементу
-  const sectionElements = document.querySelectorAll('.resume-section')
-  if (sectionElements[index]) {
-    sectionElements[index].classList.add('dragging')
-  }
+  document.body.classList.add('dragging-cursor')
 }
 
 // Процесс перетаскивания
@@ -171,6 +181,7 @@ const handleDrag = (e) => {
   if (!isDragging.value) return
   
   e.preventDefault()
+  dragCurrentY.value = e.clientY
   
   const sectionElements = document.querySelectorAll('.resume-section')
   
@@ -178,21 +189,20 @@ const handleDrag = (e) => {
   let targetIndex = null
   sectionElements.forEach((el, index) => {
     const rect = el.getBoundingClientRect()
+    const middleY = rect.top + rect.height / 2
+    
     if (e.clientY >= rect.top && e.clientY <= rect.bottom) {
-      targetIndex = index
+      // Определяем, находится ли курсор в верхней или нижней половине элемента
+      if (e.clientY < middleY) {
+        targetIndex = index
+      } else {
+        targetIndex = index
+      }
     }
   })
   
-  if (targetIndex !== null && targetIndex !== draggedIndex.value) {
+  if (targetIndex !== null) {
     dragOverIndex.value = targetIndex
-    
-    // Визуально показываем, куда будет перемещен элемент
-    sectionElements.forEach((el, index) => {
-      el.classList.remove('drag-over')
-      if (index === targetIndex) {
-        el.classList.add('drag-over')
-      }
-    })
   }
 }
 
@@ -212,14 +222,10 @@ const endDrag = () => {
   }
   
   // Сбрасываем состояние
-  const sectionElements = document.querySelectorAll('.resume-section')
-  sectionElements.forEach(el => {
-    el.classList.remove('dragging', 'drag-over')
-  })
-  
   isDragging.value = false
   draggedIndex.value = null
   dragOverIndex.value = null
+  document.body.classList.remove('dragging-cursor')
 }
 
 // Сохранение порядка секций
@@ -255,19 +261,83 @@ const handlePrevStep = () => {
   @apply w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-200;
 }
 
+/* Отключение выделения текста при перетаскивании */
+.dragging-active {
+  user-select: none;
+}
+
+/* Стили для курсора при перетаскивании */
+:global(.dragging-cursor) {
+  cursor: grabbing !important;
+}
+
 .resume-section {
-  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s, margin 0.3s;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 0;
 }
 
+/* Стиль для перетаскиваемого элемента */
 .resume-section.dragging {
-  opacity: 0.7;
-  transform: scale(0.98);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  opacity: 0.85;
+  transform: scale(0.98) translateY(4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   z-index: 10;
+  background-color: rgba(var(--neon-purple-rgb, 156, 39, 176), 0.05);
+  border: 1px dashed rgba(var(--neon-purple-rgb, 156, 39, 176), 0.3);
 }
 
+/* Стиль для элемента, над которым находится перетаскиваемый элемент */
 .resume-section.drag-over {
-  border-top: 2px dashed var(--neon-purple);
-  padding-top: 8px;
+  margin-top: 20px;
+  position: relative;
+}
+
+.resume-section.drag-over::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-purple, #9c27b0), var(--neon-blue, #2196f3));
+  box-shadow: 0 0 8px rgba(var(--neon-purple-rgb, 156, 39, 176), 0.6);
+  border-radius: 2px;
+  animation: pulse 1.5s infinite;
+}
+
+.resume-section.drag-after {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.resume-section.drag-after::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-purple, #9c27b0), var(--neon-blue, #2196f3));
+  box-shadow: 0 0 8px rgba(var(--neon-purple-rgb, 156, 39, 176), 0.6);
+  border-radius: 2px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+    transform: scaleX(0.98);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0.6;
+    transform: scaleX(0.98);
+  }
 }
 </style>
