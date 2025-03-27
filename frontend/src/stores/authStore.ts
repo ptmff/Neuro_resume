@@ -1,43 +1,50 @@
-import { defineStore } from "pinia";
-import { loginUser, registerUser } from "@/api/auth";
-import type { UserRegisterDto } from "@/types/auth";
+import { ref } from 'vue'
+import { defineStore } from 'pinia'
+import { loginUser, registerUser } from '@/api/auth'
+import type { UserRegisterDto } from '@/types/auth'
 
-export const useAuthStore = defineStore("auth", {
-  state: () => ({
-    token: localStorage.getItem("token") || "",
-    loading: false,
-    error: "",
-  }),
-  actions: {
-    async login(email: string, password: string) {
-      this.loading = true;
-      this.error = "";
-      try {
-        const token = await loginUser({ email, password });
-        this.token = token;
-        localStorage.setItem("token", token);
-      } catch (e: any) {
-        this.error = e.response?.data || "Login failed";
-      } finally {
-        this.loading = false;
-      }
-    },
+export const useAuthStore = defineStore('auth', () => {
+  const token = ref<string>(localStorage.getItem('token') || '')
+  const loading = ref(false)
+  const error = ref('')
 
-    async register(payload: UserRegisterDto) {
-      this.loading = true;
-      this.error = "";
-      try {
-        await registerUser(payload);
-      } catch (e: any) {
-        this.error = e.response?.data || "Registration failed";
-      } finally {
-        this.loading = false;
-      }
-    },
-
-    logout() {
-      this.token = "";
-      localStorage.removeItem("token");
+  const login = async (email: string, password: string) => {
+    loading.value = true
+    error.value = ''
+    try {
+      const result = await loginUser({ email, password })
+      token.value = result
+      localStorage.setItem('token', result)
+    } catch (e: any) {
+      error.value = e.response?.data || 'Login failed'
+    } finally {
+      loading.value = false
     }
-  },
-});
+  }
+
+  const register = async (payload: UserRegisterDto) => {
+    loading.value = true
+    error.value = ''
+    try {
+      await registerUser(payload)
+    } catch (e: any) {
+      error.value = e.response?.data || 'Registration failed'
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const logout = () => {
+    token.value = ''
+    localStorage.removeItem('token')
+  }
+
+  return {
+    token,
+    loading,
+    error,
+    login,
+    register,
+    logout
+  }
+})

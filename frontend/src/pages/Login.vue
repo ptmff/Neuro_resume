@@ -1,26 +1,15 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { useAuthStore } from "@/stores/authStore";
-import { useRouter } from "vue-router";
-
-const email = ref("");
-const password = ref("");
-const auth = useAuthStore();
-const router = useRouter();
-
-const submit = async () => {
-  await auth.login(email.value, password.value);
-  if (!auth.error) {
-    router.push("/profile"); // или куда нужно
-  }
-};
+import LoginForm from '@/components/LoginForm.vue'
 </script>
 
 <template>
-  <form @submit.prevent="submit">
-    <input v-model="email" placeholder="Email" />
-    <input v-model="password" type="password" placeholder="Password" />
-    <button :disabled="auth.loading">Login</button>
-    <p v-if="auth.error">{{ auth.error }}</p>
-  </form>
+  <div class="relative min-h-screen w-full bg-gray-600/20 overflow-hidden">
+    <!-- фон или анимации -->
+    <div class="absolute inset-0 z-0 opacity-40">
+      <!-- background layers, stars, градиенты и т.д. -->
+    </div>
+
+    <!-- форма логина над фоном -->
+    <LoginForm />
+  </div>
 </template>

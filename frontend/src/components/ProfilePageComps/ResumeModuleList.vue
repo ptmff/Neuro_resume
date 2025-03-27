@@ -1,3 +1,54 @@
+<script setup lang="ts">
+import { computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useProfileStore } from '@/stores/profileStore'
+import { useResumeStore } from '@/stores/resumesStore'
+import type { Resume } from '@/types/types'
+
+const profileStore = useProfileStore()
+const resumeStore = useResumeStore()
+const router = useRouter()
+
+const profile = computed(() => profileStore.profile)
+const resumes = computed(() => resumeStore.resumes)
+
+// Все резюме пользователя
+const userResumes = computed((): Resume[] => resumes.value)
+
+// Редактировать резюме
+const editResume = (resume: Resume) => {
+  resumeStore.setResumeForEdit(resume)
+  router.push('/resume')
+}
+
+// Создать новое резюме
+const createNewResume = () => {
+  resumeStore.setResumeForEdit(null)
+  router.push('/resume')
+}
+
+// Сделать резюме основным
+const setAsMain = async (id: number) => {
+  await profileStore.updateProfile({ mainResumeId: id })
+}
+
+// Удалить резюме
+const deleteResume = async (id: number) => {
+  await resumeStore.deleteResume(id)
+
+  // Если удалённое резюме было основным — сбрасываем mainResumeId
+  if (profile.value?.mainResumeId === id) {
+    await profileStore.updateProfile({ mainResumeId: null })
+  }
+}
+
+// Загрузка при монтировании
+onMounted(async () => {
+  if (!profile.value) await profileStore.fetchProfile()
+  if (!resumes.value.length) await resumeStore.fetchResumes()
+})
+</script>
+
 <template>
   <section class="flex flex-col gap-6">
     <!-- Заголовок -->
@@ -16,7 +67,10 @@
         <div>
           <h3 class="text-[var(--text-light)] font-semibold text-base sm:text-lg flex items-center gap-2">
             {{ resume.title }}
-            <span v-if="resume.id === profile?.mainResumeId" class="text-[var(--background-cta)] text-base">
+            <span
+              v-if="resume.id === profile?.mainResumeId"
+              class="text-[var(--background-cta)] text-base"
+            >
               ★
             </span>
           </h3>
@@ -50,7 +104,7 @@
 
       <!-- Кнопка "Создать резюме" -->
       <div
-        class="bg-[var(--background-overlay)] hover:[var(--background-pale)] border border-dashed border-[var(--background-pale)] rounded-xl px-4 py-6 flex flex-col items-center justify-center text-[var(--text-light)] transition cursor-pointer"
+        class="bg-[var(--background-overlay)] hover:bg-[var(--background-pale)] border border-dashed border-[var(--background-pale)] rounded-xl px-4 py-6 flex flex-col items-center justify-center text-[var(--text-light)] transition cursor-pointer"
         @click="createNewResume"
       >
         <i class="fas fa-plus text-xl mb-1"></i>
@@ -64,67 +118,3 @@
     </div>
   </section>
 </template>
-
-<script setup lang="ts">
-import { computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { useProfileStore } from '@/stores/profileStore'
-import { useResumeStore } from '@/stores/resumesStore'
-import type { Resume } from '@/types/types'
-
-const profileStore = useProfileStore()
-const resumeStore = useResumeStore()
-const router = useRouter()
-
-const profile = computed(() => profileStore.profile)
-const resumes = computed(() => resumeStore.resumes)
-
-const userResumes = computed((): Resume[] => {
-  if (!profile.value) return []
-  return resumes.value.filter(resume => profile.value!.resumes.includes(resume.id))
-})
-
-// Редактировать резюме
-const editResume = (resume: Resume) => {
-  resumeStore.setResumeForEdit(resume)
-  router.push('/resume')
-}
-
-// Создать новое резюме
-const createNewResume = () => {
-  resumeStore.setResumeForEdit(null)
-  router.push('/resume')
-}
-
-// Сделать резюме основным
-const setAsMain = async (id: number) => {
-  await profileStore.setMainResume(id)
-}
-
-// Удалить резюме
-const deleteResume = async (id: number) => {
-  await resumeStore.deleteResume(id)
-  if (profile.value?.resumes.includes(id)) {
-    const updatedResumes = profile.value.resumes.filter(rid => rid !== id)
-    await profileStore.updateProfile({ resumes: updatedResumes })
-
-    // Если удалённое резюме было основным — сбрасываем mainResumeId
-    if (profile.value.mainResumeId === id) {
-      await profileStore.updateProfile({ mainResumeId: null })
-    }
-
-    // Обновляем локально
-    profile.value.resumes = updatedResumes
-    if (profile.value.mainResumeId === id) {
-      profile.value.mainResumeId = null
-    }
-  }
-}
-
-
-// Загрузка данных при монтировании
-onMounted(async () => {
-  if (!profile.value) await profileStore.fetchProfile()
-  if (!resumes.value.length) await resumeStore.fetchResumes()
-})
-</script>

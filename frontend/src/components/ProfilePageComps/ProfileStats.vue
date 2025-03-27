@@ -22,18 +22,22 @@ import { useResumeStore } from '@/stores/resumesStore'
 const profileStore = useProfileStore()
 const resumeStore = useResumeStore()
 
-const resumeCount = computed(() => profileStore.profile?.resumes.length ?? 0)
+// ✅ Резюме считаем из resumeStore
+const resumeCount = computed(() => resumeStore.resumes.length)
 
+// ✅ Навыки суммируем по всем резюме
 const totalSkills = computed(() =>
   resumeStore.resumes.reduce((acc, resume) => acc + (resume.skills?.length ?? 0), 0)
 )
 
+// ✅ Основное резюме — из profileStore
 const hasMainResume = computed(() => !!profileStore.profile?.mainResumeId)
 
 const mainResumeLabel = computed(() =>
   profileStore.profile?.mainResumeId ? `#${profileStore.profile.mainResumeId}` : 'Нет'
 )
 
+// ✅ Заполненность профиля (зависит от profile и resumeStore)
 const profileCompletion = computed(() => {
   let score = 0
   const p = profileStore.profile
@@ -45,6 +49,7 @@ const profileCompletion = computed(() => {
   return Math.round((score / 4) * 100) + '%'
 })
 
+// ✅ Объединяем статистику
 const stats = computed(() => [
   { label: 'Создано резюме', value: resumeCount.value },
   { label: 'Указано навыков', value: totalSkills.value },
