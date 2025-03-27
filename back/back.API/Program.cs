@@ -36,6 +36,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Регистрация инфраструктурных сервисов
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
 
 // Регистрация бизнес-сервисов (слой Application)
 builder.Services.AddScoped<IAuthService, AuthService>();
