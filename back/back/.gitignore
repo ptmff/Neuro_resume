@@ -10,3 +10,4 @@ back.Infrastructure/obj
 back.Tests/bin
 back.Tests/obj
 /back.API/appsettingsjson
+/back.Infrastructure/Migrations
