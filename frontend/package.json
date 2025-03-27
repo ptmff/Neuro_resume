@@ -20,9 +20,9 @@
     "pinia": "^3.0.1",
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.174.0",
-    "vue": "^3.4.38",
+    "vue": "^3.5.13",
     "vue-filepond": "^7.0.4",
-    "vue-router": "^4.3.0",
+    "vue-router": "^4.5.0",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
@@ -32,6 +32,7 @@
     "@testing-library/vue": "^8.1.0",
     "@types/aos": "^3.0.7",
     "@types/eslint": "^9.6.1",
+    "@types/node": "^22.13.14",
     "@types/testing-library__jest-dom": "^5.14.9",
     "@types/testing-library__vue": "^5.0.0",
     "@types/three": "^0.174.0",

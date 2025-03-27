@@ -28,6 +28,51 @@ app.patch('/api/profile', async (req, res) => {
   res.json({ message: 'Profile updated', profile: updatedProfile })
 })
 
+app.delete('/api/profile', async (req, res) => {
+  try {
+    await fs.remove(profilePath);
+    res.json({ message: 'Profile deleted' });
+  } catch {
+    res.status(500).json({ message: 'Error deleting profile' });
+  }
+});
+
+// ---------------------- AUTH ----------------------
+
+// Регистрация — просто сохраняем профиль
+app.post('/api/auth/register', async (req, res) => {
+  const newUser = req.body;
+
+  // Если уже есть профиль с таким email
+  try {
+    const existing = await fs.readJson(profilePath);
+    if (existing.email === newUser.email) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+  } catch {
+    // ignore if file doesn't exist
+  }
+
+  await fs.writeJson(profilePath, newUser, { spaces: 2 });
+  res.json({ message: 'User registered', profile: newUser });
+});
+
+// Логин — проверяем email и пароль
+app.post('/api/auth/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const profile = await fs.readJson(profilePath);
+    if (profile.email === email && profile.password === password) {
+      res.json({ token: 'mock-token-123' }); // заглушка токена
+    } else {
+      res.status(401).json({ message: 'Invalid credentials' });
+    }
+  } catch {
+    res.status(404).json({ message: 'User not found' });
+  }
+});
+
 // ---------------------- RESUMES ----------------------
 
 app.get('/api/resumes', async (req, res) => {
