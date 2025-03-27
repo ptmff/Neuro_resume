@@ -13,40 +13,49 @@ using System;
 using System.Reflection;
 using System.Text;
 
-
-// Подключаем пространства имён для слоёв Infrastructure и Application
-using back.Infrastructure.Persistence;      // AppDbContext.cs находится в Infrastructure
-using back.Infrastructure.Services;          // Реализации IPasswordService, ITokenService и др.
-using back.Application.Interfaces;           // IAuthService, IResumeService
-using back.Application.Services;             // Реализации AuthService, ResumeService
-using back.API.Services;                     // IUserContext и его реализация (например, UserContext)
+using back.Infrastructure.Persistence;
+using back.Infrastructure.Services;
+using back.Application.Interfaces;
+using back.Application.Services;
+using back.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Добавляем контроллеры
 builder.Services.AddControllers();
 
-// Конфигурация DbContext (из Infrastructure)
+// CORS — разрешаем доступ с фронта
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
+// DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
         npgsqlOptions => npgsqlOptions.MigrationsAssembly("back.Infrastructure")));
 
-
-// Регистрация инфраструктурных сервисов
+// Инфраструктурные сервисы
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 
-// Регистрация бизнес-сервисов (слой Application)
+// Application-сервисы
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IResumeService, ResumeService>();
 
-// Регистрация сервисов, специфичных для API (например, получение информации о текущем пользователе)
+// API-сервисы
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserContext, UserContext>();
 
-// Конфигурация аутентификации с использованием JWT
+// JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -63,7 +72,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
          };
     });
 
-// Добавляем Swagger для документации API
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -93,7 +102,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Автоматическая миграция базы данных при запуске
+// Авто-миграция БД
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -107,6 +116,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
