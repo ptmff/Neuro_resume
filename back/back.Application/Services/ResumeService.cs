@@ -32,6 +32,18 @@ public class ResumeService : IResumeService
                 Date = dto.Date,
                 Job = dto.Job,
                 Skills = dto.Skills,
+                City = dto.City,
+                Template = dto.Template,
+                Description = dto.Description,
+                // Преобразуем список ExperienceDto в Experience
+                Experience = dto.Experience.Select(e => new Experience
+                {
+                    Company = e.Company,
+                    Position = e.Position,
+                    StartDate = e.StartDate,
+                    EndDate = e.EndDate,
+                    Description = e.Description
+                }).ToList(),
                 UserId = userId
             };
 
@@ -52,6 +64,17 @@ public class ResumeService : IResumeService
             resume.Date = dto.Date;
             resume.Job = dto.Job;
             resume.Skills = dto.Skills;
+            resume.City = dto.City;
+            resume.Template = dto.Template;
+            resume.Description = dto.Description;
+            resume.Experience = dto.Experience.Select(e => new Experience
+            {
+                Company = e.Company,
+                Position = e.Position,
+                StartDate = e.StartDate,
+                EndDate = e.EndDate,
+                Description = e.Description
+            }).ToList();
 
             await _context.SaveChangesAsync();
             return Result.Success();

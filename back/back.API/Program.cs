@@ -28,7 +28,10 @@ builder.Services.AddControllers();
 
 // Конфигурация DbContext (из Infrastructure)
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        npgsqlOptions => npgsqlOptions.MigrationsAssembly("back.Infrastructure")));
+
 
 // Регистрация инфраструктурных сервисов
 builder.Services.AddScoped<IPasswordService, PasswordService>();

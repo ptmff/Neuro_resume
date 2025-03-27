@@ -19,12 +19,12 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+
+        // Конфигурация User
         modelBuilder.Entity<User>()
             .Property(u => u.Name)
             .IsRequired(); // Name обязательное
-        
-        // Для Phone и City можно оставить как опциональные:
+            
         modelBuilder.Entity<User>()
             .Property(u => u.Phone)
             .IsRequired(false);
@@ -33,13 +33,12 @@ public class AppDbContext : DbContext
             .Property(u => u.City)
             .IsRequired(false);
 
-        // Связь "один-ко-многим": User - Resumes
         modelBuilder.Entity<User>()
             .HasMany(u => u.Resumes)
             .WithOne(r => r.User)
             .HasForeignKey(r => r.UserId);
 
-        // Настройка хранения списка навыков в формате JSON (PostgreSQL jsonb)
+        // Конфигурация Resume
         modelBuilder.Entity<Resume>()
             .Property(r => r.Skills)
             .HasColumnType("jsonb")
@@ -47,5 +46,27 @@ public class AppDbContext : DbContext
                 new ValueConverter<List<string>, string>(
                     v => JsonSerializer.Serialize(v, new JsonSerializerOptions()),
                     v => JsonSerializer.Deserialize<List<string>>(v, new JsonSerializerOptions())!));
+
+        // ✅ Добавляем поддержку сериализации Experience в JSON
+        modelBuilder.Entity<Resume>()
+            .Property(r => r.Experience)
+            .HasColumnType("jsonb")
+            .HasConversion(
+                new ValueConverter<List<Experience>, string>(
+                    v => JsonSerializer.Serialize(v, new JsonSerializerOptions()),
+                    v => JsonSerializer.Deserialize<List<Experience>>(v, new JsonSerializerOptions())!));
+
+        // Новые свойства Resume
+        modelBuilder.Entity<Resume>()
+            .Property(r => r.City)
+            .HasColumnType("text");
+
+        modelBuilder.Entity<Resume>()
+            .Property(r => r.Template)
+            .HasColumnType("text");
+
+        modelBuilder.Entity<Resume>()
+            .Property(r => r.Description)
+            .HasColumnType("text");
     }
 }
