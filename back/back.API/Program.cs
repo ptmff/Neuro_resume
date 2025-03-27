@@ -26,6 +26,19 @@ var builder = WebApplication.CreateBuilder(args);
 // Добавляем контроллеры
 builder.Services.AddControllers();
 
+// CORS — разрешаем доступ с фронта
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
+
 // Конфигурация DbContext (из Infrastructure)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
@@ -112,5 +125,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors();
 
 app.Run();
