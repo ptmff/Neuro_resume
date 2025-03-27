@@ -32,6 +32,20 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<User>()
             .Property(u => u.City)
             .IsRequired(false);
+        
+        // Настройка хранения образования как JSON:
+        modelBuilder.Entity<User>()
+            .Property(u => u.Education)
+            .HasColumnType("jsonb")
+            .HasConversion(
+                new ValueConverter<List<Education>, string>(
+                    v => JsonSerializer.Serialize(v, new JsonSerializerOptions()),
+                    v => JsonSerializer.Deserialize<List<Education>>(v, new JsonSerializerOptions())!));
+
+        // Новые поля MainResumeId и Photo можно настроить как текст/целое число:
+        modelBuilder.Entity<User>()
+            .Property(u => u.Photo)
+            .HasColumnType("text");
 
         modelBuilder.Entity<User>()
             .HasMany(u => u.Resumes)
