@@ -10,4 +10,5 @@ public interface IResumeService
     Task<Result<Resume>> CreateResume(int userId, ResumeDto dto);
     Task<Result> UpdateResume(int userId, int resumeId, ResumeDto dto);
     Task<Result> DeleteResume(int userId, int resumeId);
+    Task<Result<Resume>> GetResumeById(int userId, int resumeId);
 }

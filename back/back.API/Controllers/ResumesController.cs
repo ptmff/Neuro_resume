@@ -28,6 +28,13 @@ public class ResumesController : ControllerBase
         var result = await _resumeService.GetUserResumes(_userContext.UserId);
         return result.ToActionResult();
     }
+    
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetResume(int id)
+    {
+        var result = await _resumeService.GetResumeById(_userContext.UserId, id);
+        return result.ToActionResult();
+    }
         
     [HttpPost]
     public async Task<IActionResult> PostResume([FromBody] ResumeDto resumeDto)

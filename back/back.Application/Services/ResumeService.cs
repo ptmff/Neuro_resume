@@ -92,4 +92,13 @@ public class ResumeService : IResumeService
             await _context.SaveChangesAsync();
             return Result.Success();
         }
+        
+        public async Task<Result<Resume>> GetResumeById(int userId, int resumeId)
+        {
+            var resume = await _context.Resumes
+                .FirstOrDefaultAsync(r => r.Id == resumeId && r.UserId == userId);
+            if (resume == null)
+                return Result<Resume>.Failure("Resume not found");
+            return Result<Resume>.Success(resume);
+        }
     }
