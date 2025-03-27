@@ -1,80 +1,85 @@
 <template>
-  <div class="resume-container">
-    
-    
-    <div class="a4-page" ref="resumeContent">
+  <div class="w-[210mm]">
+    <div class="w-[210mm] min-h-[297mm] p-[20mm] mx-auto bg-white shadow-lg relative overflow-hidden" ref="resumeContent">
       <!-- Шапка резюме -->
-      <div class="resume-header">
-        <h1 class="name">{{ resumeData.name || profile?.name || 'Имя Фамилия' }}</h1>
-        <p class="profession">{{ resumeData.job || profile?.profession || 'Профессия' }}</p>
+      <div class="mb-4">
+        <h1 class="text-3xl font-bold text-gray-800 m-0 mb-1">{{ resumeData.name || profile?.name || 'Имя Фамилия' }}</h1>
+        <p class="text-lg text-gray-600 m-0 mb-4">{{ resumeData.job || profile?.profession || 'Профессия' }}</p>
         
-        <div class="contact-info">
-          <div v-if="resumeData.email || profile?.email" class="contact-item">
-            <i class="fas fa-envelope"></i>
+        <div class="flex flex-wrap gap-4">
+          <div v-if="resumeData.email || profile?.email" class="flex items-center gap-2 text-sm text-gray-600">
+            <i class="fas fa-envelope text-[var(--neon-purple)]"></i>
             <span>{{ resumeData.email || profile?.email }}</span>
           </div>
-          <div v-if="resumeData.phone || profile?.phone" class="contact-item">
-            <i class="fas fa-phone"></i>
+          <div v-if="resumeData.phone || profile?.phone" class="flex items-center gap-2 text-sm text-gray-600">
+            <i class="fas fa-phone text-[var(--neon-purple)]"></i>
             <span>{{ resumeData.phone || profile?.phone }}</span>
           </div>
-          <div v-if="resumeData.city || profile?.city" class="contact-item">
-            <i class="fas fa-map-marker-alt"></i>
+          <div v-if="resumeData.city || profile?.city" class="flex items-center gap-2 text-sm text-gray-600">
+            <i class="fas fa-map-marker-alt text-[var(--neon-purple)]"></i>
             <span>{{ resumeData.city || profile?.city }}</span>
           </div>
         </div>
       </div>
       
-      <div class="resume-divider"></div>
+      <div class="h-0.5 bg-gradient-to-r from-[var(--neon-purple)] to-[var(--neon-blue)] my-4"></div>
       
       <!-- Основное содержимое -->
-      <div class="resume-body">
+      <div class="flex flex-col gap-5">
         <!-- О себе -->
-        <div class="resume-section" v-if="resumeData.description">
-          <h2 class="section-title">Обо мне</h2>
-          <p class="description">{{ resumeData.description }}</p>
+        <div class="mb-5" v-if="resumeData.description">
+          <h2 class="text-lg font-semibold text-[var(--neon-purple)] m-0 mb-4 pb-1 border-b border-gray-200">Обо мне</h2>
+          <p class="text-sm text-gray-600 m-0 leading-relaxed">{{ resumeData.description }}</p>
         </div>
         
         <!-- Опыт работы -->
-        <div class="resume-section" v-if="resumeData.experience?.length">
-          <h2 class="section-title">Опыт работы</h2>
-          <div class="experience-item" v-for="(exp, i) in resumeData.experience" :key="i">
-            <div class="experience-header">
-              <h3 class="company-position">{{ exp.position }} | {{ exp.company }}</h3>
-              <span class="date">{{ exp.startDate }} – {{ exp.endDate }}</span>
+        <div class="mb-5" v-if="resumeData.experience?.length">
+          <h2 class="text-lg font-semibold text-[var(--neon-purple)] m-0 mb-4 pb-1 border-b border-gray-200">Опыт работы</h2>
+          <div class="mb-4" v-for="(exp, i) in resumeData.experience" :key="i">
+            <div class="flex justify-between mb-1">
+              <h3 class="text-base font-semibold text-gray-800 m-0">{{ exp.position }} | {{ exp.company }}</h3>
+              <span class="text-sm text-gray-500">{{ exp.startDate }} – {{ exp.endDate }}</span>
             </div>
-            <p class="experience-description">{{ exp.description }}</p>
+            <p class="text-sm text-gray-600 m-0 mt-1 leading-relaxed">{{ exp.description }}</p>
           </div>
         </div>
         
         <!-- Образование -->
-        <div class="resume-section" v-if="profile?.education?.length">
-          <h2 class="section-title">Образование</h2>
-          <div class="education-item" v-for="(edu, i) in profile.education" :key="i">
-            <h3 class="institution">{{ edu.institution }}</h3>
-            <p class="degree">{{ edu.degree }} ({{ edu.startYear }}–{{ edu.endYear }})</p>
+        <div class="mb-5" v-if="profile?.education?.length">
+          <h2 class="text-lg font-semibold text-[var(--neon-purple)] m-0 mb-4 pb-1 border-b border-gray-200">Образование</h2>
+          <div class="mb-2.5" v-for="(edu, i) in profile.education" :key="i">
+            <h3 class="text-base font-semibold text-gray-800 m-0">{{ edu.institution }}</h3>
+            <p class="text-sm text-gray-600 mt-0.5 m-0">{{ edu.degree }} ({{ edu.startYear }}–{{ edu.endYear }})</p>
           </div>
         </div>
         
         <!-- Навыки -->
-        <div class="resume-section" v-if="resumeData.skills?.length">
-          <h2 class="section-title">Профессиональные навыки</h2>
-          <div class="skills-container">
-            <div class="skill-item" v-for="(skill, index) in resumeData.skills" :key="skill + index">
+        <div class="mb-5" v-if="resumeData.skills?.length">
+          <h2 class="text-lg font-semibold text-[var(--neon-purple)] m-0 mb-4 pb-1 border-b border-gray-200">Профессиональные навыки</h2>
+          <div class="flex flex-wrap gap-2.5">
+            <div 
+              v-for="(skill, index) in resumeData.skills" 
+              :key="skill + index"
+              class="px-3 py-1 border border-gray-200 rounded-full text-sm text-gray-600"
+            >
               {{ skill }}
             </div>
           </div>
         </div>
       </div>
-    
-
+      
+    </div>
+    <div class="flex justify-between mt-8">
+      <button @click="$emit('prev-step')" class="btn btn-secondary">Назад</button>
+      <button @click="$emit('next-step')" class="btn btn-primary">Далее</button>
     </div>
   </div>
+  
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
 import { useProfileStore } from '@/stores/profileStore'
-
 
 const props = defineProps({
   resumeData: Object
@@ -84,144 +89,18 @@ const profileStore = useProfileStore()
 const profile = computed(() => profileStore.profile)
 const resumeContent = ref(null)
 
-
+const emit = defineEmits(['next-step', 'prev-step'])
 </script>
 
 <style scoped>
-.a4-page {
-  width: 210mm;
-  min-height: 297mm;
-  padding: 20mm;
-  margin: 0 auto;
-  background: white;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-  position: relative;
-  overflow: hidden;
+
+.btn {
+  @apply px-6 py-3 font-semibold rounded-full transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--neon-purple)];
 }
-
-/* Шапка резюме */
-.resume-header {
-  margin-bottom: 15px;
+.btn-primary {
+  @apply bg-gradient-to-r from-[var(--neon-purple)] to-[var(--neon-blue)] text-[var(--text-light)];
 }
-
-.name {
-  font-size: 28px;
-  font-weight: 700;
-  color: #333;
-  margin: 0 0 5px 0;
+.btn-secondary {
+  @apply bg-[var(--background-section)] bg-opacity-50 text-[var(--text-light)];
 }
-
-.profession {
-  font-size: 18px;
-  color: #666;
-  margin: 0 0 15px 0;
-}
-
-.contact-info {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-}
-
-.contact-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: #555;
-}
-
-.contact-item i {
-  color: var(--neon-purple, #9c27b0);
-}
-
-/* Разделитель */
-.resume-divider {
-  height: 2px;
-  background: linear-gradient(90deg, var(--neon-purple, #9c27b0), var(--neon-blue, #2196f3));
-  margin: 15px 0;
-}
-
-/* Основное содержимое */
-.resume-body {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.resume-section {
-  margin-bottom: 20px;
-}
-
-.section-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--neon-purple, #9c27b0);
-  margin: 0 0 15px 0;
-  padding-bottom: 5px;
-  border-bottom: 1px solid #eee;
-}
-
-/* Опыт работы */
-.experience-item {
-  margin-bottom: 15px;
-}
-
-.experience-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 5px;
-}
-
-.company-position {
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  margin: 0;
-}
-
-.date {
-  font-size: 14px;
-  color: #777;
-}
-
-.experience-description {
-  font-size: 14px;
-  color: #555;
-  margin: 5px 0 0 0;
-  line-height: 1.5;
-}
-
-/* Образование */
-.education-item {
-  margin-bottom: 10px;
-}
-
-.institution {
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  margin: 0;
-}
-
-.degree, .description {
-  font-size: 14px;
-  color: #555;
-  margin: 3px 0 0 0;
-}
-
-/* Навыки */
-.skills-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.skill-item {
-  padding: 5px 12px;
-
-  font-size: 14px;
-  color: #555;
-}
-
 </style>
