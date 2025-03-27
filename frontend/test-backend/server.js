@@ -67,6 +67,14 @@ app.delete('/api/resumes/:id', async (req, res) => {
   res.json({ message: `Resume with ID ${id} deleted` })
 })
 
+// ---------------------- ANALYSIS ----------------------
+
+// routes/analyse.ts
+app.post('/analyse', async (req, res) => {
+  const json = await fs.promises.readFile('./data/job-analysis.json', 'utf-8')
+  res.json(JSON.parse(json))
+})
+
 // ---------------------- FRONTEND ----------------------
 
 const distPath = path.join(__dirname, '../dist')

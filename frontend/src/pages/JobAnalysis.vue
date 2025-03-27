@@ -1,7 +1,7 @@
 <template>
   <div class="relative w-full h-screen overflow-hidden">
     <!-- 🌌 Фоновое видео -->
-    <video
+    <!-- <video
       :src="footage"
       ref="videoRef"
       class="absolute top-0 left-0 w-full h-full object-cover filter blur-xl rotate-180"
@@ -11,7 +11,7 @@
       loop
     >
       Ваш браузер не поддерживает видео.
-    </video>
+    </video> -->
 
     <!-- 🧊 Статичный верхний слой -->
     <StaticIntroSection :fadeOut="scrolled" :phase="props.phase" />

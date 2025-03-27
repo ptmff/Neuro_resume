@@ -37,11 +37,11 @@
   
   onMounted(async () => {
     // Этап 1: Имитируем загрузку
-    await wait(1000)
+    await wait(10000)
     stage.value = 'flash'
   
     // Этап 2: Flash-анимации
-    await wait(1000)
+    await wait(10000)
     stage.value = 'result'
   
     emit('done') // уведомим родителя (например, для перехода к следующему этапу)

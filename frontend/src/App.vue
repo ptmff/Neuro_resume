@@ -37,7 +37,7 @@ const isLoading = computed(() => appStore.isAppLoading)
       <div class="absolute inset-0 -z-10 animated-bg"></div>
       <Parallax class="absolute inset-0" />
 
-      <NavBar v-if="phase !== 'visualizing'" />
+      <NavBar v-if="phase !== 'visualizing'"/>
 
       <RouterView v-slot="{ Component, route }">
         <transition mode="out-in">
@@ -49,7 +49,7 @@ const isLoading = computed(() => appStore.isAppLoading)
       </RouterView>
 
       <Footer
-        v-if="!(route.path === '/analyse')"
+        v-if="!(route.path === '/analyse' || '/test2')"
       />
     </div>
   </template>
