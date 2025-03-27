@@ -3,7 +3,17 @@
     <div class="container mx-auto px-4 py-20">
       <ProgressBar :currentStep="currentStep" @step-click="goToStep" />
 
-      <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Для шага 4 (FinalPreview) используем полную ширину и центрирование -->
+      <div v-if="currentStep === 4" class="mt-8 flex justify-center">
+        <FinalPreview
+          :resumeData="resumeData"
+          @next-step="nextStep"
+          @prev-step="prevStep"
+        />
+      </div>
+      
+      <!-- Для остальных шагов используем двухколоночную сетку -->
+      <div v-else class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div class="space-y-8">
           <transition name="fade" mode="out-in">
             <component
@@ -28,7 +38,7 @@
         </div>
 
         <div class="lg:sticky lg:top-8 lg:self-start">
-          <ResumePreview :resumeData="resumeData" :selectedTemplate="selectedTemplate" v-if="currentStep!=4"/>
+          <ResumePreview :resumeData="resumeData" :selectedTemplate="selectedTemplate" />
         </div>
       </div>
     </div>
