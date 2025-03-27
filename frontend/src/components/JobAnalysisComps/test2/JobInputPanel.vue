@@ -50,13 +50,13 @@
 
 <script setup lang="ts">
 import { ref, watch, nextTick, onMounted, computed } from 'vue'
-import { useAppStore } from '@/stores/appStore'
+import { useAnalysisStore } from '@/stores/analysisStore'
 
 const emit = defineEmits<{
   (e: 'start', url: string): void
 }>()
 
-const appStore = useAppStore()
+const analysisStore = useAnalysisStore()
 const jobInput = ref('')
 const loading = ref(false)
 const isSending = ref(false)
@@ -92,7 +92,7 @@ const analyze = async () => {
   isSending.value = true
 
   try {
-    await appStore.startJobAnalysis(jobInput.value.trim())
+    await analysisStore.startJobAnalysis(jobInput.value.trim())
     emit('start', jobInput.value.trim())
   } catch (e) {
     console.error(e)

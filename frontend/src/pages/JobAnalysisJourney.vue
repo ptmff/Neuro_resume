@@ -26,16 +26,18 @@
   import SignalPath from '@/components/JobAnalysisComps/test2/SignalPath.vue'
   import GlowingBrain from '@/components/JobAnalysisComps/test2/GlowingBrain.vue'
   import JobAnalysisResult from '@/components/JobAnalysisComps/test2/JobAnalysisResult.vue'
-  import { useAppStore } from '@/stores/appStore'
+  import { useAnalysisStore } from '@/stores/analysisStore'
+  import { fetchMockAnalysis } from '@/mocks/mockAnalysis'
   
-  const appStore = useAppStore()
+  const analysisStore = useAnalysisStore()
   const scrollX = ref(0)
   
   const handleStart = async (url: string) => {
-    const totalScroll = 300 // от 0 до 300vw (всего 4 экрана: 0, 100, 200, 300)
-    const duration = 10000 // 10 секунд
+    scrollX.value = 0
+  
+    const totalScroll = 300
     const steps = 100
-    const stepTime = duration / steps
+    const stepTime = 100
     const stepSize = totalScroll / steps
   
     let current = 0
@@ -48,9 +50,21 @@
       }
     }, stepTime)
   
-    await appStore.startJobAnalysis(url)
+    // ⏳ Запрос на мок-данные
+    const { result, steps: receivedSteps } = await fetchMockAnalysis(url)
+  
+    // 👣 Обновление результата
+    analysisStore.result = result
+    analysisStore.steps = []
+  
+    // 🚶 Добавляем шаги по одному
+    for (const step of receivedSteps) {
+      await new Promise(resolve => setTimeout(resolve, 800))
+      analysisStore.steps.push(step)
+    }
   }
   </script>
+  
   
   <style scoped>
   </style>
