@@ -39,19 +39,19 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    currentStep: {
-      type: Number,
-      required: true,
-    },
-  },
-  methods: {
-    goToStep(step) {
-      this.$emit('step-click', step)
-    },
-  },
+<script setup lang="ts">
+interface ProgressBarProps {
+  currentStep: number;
+}
+
+const props = defineProps<ProgressBarProps>()
+
+const emit = defineEmits<{
+  (e: 'step-click', step: number): void;
+}>()
+
+const goToStep = (step: number): void => {
+  emit('step-click', step)
 }
 </script>
 
