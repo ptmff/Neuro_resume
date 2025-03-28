@@ -1,5 +1,8 @@
 <template>
   <div class="w-[210mm]" :class="{ 'dragging-active': isDragging }">
+    <h2 class="text-4xl font-bold bg-gradient-to-r from-[var(--text-secondary)] to-[var(--text-light)] bg-clip-text text-transparent mb-8">
+      Ваше резюме выглядит так
+    </h2>
     <div class="w-[210mm] min-h-[297mm] p-[20mm] mx-auto bg-white shadow-lg relative overflow-hidden" ref="resumeContent">
       <!-- Шапка резюме (всегда фиксирована вверху) -->
       <div class="mb-4">

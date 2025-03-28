@@ -8,7 +8,7 @@
       :type="type"
       :id="id"
       :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
+      @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
       :required="required"
       :placeholder="placeholder"
       class="w-full bg-[var(--background-section)] bg-opacity-50 border border-[var(--background-pale)] rounded-xl px-4 py-3 text-[var(--text-light)] focus:outline-none focus:border-[var(--text-secondary)] transition-all duration-300"
@@ -18,7 +18,7 @@
       ref="textareaRef"
       :id="id"
       :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
+      @input="$emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)"
       :required="required"
       :placeholder="placeholder"
       rows="1"
@@ -27,43 +27,31 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
-const props = defineProps({
-  id: {
-    type: String,
-    required: true,
-  },
-  label: {
-    type: String,
-    required: true,
-  },
-  type: {
-    type: String,
-    default: 'text',
-  },
-  modelValue: {
-    type: String,
-    required: true,
-  },
-  required: {
-    type: Boolean,
-    default: false,
-  },
-  placeholder: {
-    type: String,
-    default: '',
-  },
-  autoGrow: {
-    type: Boolean,
-    default: false,
-  }
+
+interface FormFieldProps {
+  id: string;
+  label: string;
+  type?: string;
+  modelValue: string;
+  required?: boolean;
+  placeholder?: string;
+  autoGrow?: boolean;
+}
+
+const props = withDefaults(defineProps<FormFieldProps>(), {
+  type: 'text',
+  required: false,
+  placeholder: '',
+  autoGrow: false
 })
 
+defineEmits<{
+  (e: 'update:modelValue', value: string): void
+}>()
 
-defineEmits(['update:modelValue'])
-
-const textareaRef = ref(null)
+const textareaRef = ref<HTMLTextAreaElement | null>(null)
 
 watch(() => props.modelValue, () => {
   if (props.autoGrow && textareaRef.value) {
@@ -78,15 +66,4 @@ onMounted(() => {
     textareaRef.value.style.height = textareaRef.value.scrollHeight + 'px'
   }
 })
-
-const handleInput = (e) => {
-  const target = e.target
-  emit('update:modelValue', target.value)
-
-  if (autoGrow && target.tagName === 'TEXTAREA') {
-    target.style.height = 'auto'
-    target.style.height = target.scrollHeight + 'px'
-  }
-}
-
 </script>

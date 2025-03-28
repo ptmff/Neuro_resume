@@ -7,9 +7,9 @@
     <form @submit.prevent="convertDataAndNext">
       <!-- 📌 Основные поля -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <FormField id="title" label="Название резюме" v-model="resumeData.title" placeholder="Например: Резюме для Frontend" required />
-        <FormField id="city" label="Город" v-model="resumeData.city" placeholder="Москва" required />
-        <FormField id="job" label="Профессия" v-model="resumeData.job" placeholder="Frontend-разработчик" required />
+        <FormField id="title" label="Название резюме" :modelValue="safeValue(resumeData.title)" @update:modelValue="updateField('title', $event)" placeholder="Например: Резюме для Frontend" required />
+        <FormField id="city" label="Город" :modelValue="safeValue(resumeData.city)" @update:modelValue="updateField('city', $event)" placeholder="Москва" required />
+        <FormField id="job" label="Профессия" :modelValue="safeValue(resumeData.job)" @update:modelValue="updateField('job', $event)" placeholder="Frontend-разработчик" required />
       </div>
 
       <!-- Поле "О себе" -->
@@ -17,7 +17,8 @@
         <FormField
           id="description"
           label="О себе (необязательно)"
-          v-model="resumeData.description"
+          :modelValue="safeValue(resumeData.description)"
+          @update:modelValue="updateField('description', $event)"
           type="textarea"
           autoGrow
           placeholder="Кратко расскажите о себе, что вас отличает"
@@ -36,11 +37,11 @@
               </div>
               <div class="w-full md:col-span-2 pl-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField v-model="element.company" label="Компания" :id="`company-${index}`" />
-                  <FormField v-model="element.position" label="Должность" :id="`position-${index}`" />
-                  <FormField v-model="element.startDate" label="Дата начала" type="month" :id="`start-${index}`" />
-                  <FormField v-model="element.endDate" label="Дата окончания" type="month" :id="`end-${index}`" />
-                  <FormField autoGrow v-model="element.description" label="Описание" type="textarea" :id="`desc-${index}`" class="md:col-span-2" />
+                  <FormField :modelValue="safeValue(element.company)" @update:modelValue="updateExperienceField(index, 'company', $event)" label="Компания" :id="`company-${index}`" />
+                  <FormField :modelValue="safeValue(element.position)" @update:modelValue="updateExperienceField(index, 'position', $event)" label="Должность" :id="`position-${index}`" />
+                  <FormField :modelValue="safeValue(element.startDate)" @update:modelValue="updateExperienceField(index, 'startDate', $event)" label="Дата начала" type="month" :id="`start-${index}`" />
+                  <FormField :modelValue="safeValue(element.endDate)" @update:modelValue="updateExperienceField(index, 'endDate', $event)" label="Дата окончания" type="month" :id="`end-${index}`" />
+                  <FormField autoGrow :modelValue="safeValue(element.description)" @update:modelValue="updateExperienceField(index, 'description', $event)" label="Описание" type="textarea" :id="`desc-${index}`" class="md:col-span-2" />
                 </div>
                 <button
                   type="button"
@@ -87,27 +88,73 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch } from 'vue'
 import draggable from 'vuedraggable'
 import FormField from './FormField.vue'
 
-const props = defineProps({
-  resumeData: {
-    type: Object,
-    required: true
-  }
-})
+interface Experience {
+  id?: string;
+  company: string;
+  position: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+}
 
-const emit = defineEmits(['next-step', 'update:modelValue'])
+interface ResumeData {
+  id?: number;
+  title?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  city?: string;
+  job?: string;
+  description?: string;
+  experience?: Array<Experience>;
+  skills?: Array<string>;
+  template?: string;
+  date?: string;
+  sectionsOrder?: Array<string>;
+  [key: string]: any;
+}
 
-const experience = ref([...props.resumeData.experience ?? []])
-const skills = ref([...props.resumeData.skills ?? []])
-const description = ref([...props.resumeData.description ?? []])
+interface ResumeFormProps {
+  resumeData: ResumeData;
+}
+
+const props = defineProps<ResumeFormProps>()
+
+const emit = defineEmits<{
+  (e: 'next-step'): void;
+  (e: 'update:modelValue', value: ResumeData): void;
+}>()
+
+const experience = ref<Experience[]>([...(props.resumeData.experience || [])])
+const skills = ref<string[]>([...(props.resumeData.skills || [])])
 const newSkill = ref('')
 
+// Функция для безопасного получения значения (всегда возвращает строку)
+const safeValue = (value: any): string => {
+  return value || ''
+}
+
+// Обновление полей resumeData
+const updateField = (field: string, value: string): void => {
+  props.resumeData[field] = value
+  syncDataToPreview()
+}
+
+// Обновление полей опыта работы
+const updateExperienceField = (index: number, field: string, value: string): void => {
+  if (experience.value[index]) {
+    experience.value[index][field as keyof Experience] = value as any
+    syncDataToPreview()
+  }
+}
+
 // 📌 Обновление preview
-const syncDataToPreview = () => {
+const syncDataToPreview = (): void => {
   props.resumeData.experience = experience.value
   props.resumeData.skills = skills.value
   emit('update:modelValue', props.resumeData)
@@ -119,8 +166,9 @@ watch(experience, () => {
 }, { deep: true })
 
 // Методы
-const addExperience = () => {
+const addExperience = (): void => {
   experience.value.push({
+    id: Date.now().toString(),
     company: '',
     position: '',
     startDate: '',
@@ -129,11 +177,11 @@ const addExperience = () => {
   })
 }
 
-const removeExperience = (index) => {
+const removeExperience = (index: number): void => {
   experience.value.splice(index, 1)
 }
 
-const addSkill = () => {
+const addSkill = (): void => {
   const skill = newSkill.value.trim()
   if (skill && !skills.value.includes(skill)) {
     skills.value.push(skill)
@@ -142,12 +190,12 @@ const addSkill = () => {
   newSkill.value = ''
 }
 
-const removeSkill = (index) => {
+const removeSkill = (index: number): void => {
   skills.value.splice(index, 1)
   syncDataToPreview()
 }
 
-const handleComma = (event) => {
+const handleComma = (event: KeyboardEvent): void => {
   if (event.key === ',') {
     event.preventDefault()
     addSkill()
@@ -155,13 +203,12 @@ const handleComma = (event) => {
 }
 
 // 🚀 Далее
-const convertDataAndNext = () => {
+const convertDataAndNext = (): void => {
   syncDataToPreview()
   props.resumeData.date = new Date().toISOString().slice(0, 10)
   emit('next-step')
 }
 </script>
-
 
 <style scoped>
 .btn {
