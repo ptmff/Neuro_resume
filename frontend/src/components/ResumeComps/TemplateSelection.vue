@@ -1,39 +1,3 @@
-<script setup>
-const props = defineProps({
-  templates: {
-    type: Array,
-    required: true,
-  },
-  selectedTemplate: {
-    type: Number,
-    required: true,
-  },
-  resumeData: {
-    type: Object,
-    required: true,
-  }
-})
-
-const emit = defineEmits([
-  'select-template',
-  'next-step',
-  'prev-step',
-  'update:modelValue'
-])
-
-const select = (index) => {
-  emit('select-template', index)
-
-  const updatedResume = {
-    ...props.resumeData,
-    template: props.templates[index].name.toLowerCase()
-  }
-
-  // Обновляем только локально (в родителе и предпросмотре)
-  emit('update:modelValue', updatedResume)
-}
-</script>
-
 <template>
   <div class="bg-[var(--background-section)] bg-opacity-30 backdrop-blur-xl p-8 rounded-3xl border border-[var(--background-pale)]">
     <h2 class="text-4xl font-bold bg-gradient-to-r from-[var(--text-secondary)] to-[var(--text-light)] bg-clip-text text-transparent mb-8">
@@ -72,6 +36,66 @@ const select = (index) => {
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+interface Template {
+  name: string;
+  image: string;
+}
+
+interface Experience {
+  id?: string;
+  company: string;
+  position: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+}
+
+interface ResumeData {
+  id?: number;
+  title?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  city?: string;
+  job?: string;
+  description?: string;
+  experience?: Array<Experience>;
+  skills?: Array<string>;
+  template?: string;
+  date?: string;
+  sectionsOrder?: Array<string>;
+  [key: string]: any;
+}
+
+interface TemplateSelectionProps {
+  templates: Template[];
+  selectedTemplate: number;
+  resumeData: ResumeData;
+}
+
+const props = defineProps<TemplateSelectionProps>()
+
+const emit = defineEmits<{
+  (e: 'select-template', index: number): void;
+  (e: 'next-step'): void;
+  (e: 'prev-step'): void;
+  (e: 'update:modelValue', value: ResumeData): void;
+}>()
+
+const select = (index: number): void => {
+  emit('select-template', index)
+
+  const updatedResume: ResumeData = {
+    ...props.resumeData,
+    template: props.templates[index].name.toLowerCase()
+  }
+
+  // Обновляем только локально (в родителе и предпросмотре)
+  emit('update:modelValue', updatedResume)
+}
+</script>
 
 <style scoped>
 .template-card {
