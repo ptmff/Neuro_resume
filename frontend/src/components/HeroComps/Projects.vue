@@ -4,7 +4,7 @@
     <div class="grid gap-12 masonry-grid">
       <template v-for="(project, index) in projects" :key="index">
         <div
-          :ref="el => (projectRefs[index] = el)"
+          :ref="el => (projectRefs[index] = el as HTMLElement)"
           class="project-card group hover:scale-105 hover:shadow-3xl"
           :class="getSizeClass(index)"
           :style="{ background: project.bgColor }"
@@ -24,14 +24,21 @@
   </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const projects = [
+interface Project {
+  icon: string;
+  title: string;
+  description: string;
+  bgColor: string;
+}
+
+const projects: Project[] = [
   {
     icon: 'fas fa-user',
     title: 'Заполни данные',
@@ -58,8 +65,8 @@ const projects = [
   },
 ]
 
-const windowWidth = ref(window.innerWidth)
-const projectRefs = ref([])
+const windowWidth = ref<number>(window.innerWidth)
+const projectRefs = ref<HTMLElement[]>([])
 
 const updateWindowWidth = () => {
   windowWidth.value = window.innerWidth
@@ -69,6 +76,7 @@ onMounted(() => {
   window.addEventListener('resize', updateWindowWidth)
 
   projectRefs.value.forEach((element, index) => {
+    if (!element) return
     const xStart = index % 2 === 0 ? -50 : 50
     gsap.fromTo(
       element,
@@ -94,7 +102,7 @@ onUnmounted(() => {
   ScrollTrigger.getAll().forEach(trigger => trigger.kill())
 })
 
-const getSizeClass = computed(() => index => {
+const getSizeClass = computed(() => (index: number) => {
   if (windowWidth.value < 951) return 'w-full h-[350px]'
 
   const isOddRow = Math.floor(index / 2) % 2 === 0
