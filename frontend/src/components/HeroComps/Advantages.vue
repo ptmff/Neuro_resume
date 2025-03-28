@@ -30,10 +30,16 @@
   </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { Sparkles, Settings, FileText, ShieldCheck } from 'lucide-vue-next'
 
-const benefits = [
+interface Benefit {
+  icon: typeof Sparkles;
+  title: string;
+  desc: string;
+}
+
+const benefits: Benefit[] = [
   {
     icon: Sparkles,
     title: 'Искусственный интеллект',
@@ -49,6 +55,10 @@ const benefits = [
     title: 'Безопасность данных',
     desc: 'Никаких утечек. Только ты и твоё резюме.',
   },
-  { icon: Settings, title: 'Гибкость', desc: 'Ты управляешь всем — от стиля до содержания.' },
+  {
+    icon: Settings,
+    title: 'Гибкость',
+    desc: 'Ты управляешь всем — от стиля до содержания.',
+  },
 ]
 </script>
