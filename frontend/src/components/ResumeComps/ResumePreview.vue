@@ -75,16 +75,67 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import { useProfileStore } from '@/stores/profileStore'
 
-const props = defineProps({
-  resumeData: Object
-})
+// Определяем интерфейсы прямо в компоненте, соответствующие фактической структуре данных
+interface StoreEducation {
+  institution: string;
+  degree: string;
+  field: string;
+  startYear: number;
+  endYear: number;
+}
+
+interface Experience {
+  id?: string;
+  company: string;
+  position: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+}
+
+interface ResumeData {
+  id?: number;
+  title?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  city?: string;
+  job?: string;
+  description?: string;
+  experience?: Experience[];
+  skills?: string[];
+  template?: string;
+  date?: string;
+  sectionsOrder?: string[];
+  [key: string]: any;
+}
+
+// Обновленный интерфейс Profile, соответствующий фактической структуре данных из хранилища
+interface StoreProfile {
+  email: string;
+  name?: string;
+  phone?: string;
+  city?: string;
+  photo?: string;
+  education?: StoreEducation[];
+  mainResumeId?: number | null;
+  resumes?: number[];
+  profession?: string;
+}
+
+interface ResumePreviewProps {
+  resumeData: ResumeData;
+}
+
+const props = defineProps<ResumePreviewProps>()
 
 const profileStore = useProfileStore()
-const profile = computed(() => profileStore.profile)
+// Используем тип StoreProfile для соответствия фактической структуре данных
+const profile = computed<StoreProfile | null>(() => profileStore.profile)
 </script>
 
 <style scoped>
