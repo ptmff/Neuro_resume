@@ -54,20 +54,21 @@
   </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import gsap from 'gsap'
 import footage from '@/assets/video/footage1.mp4'
 
-const videoRef = ref(null)
-const contentRef = ref(null)
-const titleRef = ref(null)
-const subtitleRef = ref(null)
-const buttonRef = ref(null)
-const buttonTextRef = ref(null)
+const videoRef = ref<HTMLVideoElement | null>(null)
+const contentRef = ref<HTMLElement | null>(null)
+const titleRef = ref<HTMLElement | null>(null)
+const subtitleRef = ref<HTMLElement | null>(null)
+const buttonRef = ref<HTMLButtonElement | null>(null)
+const buttonTextRef = ref<HTMLElement | null>(null)
 
 onMounted(() => {
   const video = videoRef.value
+  if (!video) return
 
   const handleTimeUpdate = () => {
     if (video.currentTime >= video.duration - 0.5) {
