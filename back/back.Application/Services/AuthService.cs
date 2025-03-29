@@ -26,20 +26,17 @@ public class AuthService : IAuthService
 
     public async Task<Result<UserDto>> RegisterUserAsync(UserRegisterDto request)
     {
-        // Проверяем, что передан хотя бы email или phone
         if (string.IsNullOrWhiteSpace(request.Email) && string.IsNullOrWhiteSpace(request.Phone))
         {
             return Result<UserDto>.Failure("Необходимо указать Email или Phone");
         }
 
-        // Если передан email, проверяем его уникальность
         if (!string.IsNullOrWhiteSpace(request.Email) &&
             await _context.Users.AnyAsync(u => u.Email == request.Email))
         {
             return Result<UserDto>.Failure("Пользователь с таким email уже существует");
         }
 
-        // Если передан телефон, проверяем его уникальность
         if (!string.IsNullOrWhiteSpace(request.Phone) &&
             await _context.Users.AnyAsync(u => u.Phone == request.Phone))
         {
@@ -48,7 +45,6 @@ public class AuthService : IAuthService
 
         _passwordService.CreatePasswordHash(request.Password, out byte[] hash, out byte[] salt);
 
-        // Создаём доменную модель User
         var user = new User
         {
             Email = request.Email,
