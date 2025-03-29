@@ -23,7 +23,7 @@ public class UserDto
 public class UserRegisterDto
 {
     public string? Email { get; set; }
-    public string? Phone { get; set; }  // новый параметр для регистрации по номеру
+    public string? Phone { get; set; } 
     public string Password { get; set; }
     public string? Name { get; set; }
     public string? City { get; set; }
@@ -32,6 +32,6 @@ public class UserRegisterDto
 public class UserLoginDto
 {
     public string? Email { get; set; }
-    public string? Phone { get; set; }  // новый параметр для логина по номеру
+    public string? Phone { get; set; }  
     public string Password { get; set; }
 }
