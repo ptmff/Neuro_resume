@@ -13,7 +13,6 @@ public class User
     public int? MainResumeId { get; set; } 
     public string? Photo { get; set; }  
 
-    // Связь с резюме
     public List<Resume> Resumes { get; set; } = new List<Resume>();
 }
 
