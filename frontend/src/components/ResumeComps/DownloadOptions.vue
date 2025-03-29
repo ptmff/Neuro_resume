@@ -7,7 +7,7 @@
     <div class="download-options p-6 rounded-2xl bg-gradient-to-br from-[var(--neon-purple)]/10 to-[var(--neon-blue)]/10">
       <h3 class="text-2xl font-semibold text-[var(--text-light)] mb-4">Выберите формат для скачивания:</h3>
       <div class="flex space-x-4 mb-8">
-        <button @click="$emit('download-resume', 'pdf')" class="btn btn-primary flex-1">
+        <button @click="generatePDF" class="btn btn-primary flex-1">
           <i class="fas fa-file-pdf mr-2"></i>
           <span>Скачать PDF</span>
         </button>
@@ -48,6 +48,14 @@ import { useResumeStore } from '@/stores/resumesStore'
 import { useProfileStore } from '@/stores/profileStore'
 import FormField from './FormField.vue'
 import { computed } from 'vue'
+import html2pdf from 'html2pdf.js'
+
+//const resumeContent = ref(null)
+const generatePDF = () => {
+  alert('Кнопка нажата!')
+  const element = document.getElementById('resume-content')
+  html2pdf().from(element).save('myDocument.pdf')
+}
 
 // Define the Resume interface based on your actual store structure
 interface Resume {

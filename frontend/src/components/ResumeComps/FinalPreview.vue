@@ -3,7 +3,8 @@
     <h2 class="text-4xl font-bold bg-gradient-to-r from-[var(--text-secondary)] to-[var(--text-light)] bg-clip-text text-transparent mb-8">
       Ваше резюме выглядит так
     </h2>
-    <div class="w-[210mm] min-h-[297mm] p-[20mm] mx-auto bg-white shadow-lg relative overflow-hidden" ref="resumeContent">
+    
+    <div class="w-[210mm] min-h-[297mm] p-[20mm] mx-auto bg-white shadow-lg relative overflow-hidden" ref="resumeContent" id="resume-content">
       <!-- Шапка резюме (всегда фиксирована вверху) -->
       <div class="mb-4">
         <h1 class="text-3xl font-bold text-gray-800 m-0 mb-1">{{ resumeData.name || profile?.name || 'Имя Фамилия' }}</h1>
@@ -35,7 +36,7 @@
                :class="{ 
                  'dragging': draggedIndex === index, 
                  'drag-over': dragOverIndex === index && draggedIndex !== index,
-                 'drag-after': dragOverIndex === index - 1 && draggedIndex !== index - 1 && draggedIndex > index
+                 'drag-after': dragOverIndex === index - 1 && draggedIndex !== index - 1 && draggedIndex !== null && draggedIndex > index
                }">
             <!-- Кнопка для перетаскивания -->
             <div class="drag-handle absolute -left-8 top-1 opacity-0 group-hover:opacity-100 cursor-move text-gray-400 hover:text-gray-600 transition-opacity"
@@ -64,7 +65,7 @@
             <!-- Секция "Образование" -->
             <div v-if="section.id === 'education'" class="mb-5" v-show="profile?.education?.length">
               <h2 class="text-lg font-semibold text-[var(--neon-purple)] m-0 mb-4 pb-1 border-b border-gray-200">Образование</h2>
-              <div class="mb-2.5" v-for="(edu, i) in profile.education" :key="i">
+              <div class="mb-2.5" v-for="(edu, i) in profile?.education || []" :key="i">
                 <h3 class="text-base font-semibold text-gray-800 m-0">{{ edu.institution }}</h3>
                 <p class="text-sm text-gray-600 mt-0.5 m-0">{{ edu.degree }} ({{ edu.startYear }}–{{ edu.endYear }})</p>
               </div>
@@ -86,12 +87,14 @@
           </div>
         </template>
       </div>
-      
     </div>
     
     <!-- Инструкции по перетаскиванию -->
     <div class="mt-4 text-center text-sm text-[var(--text-light)] opacity-80">
       <p>Наведите на секцию и перетащите <i class="fas fa-grip-vertical mx-1"></i> чтобы изменить порядок разделов</p>
+      <button @click="generatePDF" class="btn-download">
+        <i class="fas fa-file-pdf mr-2"></i> Скачать PDF
+      </button>
     </div>
     
     <div class="flex justify-between mt-8">
@@ -101,39 +104,105 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useProfileStore } from '@/stores/profileStore'
 import { useResumeStore } from '@/stores/resumesStore'
+import html2pdf from 'html2pdf.js'
 
-const props = defineProps({
-  resumeData: {
-    type: Object,
-    required: true
-  }
-})
 
-const emit = defineEmits(['next-step', 'prev-step'])
+interface Section {
+  id: string;
+  title: string;
+}
+
+interface StoreEducation {
+  institution: string;
+  degree: string;
+  field: string;
+  startYear: number;
+  endYear: number;
+}
+
+interface Experience {
+  id?: string;
+  company: string;
+  position: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+}
+
+interface ResumeData {
+  id?: number;
+  title?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  city?: string;
+  job?: string;
+  description?: string;
+  experience?: Experience[];
+  skills?: string[];
+  template?: string;
+  date?: string;
+  sectionsOrder?: string[];
+  [key: string]: any;
+}
+
+interface StoreProfile {
+  email: string;
+  name?: string;
+  phone?: string;
+  city?: string;
+  photo?: string;
+  education?: StoreEducation[];
+  mainResumeId?: number | null;
+  resumes?: number[];
+  profession?: string;
+}
+
+interface ResumePreviewProps {
+  resumeData: ResumeData;
+}
+
+const props = defineProps<ResumePreviewProps>()
+const emit = defineEmits<{
+  (e: 'next-step'): void;
+  (e: 'prev-step'): void;
+}>()
 
 const profileStore = useProfileStore()
 const resumeStore = useResumeStore()
-const profile = computed(() => profileStore.profile)
-const resumeContent = ref(null)
+const profile = computed<StoreProfile | null>(() => profileStore.profile)
+const resumeContent = ref<HTMLElement | null>(null)
 
-// Определение секций с возможностью перемещения
-const sections = ref([
+const sections = ref<Section[]>([
   { id: 'about', title: 'Обо мне' },
   { id: 'experience', title: 'Опыт работы' },
   { id: 'education', title: 'Образование' },
   { id: 'skills', title: 'Профессиональные навыки' }
 ])
 
-// Загрузка сохраненного порядка секций при монтировании
+const draggedIndex = ref<number | null>(null)
+const dragOverIndex = ref<number | null>(null)
+const isDragging = ref(false)
+const dragStartY = ref(0)
+const dragCurrentY = ref(0)
+
+const generatePDF = (): void => {
+  alert('Кнопка нажата!')
+  const element = document.getElementById('resume-content')
+  if (element) {
+    html2pdf().from(element).save('myDocument.pdf')
+  }
+}
+
 onMounted(() => {
   const savedOrder = props.resumeData.sectionsOrder
-  if (savedOrder && Array.isArray(savedOrder) && savedOrder.length === sections.value.length) {
-    // Создаем новый массив секций в сохраненном порядке
-    const orderedSections = []
+  if (savedOrder && Array.isArray(savedOrder)) {
+    const orderedSections: Section[] = []
+    
     savedOrder.forEach(id => {
       const section = sections.value.find(s => s.id === id)
       if (section) {
@@ -141,33 +210,26 @@ onMounted(() => {
       }
     })
     
-    // Проверяем, что все секции были найдены
-    if (orderedSections.length === sections.value.length) {
-      sections.value = orderedSections
-    }
+    // Добавляем отсутствующие секции (если есть)
+    sections.value.forEach(section => {
+      if (!orderedSections.some(s => s.id === section.id)) {
+        orderedSections.push(section)
+      }
+    })
+    
+    sections.value = orderedSections
   }
   
-  // Добавляем обработчики для перетаскивания
   document.addEventListener('mousemove', handleDrag)
   document.addEventListener('mouseup', endDrag)
 })
 
 onBeforeUnmount(() => {
-  // Удаляем обработчики при размонтировании компонента
   document.removeEventListener('mousemove', handleDrag)
   document.removeEventListener('mouseup', endDrag)
 })
 
-// Переменные для отслеживания перетаскивания
-const draggedIndex = ref(null)
-const dragOverIndex = ref(null)
-const isDragging = ref(false)
-const dragStartY = ref(0)
-const dragCurrentY = ref(0)
-
-// Начало перетаскивания
-const startDrag = (event, index) => {
-  // Предотвращаем выделение текста
+const startDrag = (event: MouseEvent, index: number): void => {
   event.preventDefault()
   
   draggedIndex.value = index
@@ -175,27 +237,23 @@ const startDrag = (event, index) => {
   dragStartY.value = event.clientY
   dragCurrentY.value = event.clientY
   
-  // Добавляем класс к перетаскиваемому элементу
   document.body.classList.add('dragging-cursor')
 }
 
-// Процесс перетаскивания
-const handleDrag = (e) => {
-  if (!isDragging.value) return
+const handleDrag = (e: MouseEvent): void => {
+  if (!isDragging.value || draggedIndex.value === null) return
   
   e.preventDefault()
   dragCurrentY.value = e.clientY
   
   const sectionElements = document.querySelectorAll('.resume-section')
   
-  // Находим элемент, над которым находится курсор
-  let targetIndex = null
+  let targetIndex: number | null = null
   sectionElements.forEach((el, index) => {
     const rect = el.getBoundingClientRect()
     const middleY = rect.top + rect.height / 2
     
     if (e.clientY >= rect.top && e.clientY <= rect.bottom) {
-      // Определяем, находится ли курсор в верхней или нижней половине элемента
       if (e.clientY < middleY) {
         targetIndex = index
       } else {
@@ -209,41 +267,30 @@ const handleDrag = (e) => {
   }
 }
 
-// Завершение перетаскивания
-const endDrag = () => {
-  if (!isDragging.value) return
+const endDrag = (): void => {
+  if (!isDragging.value || draggedIndex.value === null) return
   
-  // Если есть целевой индекс, перемещаем элемент
   if (dragOverIndex.value !== null && dragOverIndex.value !== draggedIndex.value) {
     const newSections = [...sections.value]
     const [movedItem] = newSections.splice(draggedIndex.value, 1)
     newSections.splice(dragOverIndex.value, 0, movedItem)
     sections.value = newSections
     
-    // Сохраняем новый порядок
-    saveSectionsOrder()
+
   }
   
-  // Сбрасываем состояние
   isDragging.value = false
   draggedIndex.value = null
   dragOverIndex.value = null
   document.body.classList.remove('dragging-cursor')
 }
 
-// Сохранение порядка секций
-const saveSectionsOrder = () => {
-  const order = sections.value.map(section => section.id)
-  const updatedResumeData = { ...props.resumeData, sectionsOrder: order }
-  resumeStore.setResumeForEdit(updatedResumeData)
-}
 
-// Обработчики для кнопок навигации
-const handleNextStep = () => {
+const handleNextStep = (): void => {
   emit('next-step')
 }
 
-const handlePrevStep = () => {
+const handlePrevStep = (): void => {
   emit('prev-step')
 }
 </script>
@@ -259,17 +306,14 @@ const handlePrevStep = () => {
   @apply bg-[var(--background-section)] bg-opacity-50 text-[var(--text-light)];
 }
 
-/* Стили для перетаскивания */
 .drag-handle {
   @apply w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-200;
 }
 
-/* Отключение выделения текста при перетаскивании */
 .dragging-active {
   user-select: none;
 }
 
-/* Стили для курсора при перетаскивании */
 :global(.dragging-cursor) {
   cursor: grabbing !important;
 }
@@ -282,7 +326,6 @@ const handlePrevStep = () => {
   margin: 0;
 }
 
-/* Стиль для перетаскиваемого элемента */
 .resume-section.dragging {
   opacity: 0.85;
   transform: scale(0.98) translateY(4px);
@@ -292,7 +335,6 @@ const handlePrevStep = () => {
   border: 1px dashed rgba(var(--neon-purple-rgb, 156, 39, 176), 0.3);
 }
 
-/* Стиль для элемента, над которым находится перетаскиваемый элемент */
 .resume-section.drag-over {
   margin-top: 20px;
   position: relative;
