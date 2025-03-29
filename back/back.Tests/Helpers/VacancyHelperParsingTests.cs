@@ -10,19 +10,16 @@ namespace back.Tests.Helpers
 {
     public class VacancyHelperParsingTests
     {
-        // Вспомогательный метод для создания мокированного HttpClient
         private HttpClient CreateMockHttpClient(string normalizedUrl, string fakeHtml)
         {
             var mockHttp = new MockHttpMessageHandler();
             mockHttp.When(normalizedUrl)
                 .Respond("text/html", fakeHtml);
             var httpClient = mockHttp.ToHttpClient();
-            // Не устанавливаем User-Agent здесь, так как он задается в методе ParseVacancyAsync
             return httpClient;
         }
 
 
-        // Вспомогательный метод для построения HTML с различными полями
         private string BuildHtml(
             string title = null,
             string salary = null,
