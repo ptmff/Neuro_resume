@@ -26,7 +26,6 @@ public class TokenService : ITokenService
 
     public string CreateToken(User user)
     {
-        // Если email не указан, используем номер телефона
         var identifier = !string.IsNullOrWhiteSpace(user.Email) ? user.Email : user.Phone;
         if (string.IsNullOrWhiteSpace(identifier))
             throw new ArgumentException("Пользователь должен иметь email или номер телефона для создания токена");
