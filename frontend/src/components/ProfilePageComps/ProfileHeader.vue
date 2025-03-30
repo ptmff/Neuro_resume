@@ -3,6 +3,12 @@ import { ref, computed } from 'vue'
 import { useProfileStore } from '@/stores/profileStore'
 import { useResumeStore } from '@/stores/resumesStore'
 import { useAppStore } from '@/stores/appStore'
+import AvatarPicker from '@/components/ProfilePageComps/AvatarPicker.vue'
+
+const showAvatarPicker = ref(false)
+const openAvatarPicker = () => {
+  showAvatarPicker.value = true
+}
 
 const appStore = useAppStore()
 const isAppReady = computed(() => appStore.isAppReady)
@@ -33,11 +39,9 @@ const startEdit = () => {
   }
 }
 
-const handlePhotoSelect = async (event: Event) => {
-  const file = (event.target as HTMLInputElement).files?.[0]
-  if (file) {
-    await profileStore.uploadPhoto(file)
-  }
+const closeAvatarPicker = async () => {
+  showAvatarPicker.value = false
+  await profileStore.fetchProfile()
 }
 
 const saveProfile = async () => {
@@ -81,47 +85,29 @@ const mainResume = computed(() => {
   >
 <!-- Аватар -->
 <div
-  class="relative group w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden border-2 border-[var(--profile-avatar-border)] shadow-md"
+  class="relative group w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden border-2 border-[var(--profile-avatar-border)] cursor-pointer"
+  @click="openAvatarPicker"
 >
-  <!-- Само изображение -->
   <img
     :src="isEditing ? editedPhoto : profile.photo || '/placeholder.png'"
     alt="Avatar"
     class="w-full h-full object-cover"
   />
-
-  <!-- Эффект подсветки -->
   <div
-    class="absolute inset-0 rounded-full bg-[var(--background-cta)] opacity-20 blur-2xl animate-pulse"
-  />
-
-  <!-- Кнопка выбора файла -->
-  <label
-    v-if="isEditing"
-    class="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      class="h-8 w-8 text-white"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      stroke-width="2"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M5 16l7-7 7 7M5 10l7 7 7-7"
-      />
-    </svg>
-    <input
-      type="file"
-      accept="image/*"
-      class="hidden"
-      @change="handlePhotoSelect"
-    />
-  </label>
+  class="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity"
+>
+  <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16V4H4zm4 4l4 4m0 0l4-4m-4 4v8" />
+  </svg>
 </div>
+
+</div>
+
+<!-- Модалка -->
+<Teleport to="body">
+  <AvatarPicker v-if="showAvatarPicker" @close="closeAvatarPicker" />
+</Teleport>
+
 
     <!-- Информация -->
     <div class="text-center md:text-left w-full max-w-xl">

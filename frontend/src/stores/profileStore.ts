@@ -29,7 +29,7 @@ export const useProfileStore = defineStore('profile', () => {
     try {
       loading.value = true
       const res = await api.get('/Profile')
-      profile.value = res.data
+      profile.value = { ...res.data }
     } catch (err: any) {
       error.value = err.response?.data || 'Ошибка загрузки профиля'
     } finally {
