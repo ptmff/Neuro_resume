@@ -29,7 +29,7 @@ export const useProfileStore = defineStore('profile', () => {
     try {
       loading.value = true
       const res = await api.get('/Profile')
-      profile.value = { ...res.data }
+      profile.value = res.data
     } catch (err: any) {
       error.value = err.response?.data || 'Ошибка загрузки профиля'
     } finally {
@@ -50,20 +50,23 @@ export const useProfileStore = defineStore('profile', () => {
     try {
       const formData = new FormData()
       formData.append('file', file)
-
+  
       const res = await api.post('/Profile/photo', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       })
-
-      if (profile.value && res.data?.photo) {
-        profile.value.photo = res.data.photo
+  
+      if (profile.value && res.data?.photoUrl) {
+        profile.value = {
+          ...profile.value,
+          photo: res.data.photoUrl,
+        }
       }
     } catch (err: any) {
       error.value = err.response?.data || 'Ошибка загрузки фото'
     }
-  }
+  }  
 
   const deleteProfile = async () => {
     try {

@@ -39,16 +39,24 @@ const uploadCustomAvatar = async (event: Event) => {
 }
 
 const saveAvatar = async () => {
-  if (selected.value !== current.value) {
-    await profileStore.updateProfile({ photo: selected.value })
+  if (!selected.value) return
+
+  // Если выбран один из пресетов
+  if (selected.value.startsWith('/avatars/')) {
+    const response = await fetch(selected.value)
+    const blob = await response.blob()
+    const file = new File([blob], 'avatar.png', { type: blob.type })
+
+    await profileStore.uploadPhoto(file)
   }
 
-  // Закрыть окно до начала загрузки
+  // Закрыть окно до загрузки
   emit('close')
 
-  // Затем обновить профиль
+  // Обновить профиль
   await profileStore.fetchProfile()
 }
+
 
 </script>
 
