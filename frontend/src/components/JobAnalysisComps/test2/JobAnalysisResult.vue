@@ -26,72 +26,72 @@
   import TimelineMatch from './JobAnalysisResult/TimelineMatch.vue'
   
   const appStore = useAppStore()
-  const result = computed(() => appStore.analysisResult)
+  // const result = computed(() => appStore.analysisResult)
   
-  const mappedInsights = computed(() =>
-    result.value?.insights.map(i => ({
-      title: 'Совет от AI',
-      description: i.text
-    })) ?? []
-  )
+  // const mappedInsights = computed(() =>
+  //   result.value?.insights.map(i => ({
+  //     title: 'Совет от AI',
+  //     description: i.text
+  //   })) ?? []
+  // )
   
-  interface SkillItem {
-    label: string;
-    x: number;
-    y: number;
-  }
+  // interface SkillItem {
+  //   label: string;
+  //   x: number;
+  //   y: number;
+  // }
   
-  const mappedSkills = computed<SkillItem[]>(() => {
-    const output: SkillItem[] = []
-    const offsetX = 100
-    const offsetY = 60
+  // const mappedSkills = computed<SkillItem[]>(() => {
+  //   const output: SkillItem[] = []
+  //   const offsetX = 100
+  //   const offsetY = 60
   
-    result.value?.skills.matched.forEach((s, i) => {
-      output.push({ label: s, x: 100 + i * offsetX, y: 200 })
-    })
-    result.value?.skills.missing.forEach((s, i) => {
-      output.push({ label: s, x: 100 + i * offsetX, y: 300 })
-    })
-    result.value?.skills.similar.forEach((s, i) => {
-      output.push({ label: s, x: 100 + i * offsetX, y: 400 })
-    })
+  //   result.value?.skills.matched.forEach((s, i) => {
+  //     output.push({ label: s, x: 100 + i * offsetX, y: 200 })
+  //   })
+  //   result.value?.skills.missing.forEach((s, i) => {
+  //     output.push({ label: s, x: 100 + i * offsetX, y: 300 })
+  //   })
+  //   result.value?.skills.similar.forEach((s, i) => {
+  //     output.push({ label: s, x: 100 + i * offsetX, y: 400 })
+  //   })
   
-    return output
-  })
+  //   return output
+  // })
   
-  interface TimelineItem {
-    company: string;
-    position: string;
-    startDate: string;
-    endDate?: string;
-    description: string;
-  }
+  // interface TimelineItem {
+  //   company: string;
+  //   position: string;
+  //   startDate: string;
+  //   endDate?: string;
+  //   description: string;
+  // }
   
-  const mappedTimeline = computed<TimelineItem[]>(() => {
-    const resultList: TimelineItem[] = []
+  // const mappedTimeline = computed<TimelineItem[]>(() => {
+  //   const resultList: TimelineItem[] = []
   
-    result.value?.timeline.matched.forEach((range) => {
-      resultList.push({
-        company: 'AI Match',
-        position: 'Найдено совпадение',
-        startDate: range.split('–')[0],
-        endDate: range.split('–')[1],
-        description: 'Опыт совпадает с вакансией'
-      })
-    })
+  //   result.value?.timeline.matched.forEach((range) => {
+  //     resultList.push({
+  //       company: 'AI Match',
+  //       position: 'Найдено совпадение',
+  //       startDate: range.split('–')[0],
+  //       endDate: range.split('–')[1],
+  //       description: 'Опыт совпадает с вакансией'
+  //     })
+  //   })
   
-    result.value?.timeline.gap.forEach((gap) => {
-      resultList.push({
-        company: 'AI Gap',
-        position: 'Пробел в опыте',
-        startDate: gap,
-        endDate: '',
-        description: 'Нет данных за этот период'
-      })
-    })
+  //   result.value?.timeline.gap.forEach((gap) => {
+  //     resultList.push({
+  //       company: 'AI Gap',
+  //       position: 'Пробел в опыте',
+  //       startDate: gap,
+  //       endDate: '',
+  //       description: 'Нет данных за этот период'
+  //     })
+  //   })
   
-    return resultList
-  })
+  //   return resultList
+  // })
   </script>
   
   <style scoped>

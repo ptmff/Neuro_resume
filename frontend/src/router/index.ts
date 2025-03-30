@@ -11,6 +11,7 @@ import Register from '@/pages/Register.vue'
 
 import { useAuthStore } from '@/stores/authStore'
 import { useAppStore } from '@/stores/appStore'
+import TestJobAnalysisJourney from '@/pages/TestJobAnalysisJourney.vue'
 
 const routes: Array<RouteRecordRaw> = [
   { path: '/', component: HomePage, meta: { requiresAuth: true } },
@@ -19,6 +20,7 @@ const routes: Array<RouteRecordRaw> = [
   { path: '/analyse', component: JobAnalysis, meta: { requiresAuth: true } },
   { path: '/test', component: TestJobAnalysis },
   { path: '/test2', component: JobAnalysisJourney },
+  { path: '/test3', component: TestJobAnalysisJourney },
   { path: '/login', component: Login },
   { path: '/register', component: Register }
 ]

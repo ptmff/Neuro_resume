@@ -46,6 +46,7 @@
   /* 🌠 Градиенты (неоновые эффекты) */
   --gradient-primary: linear-gradient(135deg, #9d00ff, #00e5ff); /* Фиолетово-бирюзовый */
   --gradient-card: linear-gradient(135deg, rgba(157, 0, 255, 0.2), rgba(0, 229, 255, 0.2));
+  --gradient-danger: linear-gradient(135deg, #ca1b18, #FF7A00);
 
   /* 💡 Дополнительные */
   --neon-blue: #00e5ff; /* Неоновый бирюзовый */
@@ -60,6 +61,7 @@
   --progressbar-shadow-hover: rgba(0, 255, 255, 1);
 
   --resume-red: #ef5350;
+  --resume-red-opac: #ef5350a2;
   --resume-red-hover: #ef9a9a;
 }
 
@@ -83,4 +85,43 @@ body {
     rgba(14, 14, 44, 1) 75%,
     rgb(27, 4, 78) 100%
   );
+}
+
+.particle-blast {
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(circle, var(--neon-blue), transparent);
+  border-radius: 9999px;
+  animation: particle-blast 1s ease-out forwards;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+@keyframes particle-blast {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(3);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
