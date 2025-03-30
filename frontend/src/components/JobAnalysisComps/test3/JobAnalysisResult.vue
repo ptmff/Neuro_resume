@@ -92,7 +92,9 @@ onMounted(() => {
       data-aos="fade-down" data-aos-delay="550"
     >
       <button class="btn-glow" @click="$emit('edit')">Улучшить резюме</button>
-      <button class="btn-glow-outline" @click="$emit('restart')">Проанализировать снова</button>
+      <button class="btn-glow-outline" @click="$emit('restart')">
+        Новая вакансия
+      </button>
     </div>
   </div>
 </template>

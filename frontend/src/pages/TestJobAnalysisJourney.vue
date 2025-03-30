@@ -10,6 +10,7 @@ const analysisStore = useAnalysisStore()
 const jobUrl = ref('')
 const analysisStarted = ref(false)
 const showResult = ref(false)
+const resetKey = ref(0) // 💡 Уникальный ключ при сбросе
 
 const isComplete = computed(() =>
   analysisStarted.value &&
@@ -28,6 +29,14 @@ const onPhasesLeave = () => {
     showResult.value = true
   }, 150)
 }
+
+const restart = () => {
+  analysisStore.clear()
+  jobUrl.value = ''
+  analysisStarted.value = false
+  showResult.value = false
+  resetKey.value++ // 🔁 форс перерисовку всех компонентов
+}
 </script>
 
 <template>
@@ -36,26 +45,28 @@ const onPhasesLeave = () => {
 
       <!-- Ввод ссылки -->
       <transition name="fade">
-        <JobInputPanel v-if="!jobUrl" @start="start" />
+        <JobInputPanel
+          v-if="!jobUrl"
+          :key="'input-' + resetKey"
+          @start="start"
+        />
       </transition>
 
       <!-- Прогрузка фаз -->
       <transition name="slide-fade" mode="out-in" @after-leave="onPhasesLeave">
-        <LoadingPhases v-if="jobUrl && !isComplete" key="phases" />
+        <LoadingPhases
+          v-if="jobUrl && !isComplete"
+          :key="'phases-' + resetKey"
+        />
       </transition>
 
       <!-- Результат -->
       <transition name="fade-up">
         <JobAnalysisResult
           v-if="isComplete && showResult"
-          key="result"
+          :key="'result-' + resetKey"
           @edit="() => console.log('Улучшить резюме')"
-          @restart="() => {
-            analysisStore.clear()
-            jobUrl.value = ''
-            analysisStarted.value = false
-            showResult.value = false
-          }"
+          @restart="restart"
         />
       </transition>
 
