@@ -9,6 +9,7 @@ import JobAnalysisResult from '@/components/JobAnalysisComps/test3/JobAnalysisRe
 const analysisStore = useAnalysisStore()
 const jobUrl = ref('')
 const analysisStarted = ref(false)
+const showResult = ref(false)
 
 const isComplete = computed(() =>
   analysisStarted.value &&
@@ -21,11 +22,17 @@ const start = async (url: string) => {
   await analysisStore.startJobAnalysis(url)
   analysisStarted.value = true
 }
+
+const onPhasesLeave = () => {
+  setTimeout(() => {
+    showResult.value = true
+  }, 150)
+}
 </script>
 
 <template>
   <div class="w-full min-h-screen text-white px-4 py-12 overflow-hidden">
-    <div class="max-w-3xl w-full mx-auto flex items-center justify-center min-h-[calc(100vh-96px)] fade-in">
+    <div class="max-w-3xl w-full mx-auto flex items-center justify-center min-h-[calc(100vh-96px)]">
 
       <!-- Ввод ссылки -->
       <transition name="fade">
@@ -33,27 +40,31 @@ const start = async (url: string) => {
       </transition>
 
       <!-- Прогрузка фаз -->
-      <transition name="fade" mode="out-in">
+      <transition name="slide-fade" mode="out-in" @after-leave="onPhasesLeave">
         <LoadingPhases v-if="jobUrl && !isComplete" key="phases" />
       </transition>
 
       <!-- Результат -->
+      <transition name="fade-up">
         <JobAnalysisResult
-          v-if="isComplete"
+          v-if="isComplete && showResult"
           key="result"
           @edit="() => console.log('Улучшить резюме')"
           @restart="() => {
             analysisStore.clear()
-            jobUrl = ''
+            jobUrl.value = ''
             analysisStarted.value = false
+            showResult.value = false
           }"
         />
+      </transition>
 
     </div>
   </div>
 </template>
 
 <style scoped>
+/* Ввод: плавное появление */
 .fade-enter-active, .fade-leave-active {
   transition: all 0.6s ease;
 }
@@ -62,18 +73,21 @@ const start = async (url: string) => {
   transform: translateY(20px);
 }
 
-.fade-in {
-  animation: fadeInUp 0.7s ease both;
+/* Фазы: уходит вниз */
+.slide-fade-leave-active {
+  transition: all 0.6s ease;
+}
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateY(40px);
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Результат: появляется вверх */
+.fade-up-enter-active {
+  transition: all 0.6s ease;
+}
+.fade-up-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
 }
 </style>

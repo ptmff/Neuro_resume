@@ -27,8 +27,8 @@ defineProps<{
         class="h-full transition-all duration-300"
         :class="{
           'bg-neon-blue animate-pulse': status === 'active',
-          'bg-green-400': status === 'done',
-          'bg-yellow-500': status === 'skipped',
+          'bg-done': status === 'done',
+          'bg-skipped': status === 'skipped',
           'bg-white/20': status === 'pending'
         }"
         :style="{ width: progress + '%' }"
@@ -45,5 +45,11 @@ defineProps<{
 <style scoped>
 .bg-neon-blue {
   background: var(--neon-blue);
+}
+.bg-done {
+  background: var(--gradient-primary)
+}
+.bg-skipped {
+  background: var(--gradient-danger)
 }
 </style>

@@ -51,15 +51,16 @@ onMounted(() => {
       ref="skillsRef"
       class="mb-10"
       data-section="missing-skills"
+      data-aos="fade-down" data-aos-delay="300"
     >
       <h3 class="text-xl font-semibold mb-4">Не хватает навыков:</h3>
-      <div class="flex flex-wrap gap-3 skill-chip"
-      data-aos="slide-right"
-      data-aos-delay="350">
+      <div class="flex flex-wrap gap-3 skill-chip">
         <SkillTag
           v-for="skill in store.result.missingSkills"
           :key="skill"
           :label="skill"
+          data-aos="fade-right"
+          :data-aos-delay="350+index*100"
         />
       </div>
     </div>

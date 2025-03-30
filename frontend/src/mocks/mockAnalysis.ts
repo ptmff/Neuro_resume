@@ -4,7 +4,7 @@ export const fetchMockAnalysis = async (jobText: string) => {
 
   return {
     result: {
-      matchScore: 78,
+      matchScore: 63,
       missingSkills: ['TypeScript', 'GraphQL', 'Docker'],
       overlappingExperience: true,
       recommendations: [
