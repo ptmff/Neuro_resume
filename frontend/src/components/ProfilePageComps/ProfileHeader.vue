@@ -18,20 +18,41 @@ const isEditing = ref(false)
 // Локальное редактируемое состояние
 const editedName = ref('')
 const editedEmail = ref('')
+const editedPhone = ref('')
+const editedCity = ref('')
+const editedPhoto = ref('')
 
 const startEdit = () => {
   if (profile.value) {
     editedName.value = profile.value.name || ''
     editedEmail.value = profile.value.email || ''
+    editedPhone.value = profile.value.phone || ''
+    editedCity.value = profile.value.city || ''
+    editedPhoto.value = profile.value.photo || ''
     isEditing.value = true
   }
 }
 
+const handlePhotoSelect = async (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0]
+  if (file) {
+    await profileStore.uploadPhoto(file)
+  }
+}
+
 const saveProfile = async () => {
-  await profileStore.updateProfile({
+  if (!profile.value) return
+
+  const updatedProfile = {
+    ...profile.value,
     name: editedName.value,
     email: editedEmail.value,
-  })
+    phone: editedPhone.value,
+    city: editedCity.value,
+    photo: editedPhoto.value,
+  }
+
+  await profileStore.updateProfile(updatedProfile)
   isEditing.value = false
 }
 
@@ -47,7 +68,6 @@ const mainResume = computed(() => {
 </script>
 
 <template>
-  <!-- 🌀 Лоадер -->
   <div
     v-if="isProfileLoading || !profile || !isAppReady"
     class="min-h-[300px] w-full flex items-center justify-center"
@@ -55,22 +75,53 @@ const mainResume = computed(() => {
     <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-[var(--text-light)]" />
   </div>
 
-  <!-- 👤 Профиль -->
   <section
     v-else
     class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-10"
   >
-    <!-- Аватар -->
-    <div
-      class="relative w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden border-2 border-[var(--profile-avatar-border)] shadow-md"
+<!-- Аватар -->
+<div
+  class="relative group w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden border-2 border-[var(--profile-avatar-border)] shadow-md"
+>
+  <!-- Само изображение -->
+  <img
+    :src="isEditing ? editedPhoto : profile.photo || '/placeholder.png'"
+    alt="Avatar"
+    class="w-full h-full object-cover"
+  />
+
+  <!-- Эффект подсветки -->
+  <div
+    class="absolute inset-0 rounded-full bg-[var(--background-cta)] opacity-20 blur-2xl animate-pulse"
+  />
+
+  <!-- Кнопка выбора файла -->
+  <label
+    v-if="isEditing"
+    class="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-8 w-8 text-white"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width="2"
     >
-      <img
-        :src="profile.photo || '/placeholder.jpg'"
-        alt="Avatar"
-        class="w-full h-full object-cover"
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M5 16l7-7 7 7M5 10l7 7 7-7"
       />
-      <div class="absolute inset-0 rounded-full bg-[var(--background-cta)] opacity-20 blur-2xl animate-pulse" />
-    </div>
+    </svg>
+    <input
+      type="file"
+      accept="image/*"
+      class="hidden"
+      @change="handlePhotoSelect"
+    />
+  </label>
+</div>
 
     <!-- Информация -->
     <div class="text-center md:text-left w-full max-w-xl">
@@ -78,52 +129,58 @@ const mainResume = computed(() => {
         {{ isEditing ? 'Редактирование профиля' : `Привет, ${profile.name || 'Гость'}!` }}
       </h1>
 
-      <!-- Имя и Email -->
       <div class="space-y-4 mb-4">
+        <!-- Имя -->
         <div>
           <label class="text-[var(--text-mainless)] text-sm">Имя</label>
           <div v-if="isEditing">
-            <input
-              v-model="editedName"
-              class="w-full bg-[var(--background-pale)] border border-[var(--background-pale)] rounded-xl px-4 py-2 text-[var(--text-light)] focus:outline-none focus:border-[var(--background-cta)]"
-            />
+            <input v-model="editedName" class="form-input" />
           </div>
           <p v-else class="text-[var(--text-light)] text-base">{{ profile.name || '-' }}</p>
         </div>
 
+        <!-- Email -->
         <div>
           <label class="text-[var(--text-mainless)] text-sm">Email</label>
           <div v-if="isEditing">
-            <input
-              v-model="editedEmail"
-              class="w-full bg-[var(--background-pale)] border border-[var(--background-pale)] rounded-xl px-4 py-2 text-[var(--text-light)] focus:outline-none focus:border-[var(--background-cta)]"
-            />
+            <input v-model="editedEmail" class="form-input" />
           </div>
           <p v-else class="text-[var(--text-light)] text-base">{{ profile.email || '-' }}</p>
         </div>
-      </div>
 
-      <!-- Доп. данные -->
-      <div class="space-y-1 mb-4 text-sm text-[var(--text-subdued)]">
-        <p v-if="profile.phone">📞 {{ profile.phone }}</p>
-        <p v-if="profile.city">📍 {{ profile.city }}</p>
-        <p v-if="mainResume?.job">
-          💼 Профессия: <strong>{{ mainResume.job }}</strong>
-        </p>
+        <!-- Телефон -->
+        <div>
+          <label class="text-[var(--text-mainless)] text-sm">Телефон</label>
+          <div v-if="isEditing">
+            <input v-model="editedPhone" class="form-input" />
+          </div>
+          <p v-else class="text-[var(--text-light)] text-base">{{ profile.phone || '-' }}</p>
+        </div>
+
+        <!-- Город -->
+        <div>
+          <label class="text-[var(--text-mainless)] text-sm">Город</label>
+          <div v-if="isEditing">
+            <input v-model="editedCity" class="form-input" />
+          </div>
+          <p v-else class="text-[var(--text-light)] text-base">{{ profile.city || '-' }}</p>
+        </div>
       </div>
 
       <!-- Образование -->
       <div v-if="hasEducation" class="mb-4">
         <p class="text-sm text-[var(--text-mainless)] mb-1">🎓 Образование:</p>
         <ul class="list-disc list-inside text-[var(--text-mainless)] text-sm space-y-1">
-          <li
-            v-for="(edu, index) in profile.education || []"
-            :key="index"
-          >
+          <li v-for="(edu, index) in profile.education || []" :key="index">
             {{ edu.institution }} — {{ edu.degree }} ({{ edu.startYear }}–{{ edu.endYear }})
           </li>
         </ul>
       </div>
+
+      <!-- Профессия -->
+      <p v-if="mainResume?.job" class="text-sm text-[var(--text-subdued)] mb-4">
+        💼 Профессия: <strong>{{ mainResume.job }}</strong>
+      </p>
 
       <!-- Кнопка -->
       <button
@@ -136,3 +193,9 @@ const mainResume = computed(() => {
     </div>
   </section>
 </template>
+
+<style scoped>
+.form-input {
+  @apply w-full bg-[var(--background-pale)] border border-[var(--background-pale)] rounded-xl px-4 py-2 text-[var(--text-light)] focus:outline-none focus:border-[var(--background-cta)];
+}
+</style>
