@@ -33,12 +33,22 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = ''
     try {
       await registerUser(payload)
+  
+      const loginPayload = {
+        email: payload.email || '',
+        phone: payload.phone || '',
+        password: payload.password,
+      }
+  
+      const result = await loginUser(loginPayload)
+      token.value = result
+      localStorage.setItem('token', result)
     } catch (e: any) {
       error.value = e.response?.data || 'Ошибка регистрации'
     } finally {
       loading.value = false
     }
-  }
+  }  
 
   const logout = () => {
     token.value = ''

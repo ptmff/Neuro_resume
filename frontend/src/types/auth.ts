@@ -4,11 +4,12 @@ export interface UserLoginDto {
   }
   
   export interface UserRegisterDto {
-    email: string;
-    password: string;
-    name?: string;
-    phone?: string;
-    city?: string;
+    email: string
+    password: string
+    name?: string
+    phone?: string
+    city?: string
+    education?: EducationDto[]
   }
   
   export interface EducationDto {
