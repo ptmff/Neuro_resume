@@ -1,5 +1,5 @@
 // mocks/mockAnalysis.ts
-export const fetchMockAnalysis = async () => {
+export const fetchMockAnalysis = async (jobText: string) => {
     await new Promise(resolve => setTimeout(resolve, 1000))
     return {
       result: {
