@@ -3,20 +3,26 @@ import { defineStore } from 'pinia'
 import { loginUser, registerUser } from '@/api/auth'
 import type { UserRegisterDto } from '@/types/auth'
 
+interface LoginPayload {
+  email: string
+  phone: string
+  password: string
+}
+
 export const useAuthStore = defineStore('auth', () => {
   const token = ref<string>(localStorage.getItem('token') || '')
   const loading = ref(false)
   const error = ref('')
 
-  const login = async (email: string, password: string) => {
+  const login = async (payload: LoginPayload) => {
     loading.value = true
     error.value = ''
     try {
-      const result = await loginUser({ email, password })
+      const result = await loginUser(payload)
       token.value = result
       localStorage.setItem('token', result)
     } catch (e: any) {
-      error.value = e.response?.data || 'Login failed'
+      error.value = e.response?.data || 'Ошибка входа'
     } finally {
       loading.value = false
     }
@@ -28,7 +34,7 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       await registerUser(payload)
     } catch (e: any) {
-      error.value = e.response?.data || 'Registration failed'
+      error.value = e.response?.data || 'Ошибка регистрации'
     } finally {
       loading.value = false
     }

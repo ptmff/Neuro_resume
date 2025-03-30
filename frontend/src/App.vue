@@ -17,6 +17,10 @@ const setPhase = (value: string) => {
   phase.value = value
 }
 
+const hideLayout = computed(() =>
+  route.path === '/login' || route.path === '/register'
+)
+
 // Инициализация при загрузке приложения
 onMounted(async () => {
   await appStore.initialize()
@@ -36,24 +40,15 @@ const isLoading = computed(() => appStore.isAppLoading)
 
   <!-- Основной сайт -->
   <template v-else>
-    <div class="relative min-h-screen text-[var(--text-light)] gradient-page">
-      <div class="absolute inset-0 -z-10 animated-bg"></div>
-      <Parallax class="absolute inset-0" />
+  <div class="relative min-h-screen text-[var(--text-light)] gradient-page">
+    <div class="absolute inset-0 -z-10 animated-bg"></div>
+    <Parallax class="absolute inset-0" />
+    <NavBar v-if="!hideLayout" />
+    <RouterView />
+    <Footer v-if="!hideLayout" />
+  </div>
+</template>
 
-      <NavBar />
-
-      <RouterView v-slot="{ Component, route }">
-        <transition mode="out-in">
-          <component
-            :is="Component"
-            v-bind="route.path === '/analyse' ? { phase, setPhase } : {}"
-          />
-        </transition>
-      </RouterView>
-
-      <Footer v-if="route.path !== '/test2'" />
-    </div>
-  </template>
 </template>
 
 <style scoped>

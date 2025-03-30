@@ -1,18 +1,25 @@
-<!-- src/components/LoginForm.vue -->
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import { useProfileStore } from '@/stores/profileStore'
 
-const email = ref('')
+const emailOrPhone = ref('')
 const password = ref('')
 const auth = useAuthStore()
 const router = useRouter()
 const profileStore = useProfileStore()
 
 const handleLogin = async () => {
-  await auth.login(email.value, password.value)
+  const isEmail = emailOrPhone.value.includes('@')
+
+  const payload = {
+    email: isEmail ? emailOrPhone.value : '',
+    phone: isEmail ? '' : emailOrPhone.value,
+    password: password.value,
+  }
+
+  await auth.login(payload)
 
   if (!auth.error) {
     await profileStore.fetchProfile()
@@ -29,9 +36,9 @@ const handleLogin = async () => {
 
     <form @submit.prevent="handleLogin" class="space-y-4">
       <input
-        v-model="email"
-        type="email"
-        placeholder="Email"
+        v-model="emailOrPhone"
+        type="text"
+        placeholder="Email или телефон"
         class="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-700 text-black dark:text-white"
         required
       />

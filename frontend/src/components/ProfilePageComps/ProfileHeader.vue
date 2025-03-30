@@ -3,6 +3,8 @@ import { ref, computed } from 'vue'
 import { useProfileStore } from '@/stores/profileStore'
 import { useResumeStore } from '@/stores/resumesStore'
 import { useAppStore } from '@/stores/appStore'
+import { useAuthStore } from '@/stores/authStore'
+import { useRouter } from 'vue-router'
 import AvatarPicker from '@/components/ProfilePageComps/AvatarPicker.vue'
 
 const showAvatarPicker = ref(false)
@@ -58,6 +60,14 @@ const saveProfile = async () => {
 
   await profileStore.updateProfile(updatedProfile)
   isEditing.value = false
+}
+
+const authStore = useAuthStore()
+const router = useRouter()
+
+const logout = () => {
+  authStore.logout()
+  router.push('/login')
 }
 
 const hasEducation = computed(() => {
@@ -168,14 +178,25 @@ const mainResume = computed(() => {
         💼 Профессия: <strong>{{ mainResume.job }}</strong>
       </p>
 
-      <!-- Кнопка -->
-      <button
-        class="px-5 py-2 text-sm font-semibold rounded-full transition-all duration-300"
-        :class="isEditing ? 'bg-[var(--profile-is-editing)] text-[var(--text-light)]' : 'bg-[var(--background-cta)] text-[var(--text-light)] hover:bg-[var(--background-cta-hover)]'"
-        @click="isEditing ? saveProfile() : startEdit()"
-      >
-        {{ isEditing ? 'Сохранить' : 'Редактировать' }}
-      </button>
+      <div class="flex gap-4 mt-2">
+        <!-- Кнопка -->
+        <button
+          class="px-5 py-2 text-sm font-semibold rounded-full transition-all duration-300"
+          :class="isEditing ? 'bg-[var(--profile-is-editing)] text-[var(--text-light)]' : 'bg-[var(--background-cta)] text-[var(--text-light)] hover:bg-[var(--background-cta-hover)]'"
+          @click="isEditing ? saveProfile() : startEdit()"
+        >
+          {{ isEditing ? 'Сохранить' : 'Редактировать' }}
+        </button>
+
+        <!-- Кнопка выхода -->
+        <button
+          v-if="isEditing"
+          class="ml-4 px-5 py-2 text-sm font-semibold rounded-full bg-red-600 text-white hover:bg-red-700 transition-all duration-300"
+          @click="logout"
+        >
+          Выйти
+        </button>
+      </div>
     </div>
   </section>
 </template>
