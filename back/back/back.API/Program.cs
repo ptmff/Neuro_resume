@@ -128,4 +128,6 @@ app.MapControllers();
 
 app.UseCors();
 
+app.UseStaticFiles();
+
 app.Run();

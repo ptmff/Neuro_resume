@@ -26,11 +26,15 @@ public class TokenService : ITokenService
 
     public string CreateToken(User user)
     {
+        var identifier = !string.IsNullOrWhiteSpace(user.Email) ? user.Email : user.Phone;
+        if (string.IsNullOrWhiteSpace(identifier))
+            throw new ArgumentException("Пользователь должен иметь email или номер телефона для создания токена");
+
         var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email)
-        };
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Name, identifier)
+    };
 
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -50,4 +54,5 @@ public class TokenService : ITokenService
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
+
 }
