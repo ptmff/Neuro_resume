@@ -4,29 +4,34 @@
       Ваше резюме выглядит так
     </h2>
     
-    <div class="w-[210mm] min-h-[297mm] p-[20mm] mx-auto bg-white shadow-lg relative overflow-hidden" ref="resumeContent" id="resume-content">
+    <div 
+      class="w-[210mm] min-h-[297mm] p-[20mm] mx-auto bg-white shadow-lg relative overflow-hidden" 
+      ref="resumeContent" 
+      id="resume-content"
+      :class="[`template-${resumeData.template || 'классический'}`]"
+    >
       <!-- Шапка резюме (всегда фиксирована вверху) -->
-      <div class="mb-4">
-        <h1 class="text-3xl font-bold text-gray-800 m-0 mb-1">{{ resumeData.name || profile?.name || 'Имя Фамилия' }}</h1>
-        <p class="text-lg text-gray-600 m-0 mb-4">{{ resumeData.job || profile?.profession || 'Профессия' }}</p>
+      <div class="mb-4" :class="{ 'text-center': isCreativeOrModern, 'border-bottom-gradient': isModern }">
+        <h1 class="text-3xl font-bold m-0 mb-1" :class="getHeaderClass()">{{ resumeData.name || profile?.name || 'Имя Фамилия' }}</h1>
+        <p class="text-lg m-0 mb-4" :class="getSubheaderClass()">{{ resumeData.job || profile?.profession || 'Профессия' }}</p>
         
-        <div class="flex flex-wrap gap-4">
-          <div v-if="resumeData.email || profile?.email" class="flex items-center gap-2 text-sm text-gray-600">
-            <i class="fas fa-envelope text-[var(--neon-purple)]"></i>
+        <div class="flex flex-wrap gap-4" :class="{ 'justify-center': isCreativeOrModern }">
+          <div v-if="resumeData.email || profile?.email" class="flex items-center gap-2 text-sm" :class="getContactClass()">
+            <i :class="getIconClass('envelope')"></i>
             <span>{{ resumeData.email || profile?.email }}</span>
           </div>
-          <div v-if="resumeData.phone || profile?.phone" class="flex items-center gap-2 text-sm text-gray-600">
-            <i class="fas fa-phone text-[var(--neon-purple)]"></i>
+          <div v-if="resumeData.phone || profile?.phone" class="flex items-center gap-2 text-sm" :class="getContactClass()">
+            <i :class="getIconClass('phone')"></i>
             <span>{{ resumeData.phone || profile?.phone }}</span>
           </div>
-          <div v-if="resumeData.city || profile?.city" class="flex items-center gap-2 text-sm text-gray-600">
-            <i class="fas fa-map-marker-alt text-[var(--neon-purple)]"></i>
+          <div v-if="resumeData.city || profile?.city" class="flex items-center gap-2 text-sm" :class="getContactClass()">
+            <i :class="getIconClass('map-marker-alt')"></i>
             <span>{{ resumeData.city || profile?.city }}</span>
           </div>
         </div>
       </div>
       
-      <div class="h-0.5 bg-gradient-to-r from-[var(--neon-purple)] to-[var(--neon-blue)] my-4"></div>
+      <div :class="getSeparatorClass()"></div>
       
       <!-- Перетаскиваемые секции -->
       <div class="flex flex-col gap-5">
@@ -46,39 +51,41 @@
             
             <!-- Секция "О себе" -->
             <div v-if="section.id === 'about'" class="mb-5" v-show="resumeData.description">
-              <h2 class="text-lg font-semibold text-[var(--neon-purple)] m-0 mb-4 pb-1 border-b border-gray-200">Обо мне</h2>
-              <p class="text-sm text-gray-600 m-0 leading-relaxed">{{ resumeData.description }}</p>
+              <h2 :class="getSectionHeaderClass()">Обо мне</h2>
+              <p :class="getTextClass()">{{ resumeData.description }}</p>
             </div>
             
             <!-- Секция "Опыт работы" -->
             <div v-if="section.id === 'experience'" class="mb-5" v-show="resumeData.experience?.length">
-              <h2 class="text-lg font-semibold text-[var(--neon-purple)] m-0 mb-4 pb-1 border-b border-gray-200">Опыт работы</h2>
+              <h2 :class="getSectionHeaderClass()">Опыт работы</h2>
               <div class="mb-4" v-for="(exp, i) in resumeData.experience" :key="i">
-                <div class="flex justify-between mb-1">
-                  <h3 class="text-base font-semibold text-gray-800 m-0">{{ exp.position }} | {{ exp.company }}</h3>
-                  <span class="text-sm text-gray-500">{{ exp.startDate }} – {{ exp.endDate }}</span>
+                <div :class="{ 'flex justify-between mb-1': !isCreative, 'mb-2': isCreative }">
+                  <h3 :class="getItemHeaderClass()">
+                    {{ exp.company }} : {{ exp.position}}
+                  </h3>
+                  <span :class="getDateClass()">{{ exp.startDate }} – {{ exp.endDate }}</span>
                 </div>
-                <p class="text-sm text-gray-600 m-0 mt-1 leading-relaxed">{{ exp.description }}</p>
+                <p :class="getTextClass()">{{ exp.description }}</p>
               </div>
             </div>
             
             <!-- Секция "Образование" -->
             <div v-if="section.id === 'education'" class="mb-5" v-show="profile?.education?.length">
-              <h2 class="text-lg font-semibold text-[var(--neon-purple)] m-0 mb-4 pb-1 border-b border-gray-200">Образование</h2>
+              <h2 :class="getSectionHeaderClass()">Образование</h2>
               <div class="mb-2.5" v-for="(edu, i) in profile?.education || []" :key="i">
-                <h3 class="text-base font-semibold text-gray-800 m-0">{{ edu.institution }}</h3>
-                <p class="text-sm text-gray-600 mt-0.5 m-0">{{ edu.degree }} ({{ edu.startYear }}–{{ edu.endYear }})</p>
+                <h3 :class="getItemHeaderClass()">{{ edu.institution }}</h3>
+                <p :class="getTextClass()">{{ edu.degree }} ({{ edu.startYear }}–{{ edu.endYear }})</p>
               </div>
             </div>
             
             <!-- Секция "Навыки" -->
             <div v-if="section.id === 'skills'" class="mb-5" v-show="resumeData.skills?.length">
-              <h2 class="text-lg font-semibold text-[var(--neon-purple)] m-0 mb-4 pb-1 border-b border-gray-200">Профессиональные навыки</h2>
+              <h2 :class="getSectionHeaderClass()">Профессиональные навыки</h2>
               <div class="flex flex-wrap gap-2.5">
                 <div 
                   v-for="(skill, index) in resumeData.skills" 
                   :key="skill + index"
-                  class="px-3 py-1 border border-gray-200 rounded-full text-sm text-gray-600"
+                  :class="getSkillClass()"
                 >
                   {{ skill }}
                 </div>
@@ -109,7 +116,6 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useProfileStore } from '@/stores/profileStore'
 import { useResumeStore } from '@/stores/resumesStore'
 import html2pdf from 'html2pdf.js'
-
 
 interface Section {
   id: string;
@@ -189,6 +195,122 @@ const dragOverIndex = ref<number | null>(null)
 const isDragging = ref(false)
 const dragStartY = ref(0)
 const dragCurrentY = ref(0)
+
+// Вычисляемые свойства для определения текущего шаблона
+const currentTemplate = computed(() => {
+  return (props.resumeData.template || 'классический').toLowerCase()
+})
+
+const isClassic = computed(() => currentTemplate.value === 'классический')
+const isModern = computed(() => currentTemplate.value === 'современный')
+const isCreative = computed(() => currentTemplate.value === 'креативный')
+const isMinimalist = computed(() => currentTemplate.value === 'минималистичный')
+const isProfessional = computed(() => currentTemplate.value === 'профессиональный')
+const isTechnical = computed(() => currentTemplate.value === 'технический')
+
+const isCreativeOrModern = computed(() => isCreative.value || isModern.value)
+
+// Методы для стилизации в зависимости от шаблона
+const getHeaderClass = () => {
+  if (isClassic.value) return 'text-2xl font-bold text-black mb-1 font-serif'
+  if (isModern.value) return 'text-gray-800'
+  if (isCreative.value) return 'text-blue-700 font-bold'
+  if (isMinimalist.value) return 'text-gray-900 font-light'
+  if (isProfessional.value) return 'text-gray-800 font-semibold border-b-2 border-gray-300 pb-2'
+  if (isTechnical.value) return 'text-gray-800 font-mono'
+  return 'text-gray-800'
+}
+
+const getSubheaderClass = () => {
+  if (isClassic.value) return 'text-base text-gray-700 font-serif'
+  if (isModern.value) return 'text-gray-600'
+  if (isCreative.value) return 'text-blue-500'
+  if (isMinimalist.value) return 'text-gray-600 font-light'
+  if (isProfessional.value) return 'text-gray-600 uppercase tracking-wider text-sm'
+  if (isTechnical.value) return 'text-gray-600 font-mono'
+  return 'text-gray-600'
+}
+
+const getContactClass = () => {
+  if (isClassic.value) return 'text-black font-serif'
+  if (isModern.value) return 'text-gray-600'
+  if (isCreative.value) return 'text-blue-600'
+  if (isMinimalist.value) return 'text-gray-500'
+  if (isProfessional.value) return 'text-gray-700'
+  if (isTechnical.value) return 'text-gray-600 font-mono'
+  return 'text-gray-600'
+}
+
+const getIconClass = (icon: string) => {
+  const baseClass = `fas fa-${icon}`
+  if (isClassic.value) return `${baseClass} text-black`
+  if (isModern.value) return `${baseClass} text-[var(--neon-purple)]`
+  if (isCreative.value) return `${baseClass} text-blue-500`
+  if (isMinimalist.value) return `${baseClass} text-gray-400`
+  if (isProfessional.value) return `${baseClass} text-gray-500`
+  if (isTechnical.value) return `${baseClass} text-gray-600`
+  return `${baseClass} text-[var(--neon-purple)]`
+}
+
+const getSeparatorClass = () => {
+  if (isClassic.value) return 'h-px bg-gray-300 my-4'
+  if (isModern.value) return 'h-0.5 bg-gradient-to-r from-[var(--neon-purple)] to-[var(--neon-blue)] my-4'
+  if (isCreative.value) return 'h-1 bg-blue-500 my-4 w-1/3 mx-auto'
+  if (isMinimalist.value) return 'h-px bg-gray-200 my-4'
+  if (isProfessional.value) return 'h-0.5 bg-gray-300 my-4'
+  if (isTechnical.value) return 'h-0.5 bg-gray-400 my-4 border-dashed'
+  return 'h-0.5 bg-gradient-to-r from-[var(--neon-purple)] to-[var(--neon-blue)] my-4'
+}
+
+const getSectionHeaderClass = () => {
+  if (isClassic.value) return 'text-base font-bold text-black m-0 mb-3 pb-1 border-b border-gray-300 font-serif'
+  if (isModern.value) return 'text-lg font-semibold text-[var(--neon-purple)] m-0 mb-4 pb-1 border-b border-gray-200'
+  if (isCreative.value) return 'text-lg font-bold text-blue-600 m-0 mb-4 pb-1 border-b-2 border-blue-200'
+  if (isMinimalist.value) return 'text-lg font-normal text-gray-800 m-0 mb-4 pb-1'
+  if (isProfessional.value) return 'text-lg font-semibold text-gray-700 m-0 mb-4 pb-1 uppercase tracking-wider'
+  if (isTechnical.value) return 'text-lg font-mono font-semibold text-gray-800 m-0 mb-4 pb-1 border-b border-gray-300'
+  return 'text-lg font-semibold text-[var(--neon-purple)] m-0 mb-4 pb-1 border-b border-gray-200'
+}
+
+const getItemHeaderClass = () => {
+  if (isClassic.value) return 'text-base font-bold text-gray-700 m-0 font-serif'
+  if (isModern.value) return 'text-base font-semibold text-gray-800 m-0'
+  if (isCreative.value) return 'text-base font-semibold text-blue-700 m-0'
+  if (isMinimalist.value) return 'text-base font-medium text-gray-800 m-0'
+  if (isProfessional.value) return 'text-base font-semibold text-gray-800 m-0'
+  if (isTechnical.value) return 'text-base font-mono font-semibold text-gray-800 m-0'
+  return 'text-base font-semibold text-gray-800 m-0'
+}
+
+const getDateClass = () => {
+  if (isClassic.value) return 'text-sm text-gray-600 font-serif'
+  if (isModern.value) return 'text-sm text-gray-500'
+  if (isCreative.value) return 'text-sm text-blue-500'
+  if (isMinimalist.value) return 'text-sm text-gray-400'
+  if (isProfessional.value) return 'text-sm text-gray-600 font-medium'
+  if (isTechnical.value) return 'text-sm text-gray-500 font-mono'
+  return 'text-sm text-gray-500'
+}
+
+const getTextClass = () => {
+  if (isClassic.value) return 'text-sm text-black m-0 leading-relaxed font-serif'
+  if (isModern.value) return 'text-sm text-gray-600 m-0 leading-relaxed'
+  if (isCreative.value) return 'text-sm text-gray-600 m-0 leading-relaxed'
+  if (isMinimalist.value) return 'text-sm text-gray-600 m-0 leading-relaxed'
+  if (isProfessional.value) return 'text-sm text-gray-700 m-0 leading-relaxed'
+  if (isTechnical.value) return 'text-sm text-gray-600 m-0 leading-relaxed font-mono'
+  return 'text-sm text-gray-600 m-0 leading-relaxed'
+}
+
+const getSkillClass = () => {
+  if (isClassic.value) return 'px-2 py-1 text-sm text-black bg-gray-100 border border-gray-300 rounded'
+  if (isModern.value) return 'px-3 py-1 text-sm text-gray-600'
+  if (isCreative.value) return 'px-3 py-1 text-sm text-white bg-blue-500 rounded-full'
+  if (isMinimalist.value) return 'px-3 py-1 text-sm text-gray-600 border border-gray-200 rounded'
+  if (isProfessional.value) return 'px-3 py-1 text-sm text-gray-700 bg-gray-100 rounded'
+  if (isTechnical.value) return 'px-3 py-1 text-sm text-gray-100 bg-gray-700 font-mono rounded'
+  return 'px-3 py-1 text-sm text-gray-600'
+}
 
 const generatePDF = (): void => {
   alert('Кнопка нажата!')
@@ -275,8 +397,6 @@ const endDrag = (): void => {
     const [movedItem] = newSections.splice(draggedIndex.value, 1)
     newSections.splice(dragOverIndex.value, 0, movedItem)
     sections.value = newSections
-    
-
   }
   
   isDragging.value = false
@@ -284,7 +404,6 @@ const endDrag = (): void => {
   dragOverIndex.value = null
   document.body.classList.remove('dragging-cursor')
 }
-
 
 const handleNextStep = (): void => {
   emit('next-step')
@@ -384,5 +503,30 @@ const handlePrevStep = (): void => {
     opacity: 0.6;
     transform: scaleX(0.98);
   }
+}
+
+.template-классический {
+  @apply bg-white;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.template-креативный .border-bottom-gradient {
+  border-bottom: 2px solid #3498db;
+}
+
+/*.template-креативный .border-bottom-gradient {
+  border-bottom: 2px solid #9b59b6;
+}*/
+
+.template-минималистичный .border-bottom-gradient {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.template-профессиональный .border-bottom-gradient {
+  border-bottom: 2px solid #34495e;
+}
+
+.template-технический .border-bottom-gradient {
+  border-bottom: 2px dashed #7f8c8d;
 }
 </style>
