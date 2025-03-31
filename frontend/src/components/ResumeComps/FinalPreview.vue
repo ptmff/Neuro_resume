@@ -39,12 +39,13 @@
           <div class="relative group resume-section" 
                :data-section-id="section.id"
                :class="{ 
-                 'dragging': draggedIndex === index, 
-                 'drag-over': dragOverIndex === index && draggedIndex !== index,
-                 'drag-after': dragOverIndex === index - 1 && draggedIndex !== index - 1 && draggedIndex !== null && draggedIndex > index
+                 [`dragging-${resumeData.template}`]: draggedIndex === index, 
+                 [`drag-over-${resumeData.template}`]: dragOverIndex === index && draggedIndex !== index,
+                 [`drag-after-${resumeData.template}`]: dragOverIndex === index - 1 && draggedIndex !== index - 1 && draggedIndex !== null && draggedIndex > index
                }">
             <!-- Кнопка для перетаскивания -->
             <div class="drag-handle absolute -left-8 top-1 opacity-0 group-hover:opacity-100 cursor-move text-gray-400 hover:text-gray-600 transition-opacity"
+                 :class="getDragHandleClass()"
                  @mousedown="startDrag($event, index)">
               <i class="fas fa-grip-vertical"></i>
             </div>
@@ -273,7 +274,7 @@ const getSectionHeaderClass = () => {
 }
 
 const getItemHeaderClass = () => {
-  if (isClassic.value) return 'text-base font-bold text-gray-700 m-0 font-serif'
+  if (isClassic.value) return 'text-base font-bold text-black m-0 font-serif'
   if (isModern.value) return 'text-base font-semibold text-gray-800 m-0'
   if (isCreative.value) return 'text-base font-semibold text-blue-700 m-0'
   if (isMinimalist.value) return 'text-base font-medium text-gray-800 m-0'
@@ -283,7 +284,7 @@ const getItemHeaderClass = () => {
 }
 
 const getDateClass = () => {
-  if (isClassic.value) return 'text-sm text-gray-600 font-serif'
+  if (isClassic.value) return 'text-sm text-gray-600 italic font-serif'
   if (isModern.value) return 'text-sm text-gray-500'
   if (isCreative.value) return 'text-sm text-blue-500'
   if (isMinimalist.value) return 'text-sm text-gray-400'
@@ -310,6 +311,17 @@ const getSkillClass = () => {
   if (isProfessional.value) return 'px-3 py-1 text-sm text-gray-700 bg-gray-100 rounded'
   if (isTechnical.value) return 'px-3 py-1 text-sm text-gray-100 bg-gray-700 font-mono rounded'
   return 'px-3 py-1 text-sm text-gray-600'
+}
+
+// Новый метод для стилизации ручки перетаскивания
+const getDragHandleClass = () => {
+  if (isClassic.value) return 'hover:bg-gray-100'
+  if (isModern.value) return 'hover:bg-purple-100'
+  if (isCreative.value) return 'hover:bg-blue-100'
+  if (isMinimalist.value) return 'hover:bg-gray-50'
+  if (isProfessional.value) return 'hover:bg-gray-200'
+  if (isTechnical.value) return 'hover:bg-gray-700 hover:text-white'
+  return 'hover:bg-gray-200'
 }
 
 const generatePDF = (): void => {
@@ -445,7 +457,50 @@ const handlePrevStep = (): void => {
   margin: 0;
 }
 
-.resume-section.dragging {
+/* Классический стиль - традиционный, сдержанный */
+.dragging-классический {
+  opacity: 0.9;
+  transform: scale(0.99);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  background-color: rgba(240, 240, 240, 0.8);
+  border: 1px dashed #999;
+}
+
+.drag-over-классический {
+  margin-top: 20px;
+  position: relative;
+}
+
+.drag-over-классический::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #999;
+  border-radius: 0;
+}
+
+.drag-after-классический {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.drag-after-классический::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #999;
+  border-radius: 0;
+}
+
+/* Современный стиль - плавный, с градиентами */
+.dragging-современный {
   opacity: 0.85;
   transform: scale(0.98) translateY(4px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
@@ -454,12 +509,12 @@ const handlePrevStep = (): void => {
   border: 1px dashed rgba(var(--neon-purple-rgb, 156, 39, 176), 0.3);
 }
 
-.resume-section.drag-over {
+.drag-over-современный {
   margin-top: 20px;
   position: relative;
 }
 
-.resume-section.drag-over::before {
+.drag-over-современный::before {
   content: "";
   position: absolute;
   top: -10px;
@@ -472,12 +527,12 @@ const handlePrevStep = (): void => {
   animation: pulse 1.5s infinite;
 }
 
-.resume-section.drag-after {
+.drag-after-современный {
   margin-bottom: 20px;
   position: relative;
 }
 
-.resume-section.drag-after::after {
+.drag-after-современный::after {
   content: "";
   position: absolute;
   bottom: -10px;
@@ -488,6 +543,191 @@ const handlePrevStep = (): void => {
   box-shadow: 0 0 8px rgba(var(--neon-purple-rgb, 156, 39, 176), 0.6);
   border-radius: 2px;
   animation: pulse 1.5s infinite;
+}
+
+/* Креативный стиль - яркий, игривый */
+.dragging-креативный {
+  opacity: 0.9;
+  transform: rotate(-1deg) scale(0.98);
+  box-shadow: 0 10px 25px rgba(52, 152, 219, 0.3);
+  z-index: 10;
+  background-color: rgba(52, 152, 219, 0.05);
+  border: 2px dashed #3498db;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.drag-over-креативный {
+  margin-top: 25px;
+  position: relative;
+}
+
+.drag-over-креативный::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #3498db;
+  border-radius: 3px;
+  animation: bounce 1s infinite;
+}
+
+.drag-after-креативный {
+  margin-bottom: 25px;
+  position: relative;
+}
+
+.drag-after-креативный::after {
+  content: "";
+  position: absolute;
+  bottom: -12px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #3498db;
+  border-radius: 3px;
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: scaleX(0.95);
+  }
+  50% {
+    transform: scaleX(1.05);
+  }
+}
+
+/* Минималистичный стиль - очень простой, тонкий */
+.dragging-минималистичный {
+  opacity: 0.95;
+  transform: scale(0.99);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+  background-color: rgba(245, 245, 245, 0.8);
+  border: 1px solid #eee;
+}
+
+.drag-over-минималистичный {
+  margin-top: 15px;
+  position: relative;
+}
+
+.drag-over-минималистичный::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: #ddd;
+}
+
+.drag-after-минималистичный {
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.drag-after-минималистичный::after {
+  content: "";
+  position: absolute;
+  bottom: -7px;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: #ddd;
+}
+
+/* Профессиональный стиль - строгий, деловой */
+.dragging-профессиональный {
+  opacity: 0.9;
+  transform: scale(0.98);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  background-color: rgba(240, 240, 240, 0.9);
+  border: 1px solid #34495e;
+}
+
+.drag-over-профессиональный {
+  margin-top: 20px;
+  position: relative;
+}
+
+.drag-over-профессиональный::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #34495e;
+  border-radius: 0;
+}
+
+.drag-after-профессиональный {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.drag-after-профессиональный::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #34495e;
+  border-radius: 0;
+}
+
+/* Технический стиль - как код, с терминальной эстетикой */
+.dragging-технический {
+  opacity: 0.9;
+  transform: translateY(2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  background-color: rgba(52, 73, 94, 0.516);
+  border: 1px dashed #95a5a6;
+  color: #ecf0f1;
+}
+
+.drag-over-технический {
+  margin-top: 20px;
+  position: relative;
+}
+
+.drag-over-технический::before {
+  content: "// INSERT_BEFORE";
+  position: absolute;
+  top: -18px;
+  left: 0;
+  right: 0;
+  font-family: monospace;
+  font-size: 12px;
+  color: #95a5a6;
+  text-align: left;
+  border-top: 1px dashed #95a5a6;
+  padding-top: 2px;
+}
+
+.drag-after-технический {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.drag-after-технический::after {
+  content: "// INSERT_AFTER";
+  position: absolute;
+  bottom: -18px;
+  left: 0;
+  right: 0;
+  font-family: monospace;
+  font-size: 12px;
+  color: #95a5a6;
+  text-align: left;
+  border-bottom: 1px dashed #95a5a6;
+  padding-bottom: 2px;
 }
 
 @keyframes pulse {
@@ -513,10 +753,6 @@ const handlePrevStep = (): void => {
 .template-креативный .border-bottom-gradient {
   border-bottom: 2px solid #3498db;
 }
-
-/*.template-креативный .border-bottom-gradient {
-  border-bottom: 2px solid #9b59b6;
-}*/
 
 .template-минималистичный .border-bottom-gradient {
   border-bottom: 1px solid #e0e0e0;
