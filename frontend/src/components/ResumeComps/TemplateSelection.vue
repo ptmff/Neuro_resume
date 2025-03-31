@@ -74,7 +74,32 @@ interface TemplateSelectionProps {
   selectedTemplate: number;
   resumeData: ResumeData;
 }
-
+const templates = [
+  { 
+    name: 'Классический', 
+    image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=350&h=100&auto=format&fit=crop&crop=edges'
+  },
+  { 
+    name: 'Современный', 
+    image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=350&h=100&auto=format&fit=crop&crop=edges'
+  },
+  { 
+    name: 'Креативный', 
+    image: 'https://images.unsplash.com/photo-1604871000636-074fa5117945?q=80&w=350&h=100&auto=format&fit=crop&crop=edges'
+  },
+  { 
+    name: 'Минималистичный', 
+    image: 'https://images.unsplash.com/photo-1622547748225-3fc4abd2cca0?q=80&w=350&h=100&auto=format&fit=crop&crop=edges'
+  },
+  { 
+    name: 'Профессиональный', 
+    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=350&h=100&auto=format&fit=crop&crop=edges'
+  },
+  { 
+    name: 'Технический', 
+    image: 'https://images.unsplash.com/photo-1534972195531-d756b9bfa9f2?q=80&w=350&h=100&auto=format&fit=crop&crop=edges'
+  }
+]
 const props = defineProps<TemplateSelectionProps>()
 
 const emit = defineEmits<{
