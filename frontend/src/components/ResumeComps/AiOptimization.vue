@@ -146,151 +146,162 @@
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted, computed } from 'vue';
-import { getMockAiSuggestions } from '@/mocks/mockAiSuggestions';
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { 
+  getMockAiSuggestions, 
+  type AiSuggestion, 
+  type AiSuggestionStats 
+} from '@/mocks/mockAiSuggestions';
 
-const props = defineProps({
-  resumeData: {
-    type: Object,
-    required: true
-  },
-  aiSuggestions: {
-    type: Array,
-    default: () => []
-  }
-});
+interface Experience {
+  id?: string;
+  company: string;
+  position: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+}
 
-const emit = defineEmits(['apply-suggestion', 'next-step', 'prev-step', 'update:modelValue']);
+interface ResumeData {
+  id?: number;
+  title?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  city?: string;
+  job?: string;
+  description?: string;
+  experience?: Experience[];
+  skills?: string[];
+  template?: string;
+  date?: string;
+  sectionsOrder?: string[];
+  [key: string]: any;
+}
+
+interface Props {
+  resumeData: ResumeData;
+  aiSuggestions?: AiSuggestion[];
+}
+
+interface Emits {
+  (e: 'apply-suggestion', suggestion: AiSuggestion): void;
+  (e: 'next-step'): void;
+  (e: 'prev-step'): void;
+  (e: 'update:modelValue', value: ResumeData): void;
+}
+
+const props = defineProps<Props>();
+const emit = defineEmits<Emits>();
 
 // Состояние
 const isLoading = ref(true);
-const suggestions = ref([]);
-const stats = ref(null);
-const lastAppliedSuggestion = ref(null);
+const suggestions = ref<AiSuggestion[]>([]);
+const stats = ref<AiSuggestionStats | null>(null);
+const lastAppliedSuggestion = ref<AiSuggestion | null>(null);
 
 // Методы
-function applySuggestion(suggestion) {
-  // Сохраняем последнюю примененную рекомендацию для отображения
+const applySuggestion = (suggestion: AiSuggestion): void => {
   lastAppliedSuggestion.value = suggestion;
-  
-  // Создаем копию данных резюме для обновления
-  const updatedResumeData = { ...props.resumeData };
-  
-  // Применяем изменения в зависимости от типа рекомендации
+  const updatedResumeData: ResumeData = { ...props.resumeData };
+
   switch (suggestion.type) {
     case 'skills':
-      // Если рекомендация касается навыков
       if (Array.isArray(suggestion.after)) {
         updatedResumeData.skills = [...suggestion.after];
       }
       break;
       
-      case 'experience':
-  updatedResumeData.experience = [...(updatedResumeData.experience || [])];
-  
-  // Если есть targetExperienceId, ищем по нему
-  if (suggestion.targetExperienceId) {
-    const index = updatedResumeData.experience.findIndex(
-      exp => exp.id === suggestion.targetExperienceId
-    );
-    if (index !== -1) {
-      updatedResumeData.experience[index] = {
-        ...updatedResumeData.experience[index],
-        description: suggestion.after
-      };
-    }
-  }
-  
-  // Если не нашли по ID или ID не указан, обновляем первый элемент
-  if (updatedResumeData.experience.length > 0 && 
-     (!suggestion.targetExperienceId || 
-      !updatedResumeData.experience.some(exp => exp.id === suggestion.targetExperienceId))) {
-    updatedResumeData.experience[0] = {
-      ...updatedResumeData.experience[0],
-      description: suggestion.after
-    };
-  }
-  break;
+    case 'experience':
+      updatedResumeData.experience = [...(updatedResumeData.experience || [])];
+      
+      if (suggestion.targetExperienceId) {
+        const index = updatedResumeData.experience.findIndex(
+          (exp: Experience) => exp.id === suggestion.targetExperienceId
+        );
+        if (index !== -1) {
+          updatedResumeData.experience[index] = {
+            ...updatedResumeData.experience[index],
+            description: suggestion.after as string
+          };
+        }
+      }
+      
+      if (updatedResumeData.experience && updatedResumeData.experience.length > 0 && 
+         (!suggestion.targetExperienceId || 
+          !updatedResumeData.experience.some((exp: Experience) => exp.id === suggestion.targetExperienceId))) {
+        updatedResumeData.experience[0] = {
+          ...updatedResumeData.experience[0],
+          description: suggestion.after as string
+        };
+      }
+      break;
       
     case 'description':
-      // Если рекомендация касается самоописания
-      updatedResumeData.description = suggestion.after;
+      updatedResumeData.description = suggestion.after as string;
       break;
   }
-  
-  // Эмитим событие для обновления данных резюме в родительском компоненте
+
   emit('update:modelValue', updatedResumeData);
-  
-  // Эмитим событие применения рекомендации
   emit('apply-suggestion', suggestion);
   
-  // Удаляем рекомендацию из списка
   suggestions.value = suggestions.value.filter(s => s.id !== suggestion.id);
   
   if (stats.value) {
     stats.value.totalSuggestions--;
   }
-  
-  // Автоматически скрываем уведомление через 5 секунд
+
   setTimeout(() => {
     lastAppliedSuggestion.value = null;
   }, 5000);
-}
+};
 
-function ignoreSuggestion(suggestionId) {
-  // Удаляем рекомендацию из списка
+const ignoreSuggestion = (suggestionId: string): void => {
   suggestions.value = suggestions.value.filter(s => s.id !== suggestionId);
-  
-  if (stats.value) {
-    stats.value.totalSuggestions--;
-  }
-}
+  if (stats.value) stats.value.totalSuggestions--;
+};
 
 // Вспомогательные функции
-function getConfidenceBadgeClass(confidence) {
+const getConfidenceBadgeClass = (confidence: number): string => {
   if (confidence >= 0.9) return 'bg-green-500/20 text-green-500';
   if (confidence >= 0.7) return 'bg-blue-500/20 text-blue-500';
   return 'bg-yellow-500/20 text-yellow-500';
-}
+};
 
-function formatBeforeAfter(value) {
-  if (Array.isArray(value)) {
-    return value.join(', ');
-  }
+const formatBeforeAfter = (value: unknown): string => {
+  if (Array.isArray(value)) return value.join(', ');
   return String(value);
-}
+};
 
 // Загрузка данных
-function loadSuggestions() {
+const loadSuggestions = (): void => {
   isLoading.value = true;
   
-  // Если есть предоставленные рекомендации, используем их
   if (props.aiSuggestions && props.aiSuggestions.length > 0) {
     suggestions.value = props.aiSuggestions;
     isLoading.value = false;
     return;
   }
   
-  // Иначе загружаем мок-данные
   setTimeout(() => {
+    const experienceIds = props.resumeData.experience?.map(exp => exp.id).filter(Boolean) as string[];
+    
     const response = getMockAiSuggestions(
       props.resumeData.id || 123, 
       props.resumeData.job || 'Frontend Developer',
       '',
-      props.resumeData.experience?.map(exp => exp.id)
+      experienceIds
     );
     
     suggestions.value = response.suggestions;
     stats.value = response.stats;
     isLoading.value = false;
   }, 1000);
-}
+};
 
-// При монтировании компонента загружаем рекомендации
-onMounted(() => {
-  loadSuggestions();
-});
+
+onMounted(loadSuggestions);
 </script>
 
 <style scoped>
