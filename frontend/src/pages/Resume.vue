@@ -1,12 +1,12 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-[var(--background-start)] to-[var(--background-end)]">
     <div class="container mx-auto px-4 py-20">
-      <ProgressBar :currentStep="currentStep" @step-click="goToStep" />
+      <ProgressBar :current-step="currentStep" @step-click="goToStep" />
 
       <!-- Для шага 4 (FinalPreview) используем полную ширину и центрирование -->
       <div v-if="currentStep === 4" class="mt-8 flex justify-center">
         <FinalPreview
-          :resumeData="resumeData"
+          :resume-data="resumeData"
           @next-step="nextStep"
           @prev-step="prevStep"
         />
@@ -19,11 +19,11 @@
             <component
               :is="currentStepComponent"
               :key="currentStep"
-              :resumeData="resumeData"
+              :resume-data="resumeData"
               :templates="templates"
-              :selectedTemplate="selectedTemplate"
-              :aiSuggestions="aiSuggestions"
-              :employerEmail="employerEmail"
+              :selected-template="selectedTemplate"
+              :ai-suggestions="aiSuggestions"
+              :employer-email="employerEmail"
               @next-step="nextStep"
               @prev-step="prevStep"
               @update:modelValue="updateResumeData"
@@ -38,14 +38,14 @@
         </div>
 
         <div class="lg:sticky lg:top-8 lg:self-start">
-          <ResumePreview :resumeData="resumeData" :selectedTemplate="selectedTemplate" />
+          <ResumePreview :resume-data="resumeData" :selected-template="selectedTemplate" />
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, computed, watch } from 'vue'
 import { useResumeStore } from '@/stores/resumesStore'
 
@@ -57,24 +57,93 @@ import AiOptimization from '../components/ResumeComps/AiOptimization.vue'
 import DownloadOptions from '../components/ResumeComps/DownloadOptions.vue'
 import FinalPreview from '@/components/ResumeComps/FinalPreview.vue'
 
+interface Template {
+  name: string
+  image: string
+}
+
+interface AiSuggestion {
+  id: string
+  type: string
+  title: string
+  description: string
+  before: any
+  after: any
+  confidence: number
+  reasoning: string
+}
+
+interface Experience {
+  id?: string
+  company: string
+  position: string
+  startDate: string
+  endDate: string
+  description: string
+}
+
+interface StoreEducation {
+  institution: string
+  degree: string
+  field: string
+  startYear: number
+  endYear: number
+}
+
+interface ResumeData {
+  id?: number
+  title?: string
+  name?: string
+  email?: string
+  phone?: string
+  city?: string
+  job?: string
+  description?: string
+  experience?: Experience[]
+  education?: StoreEducation[]
+  skills?: string[]
+  template?: string
+  date?: string
+  sectionsOrder?: string[]
+  [key: string]: any
+}
+
+interface Resume extends Omit<ResumeData, 'id'> {
+  id: number
+  title: string
+  city: string
+  job: string
+  experience: Experience[]
+  education: StoreEducation[]
+  skills: string[]
+  template: string
+  date: string
+}
+
 const resumeStore = useResumeStore()
 
-const resumeData = computed(() =>
-  resumeStore.resumeToEdit || {
-    title: '',
-    city: '',
-    job: '',
-    experience: [],
-    skills: [],
-    template: ''
-  }
+const defaultResume: Resume = {
+  id: Date.now(),
+  title: '',
+  city: '',
+  job: '',
+  experience: [],
+  education: [],
+  skills: [],
+  template: '',
+  date: new Date().toISOString()
+}
+
+const resumeData = computed<ResumeData>(() => 
+  resumeStore.resumeToEdit ? { ...resumeStore.resumeToEdit } : { ...defaultResume }
 )
 
-const employerEmail = ref('')
-const currentStep = ref(1)
-const selectedTemplate = ref(null)
+const employerEmail = ref<string>('')
+const currentStep = ref<number>(1)
+const selectedTemplate = ref<number | null>(null)
+const aiSuggestions = ref<AiSuggestion[]>([])
 
-const templates = [
+const templates: Template[] = [
   { name: 'Классический', image: '/placeholder.svg?height=200&width=150' },
   { name: 'Современный', image: '/placeholder.svg?height=200&width=150' },
   { name: 'Креативный', image: '/placeholder.svg?height=200&width=150' },
@@ -94,11 +163,15 @@ const currentStepComponent = computed(() => {
   }
 })
 
-// 💡 Автосинхронизация шаблона с selectedTemplate
+// Автосинхронизация шаблона с selectedTemplate
 watch(
   () => resumeData.value.template,
-  (newTemplate) => {
-    const index = templates.findIndex(t => t.name.toLowerCase() === newTemplate?.toLowerCase())
+  (newTemplate: string | undefined) => {
+    if (!newTemplate) return
+    
+    const index = templates.findIndex(t => 
+      t.name.toLowerCase() === newTemplate.toLowerCase()
+    )
     if (index !== -1) {
       selectedTemplate.value = index
     }
@@ -108,91 +181,107 @@ watch(
 
 const isEditing = computed(() => !!resumeData.value.id)
 
-const selectTemplate = (index) => {
+const selectTemplate = (index: number): void => {
   selectedTemplate.value = index
-  resumeData.value.template = templates[index].name.toLowerCase()
-  resumeStore.setResumeForEdit({ ...resumeData.value })
+  const templateName = templates[index].name.toLowerCase()
+  updateResumeData({
+    ...resumeData.value,
+    template: templateName
+  })
 }
 
-const nextStep = () => {
+const nextStep = (): void => {
   if (currentStep.value === 1) {
     const r = resumeData.value
-    const valid = r.title && r.city && r.job && Array.isArray(r.experience) && r.experience.length && r.skills?.length
+    const valid = r.title && r.city && r.job && 
+                 Array.isArray(r.experience) && 
+                 r.experience.length > 0 && 
+                 r.skills?.length
     if (!valid) {
       alert('Пожалуйста, заполните все поля')
       return
     }
   }
+  
   if (currentStep.value === 2 && selectedTemplate.value === null) {
     alert('Выберите шаблон резюме')
     return
   }
+  
   currentStep.value++
   scrollToTop()
 }
 
-const prevStep = () => {
+const prevStep = (): void => {
   if (currentStep.value > 1) currentStep.value--
   scrollToTop()
 }
 
-const goToStep = (step) => {
+const goToStep = (step: number): void => {
   currentStep.value = step
   scrollToTop()
 }
 
-const scrollToTop = () => {
+const scrollToTop = (): void => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-const updateResumeData = (updated) => {
-  resumeStore.setResumeForEdit(updated)
+const updateResumeData = (updated: ResumeData): void => {
+  const completeResume: Resume = {
+    ...defaultResume,
+    ...updated,
+    id: updated.id || defaultResume.id,
+    title: updated.title || defaultResume.title,
+    city: updated.city || defaultResume.city,
+    job: updated.job || defaultResume.job,
+    experience: updated.experience || defaultResume.experience,
+    education: updated.education || defaultResume.education,
+    skills: updated.skills || defaultResume.skills,
+    template: updated.template || defaultResume.template,
+    date: updated.date || defaultResume.date
+  }
+  resumeStore.setResumeForEdit(completeResume)
 }
 
-const applySuggestion = (suggestion) => {
-  // Показываем визуальное уведомление об успешном применении
-  const notification = document.createElement('div');
-  notification.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 flex items-center';
+const applySuggestion = (suggestion: AiSuggestion): void => {
+  const notification = document.createElement('div')
+  notification.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 flex items-center'
   notification.innerHTML = `
     <i class="fas fa-check-circle mr-2"></i>
     <span>Рекомендация применена!</span>
-  `;
-  document.body.appendChild(notification);
+  `
+  document.body.appendChild(notification)
   
-  // Удаляем уведомление через 3 секунды
   setTimeout(() => {
-    notification.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+    notification.classList.add('opacity-0', 'transition-opacity', 'duration-500')
     setTimeout(() => {
-      document.body.removeChild(notification);
-    }, 500);
-  }, 3000);
+      document.body.removeChild(notification)
+    }, 500)
+  }, 3000)
   
-  // Логируем примененную рекомендацию
-  console.log('Применена рекомендация:', suggestion);
+  console.log('Применена рекомендация:', suggestion)
 }
-const createNewResume = () => {
-  resumeStore.setResumeForEdit({
-    title: '',
-    city: '',
-    job: '',
-    experience: [],
-    skills: [],
-    template: ''
-  })
+
+const createNewResume = (): void => {
+  resumeStore.setResumeForEdit({ ...defaultResume, id: Date.now() })
   currentStep.value = 1
 }
 
-const updateEmployerEmail = (email) => {
+const updateEmployerEmail = (email: string): void => {
   employerEmail.value = email
 }
 
-const handleSendToEmployer = (email) => {
+const handleSendToEmployer = (email: string): void => {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!re.test(email)) {
     alert('Некорректный email')
     return
   }
   alert('Email подтвержден: ' + email)
+}
+
+const handleDownloadResume = (): void => {
+  console.log('Download resume')
 }
 </script>
 
