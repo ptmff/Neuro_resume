@@ -177,6 +177,7 @@ const props = defineProps<ResumePreviewProps>()
 const emit = defineEmits<{
   (e: 'next-step'): void;
   (e: 'prev-step'): void;
+  (e: 'update:sections-order', order: string[]): void 
 }>()
 
 const profileStore = useProfileStore()
@@ -196,6 +197,8 @@ const dragOverIndex = ref<number | null>(null)
 const isDragging = ref(false)
 const dragStartY = ref(0)
 const dragCurrentY = ref(0)
+
+
 
 // Вычисляемые свойства для определения текущего шаблона
 const currentTemplate = computed(() => {
@@ -409,6 +412,7 @@ const endDrag = (): void => {
     const [movedItem] = newSections.splice(draggedIndex.value, 1)
     newSections.splice(dragOverIndex.value, 0, movedItem)
     sections.value = newSections
+    emit('update:sections-order', newSections.map(s => s.id))
   }
   
   isDragging.value = false

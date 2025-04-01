@@ -35,41 +35,49 @@
         </div>
 
         <!-- О себе -->
-        <h4 :class="getSectionHeaderClass()">{{ getAboutIcon() }} О себе</h4>
-         <div class="mb-6 space-y-1" :class="getTextClass()">
-          {{ resumeData?.description }}
-         </div>
+        <template v-for="section in orderedSections" :key="section.id">
+          <div v-if="section.id === 'about'" class="mb-6" v-show="resumeData.description">
+            <h4 :class="getSectionHeaderClass()">{{ getAboutIcon() }} О себе</h4>
+            <div class="mb-6 space-y-1" :class="getTextClass()">
+              {{ resumeData?.description }}
+            </div>
+          </div>
 
-        <!-- Опыт -->
-        <div v-if="resumeData.experience?.length" class="mb-6">
-          <h4 :class="getSectionHeaderClass()">{{ getExperienceIcon() }} Опыт работы</h4>
-          <div :class="getTimelineClass()">
-            <div v-for="(exp, i) in resumeData.experience" :key="i" class="timeline-entry">
-              <div :class="getDotClass()" />
-              <div class="content">
-                <div :class="getItemHeaderClass()">
-                  {{ exp.company }} — {{ exp.position }}
+          <!-- Опыт -->
+          <div v-if="section.id === 'experience'" class="mb-6" v-show="resumeData.experience">
+            <div v-if="resumeData.experience?.length" class="mb-6">
+              <h4 :class="getSectionHeaderClass()">{{ getExperienceIcon() }} Опыт работы</h4>
+              <div :class="getTimelineClass()">
+                <div v-for="(exp, i) in resumeData.experience" :key="i" class="timeline-entry">
+                  <div :class="getDotClass()" />
+                  <div class="content">
+                    <div :class="getItemHeaderClass()">
+                      {{ exp.company }} — {{ exp.position }}
+                    </div>
+                    <div :class="getDateClass()">{{ exp.startDate }} – {{ exp.endDate }}</div>
+                    <p class="mt-1" :class="getTextClass()">{{ exp.description }}</p>
+                  </div>
                 </div>
-                <div :class="getDateClass()">{{ exp.startDate }} – {{ exp.endDate }}</div>
-                <p class="mt-1" :class="getTextClass()">{{ exp.description }}</p>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Навыки -->
-        <div v-if="resumeData.skills?.length">
-          <h4 :class="getSectionHeaderClass()">{{ getSkillsIcon() }} Навыки</h4>
-          <transition-group name="chip" tag="div" class="flex flex-wrap gap-2">
-            <span
-              v-for="(skill, index) in resumeData.skills"
-              :key="skill + index"
-              :class="getSkillClass()"
-            >
-              <i :class="getSkillIconClass()"></i>{{ skill }}
-            </span>
-          </transition-group>
-        </div>
+          <!-- Навыки -->
+          <div v-if="section.id === 'skills'" class="mb-6" v-show="resumeData.skills">
+            <div v-if="resumeData.skills?.length">
+              <h4 :class="getSectionHeaderClass()">{{ getSkillsIcon() }} Навыки</h4>
+              <transition-group name="chip" tag="div" class="flex flex-wrap gap-2">
+                <span
+                  v-for="(skill, index) in resumeData.skills"
+                  :key="skill + index"
+                  :class="getSkillClass()"
+                >
+                  <i :class="getSkillIconClass()"></i>{{ skill }}
+                </span>
+              </transition-group>
+            </div>
+          </div>
+        </template>
       </div>
     </transition>
   </div>
@@ -132,6 +140,26 @@ interface ResumePreviewProps {
 }
 
 const props = defineProps<ResumePreviewProps>()
+
+const orderedSections = computed(() => {
+  const defaultSections = [
+    { id: 'about', title: 'О себе' },
+    { id: 'experience', title: 'Опыт работы' },
+    { id: 'education', title: 'Образование' },
+    { id: 'skills', title: 'Навыки' }
+  ]
+  
+  if (!props.resumeData.sectionsOrder?.length) {
+    return defaultSections
+  }
+  
+  // Сортируем секции согласно сохраненному порядку
+  return [...defaultSections].sort((a, b) => {
+    const aIndex = props.resumeData.sectionsOrder?.indexOf(a.id) ?? -1
+    const bIndex = props.resumeData.sectionsOrder?.indexOf(b.id) ?? -1
+    return aIndex - bIndex
+  })
+})
 
 const profileStore = useProfileStore()
 // Используем тип StoreProfile для соответствия фактической структуре данных

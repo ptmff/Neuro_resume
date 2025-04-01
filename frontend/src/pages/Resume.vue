@@ -9,6 +9,7 @@
           :resume-data="resumeData"
           @next-step="nextStep"
           @prev-step="prevStep"
+          @update:sections-order="updateSectionsOrder"
         />
       </div>
       
@@ -224,6 +225,13 @@ const goToStep = (step: number): void => {
 
 const scrollToTop = (): void => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+const updateSectionsOrder = (newOrder: string[]) => {
+  updateResumeData({
+    ...resumeData.value,
+    sectionsOrder: newOrder
+  })
 }
 
 const updateResumeData = (updated: ResumeData): void => {
