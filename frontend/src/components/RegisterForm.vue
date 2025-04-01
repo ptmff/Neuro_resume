@@ -113,17 +113,16 @@ const handleRegister = async () => {
               <input v-model="edu.field" type="text" placeholder="Специальность" class="form-input" />
               <input v-model.number="edu.startYear" type="number" placeholder="Год начала" class="form-input" />
               <input v-model.number="edu.endYear" type="number" placeholder="Год окончания" class="form-input" />
-              <button type="button" class="submit-btn" @click="removeEducation(i)">Удалить</button>
+              <button type="button" class="delete-btn" @click="removeEducation(i)">Удалить</button>
             </div>
-
-            <button type="button" class="submit-btn" @click="addEducation">Добавить образование</button>
+            <button type="button" class="submit-btn w-full" @click="addEducation">Добавить образование</button>
           </div>
 
           <!-- Навигация -->
-          <div class="flex justify-between pt-4">
-            <button type="button" @click="prevStep" v-if="step > 1" class="submit-btn">Назад</button>
-            <button type="submit" class="submit-btn">
-              {{ step === 3 ? (auth.loading ? 'Регистрируем...' : 'Зарегистрироваться') : 'Далее' }}
+          <div class="flex justify-between pt-4 ">
+            <button type="button" @click="prevStep" v-if="step > 1" class="submit-btn w-40">Назад</button>
+            <button type="submit" class="submit-btn w-40">
+              {{ step === 3 ? (auth.loading ? 'Регистрируем...' : 'Готово') : 'Далее' }}
             </button>
           </div>
 
@@ -182,7 +181,7 @@ const handleRegister = async () => {
 }
 
 .submit-btn {
-  @apply w-full text-white font-semibold py-2 rounded-xl;
+  @apply text-white font-semibold py-2 rounded-xl;
   background: linear-gradient(135deg, #9d00ff, #00e5ff);
   background-size: 200%;
   background-position: left center;
@@ -191,6 +190,20 @@ const handleRegister = async () => {
 }
 
 .submit-btn:hover {
+  background-position: center;
+  filter: brightness(1.1);
+}
+
+.delete-btn {
+  @apply text-white font-semibold py-2 rounded-xl p-4;
+  background: linear-gradient(135deg, #ca1b18, #FFA700);
+  background-size: 200%;
+  background-position: left center;
+  transition: all 0.4s ease-in-out;
+  filter: brightness(1);
+}
+
+.delete-btn:hover {
   background-position: center;
   filter: brightness(1.1);
 }
