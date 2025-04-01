@@ -59,6 +59,25 @@
         </div>
       </div>
 
+      <!-- Последнее примененное изменение -->
+      <div v-if="lastAppliedSuggestion" class="applied-suggestion-container mb-6 p-4 rounded-xl bg-[var(--background-section)] bg-opacity-70 border border-green-300">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center">
+            <div class="bg-green-500 p-2 rounded-full mr-3">
+              <i class="fas fa-check text-white"></i>
+            </div>
+            <h4 class="text-lg font-semibold text-[var(--text-light)]">Изменение применено</h4>
+          </div>
+          <button @click="lastAppliedSuggestion = null" class="text-[var(--text-mainless)] hover:text-[var(--text-light)]">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <p class="text-[var(--text-secondary)] mb-2">{{ lastAppliedSuggestion.title }}</p>
+        <div class="text-sm text-green-500">
+          <i class="fas fa-eye mr-1"></i> Изменения отображаются в превью справа
+        </div>
+      </div>
+
       <!-- Список рекомендаций -->
       <div class="space-y-4">
         <div
@@ -100,13 +119,22 @@
           </div>
           
           <div class="flex space-x-3">
-            <button @click="applySuggestion(suggestion.id)" class="btn btn-primary">
+            <button @click="applySuggestion(suggestion)" class="btn btn-primary">
               <i class="fas fa-check mr-2"></i> Применить
             </button>
             <button @click="ignoreSuggestion(suggestion.id)" class="btn btn-secondary">
               <i class="fas fa-times mr-2"></i> Игнорировать
             </button>
           </div>
+        </div>
+      </div>
+      
+      <!-- Нет рекомендаций -->
+      <div v-if="suggestions.length === 0 && !isLoading" class="no-suggestions p-6 text-center">
+        <div class="bg-green-500/10 p-6 rounded-xl border border-green-500/20 mb-4">
+          <i class="fas fa-check-circle text-green-500 text-4xl mb-3"></i>
+          <h4 class="text-xl font-semibold text-[var(--text-light)] mb-2">Ваше резюме оптимизировано!</h4>
+          <p class="text-[var(--text-secondary)]">Все рекомендации были применены. Ваше резюме готово к отправке.</p>
         </div>
       </div>
     </div>
@@ -118,71 +146,115 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref, onMounted, computed } from 'vue';
-import { 
-  getMockAiSuggestions, 
-  AiSuggestion, 
-  AiSuggestionStats 
-} from '@/mocks/mockAiSuggestions';
+import { getMockAiSuggestions } from '@/mocks/mockAiSuggestions';
 
 const props = defineProps({
-  resumeId: {
-    type: Number,
-    default: 123
+  resumeData: {
+    type: Object,
+    required: true
   },
-  targetPosition: {
-    type: String,
-    default: 'Frontend Developer'
-  },
-  targetCompany: {
-    type: String,
-    default: 'Yandex'
+  aiSuggestions: {
+    type: Array,
+    default: () => []
   }
 });
 
-const emit = defineEmits(['apply-suggestion', 'ignore-suggestion', 'next-step', 'prev-step']);
+const emit = defineEmits(['apply-suggestion', 'next-step', 'prev-step', 'update:modelValue']);
 
 // Состояние
 const isLoading = ref(true);
-const suggestions = ref<AiSuggestion[]>([]);
-const stats = ref<AiSuggestionStats | null>(null);
+const suggestions = ref([]);
+const stats = ref(null);
+const lastAppliedSuggestion = ref(null);
 
 // Методы
-function applySuggestion(suggestionId: string) {
-  const suggestion = suggestions.value.find(s => s.id === suggestionId);
-  if (suggestion) {
-    emit('apply-suggestion', suggestion);
-    // Удаляем рекомендацию из списка
-    suggestions.value = suggestions.value.filter(s => s.id !== suggestionId);
-    
-    if (stats.value) {
-      stats.value.totalSuggestions--;
+function applySuggestion(suggestion) {
+  // Сохраняем последнюю примененную рекомендацию для отображения
+  lastAppliedSuggestion.value = suggestion;
+  
+  // Создаем копию данных резюме для обновления
+  const updatedResumeData = { ...props.resumeData };
+  
+  // Применяем изменения в зависимости от типа рекомендации
+  switch (suggestion.type) {
+    case 'skills':
+      // Если рекомендация касается навыков
+      if (Array.isArray(suggestion.after)) {
+        updatedResumeData.skills = [...suggestion.after];
+      }
+      break;
+      
+      case 'experience':
+  updatedResumeData.experience = [...(updatedResumeData.experience || [])];
+  
+  // Если есть targetExperienceId, ищем по нему
+  if (suggestion.targetExperienceId) {
+    const index = updatedResumeData.experience.findIndex(
+      exp => exp.id === suggestion.targetExperienceId
+    );
+    if (index !== -1) {
+      updatedResumeData.experience[index] = {
+        ...updatedResumeData.experience[index],
+        description: suggestion.after
+      };
     }
   }
+  
+  // Если не нашли по ID или ID не указан, обновляем первый элемент
+  if (updatedResumeData.experience.length > 0 && 
+     (!suggestion.targetExperienceId || 
+      !updatedResumeData.experience.some(exp => exp.id === suggestion.targetExperienceId))) {
+    updatedResumeData.experience[0] = {
+      ...updatedResumeData.experience[0],
+      description: suggestion.after
+    };
+  }
+  break;
+      
+    case 'description':
+      // Если рекомендация касается самоописания
+      updatedResumeData.description = suggestion.after;
+      break;
+  }
+  
+  // Эмитим событие для обновления данных резюме в родительском компоненте
+  emit('update:modelValue', updatedResumeData);
+  
+  // Эмитим событие применения рекомендации
+  emit('apply-suggestion', suggestion);
+  
+  // Удаляем рекомендацию из списка
+  suggestions.value = suggestions.value.filter(s => s.id !== suggestion.id);
+  
+  if (stats.value) {
+    stats.value.totalSuggestions--;
+  }
+  
+  // Автоматически скрываем уведомление через 5 секунд
+  setTimeout(() => {
+    lastAppliedSuggestion.value = null;
+  }, 5000);
 }
 
-function ignoreSuggestion(suggestionId: string) {
-  const suggestion = suggestions.value.find(s => s.id === suggestionId);
-  if (suggestion) {
-    emit('ignore-suggestion', suggestion);
-    // Удаляем рекомендацию из списка
-    suggestions.value = suggestions.value.filter(s => s.id !== suggestionId);
-    
-    if (stats.value) {
-      stats.value.totalSuggestions--;
-    }
+function ignoreSuggestion(suggestionId) {
+  // Удаляем рекомендацию из списка
+  suggestions.value = suggestions.value.filter(s => s.id !== suggestionId);
+  
+  if (stats.value) {
+    stats.value.totalSuggestions--;
   }
 }
 
 // Вспомогательные функции
-function getConfidenceBadgeClass(confidence: number) {
+function getConfidenceBadgeClass(confidence) {
   if (confidence >= 0.9) return 'bg-green-500/20 text-green-500';
   if (confidence >= 0.7) return 'bg-blue-500/20 text-blue-500';
   return 'bg-yellow-500/20 text-yellow-500';
 }
 
-function formatBeforeAfter(value: any): string {
+function formatBeforeAfter(value) {
   if (Array.isArray(value)) {
     return value.join(', ');
   }
@@ -193,12 +265,20 @@ function formatBeforeAfter(value: any): string {
 function loadSuggestions() {
   isLoading.value = true;
   
-  // Имитируем задержку загрузки данных
+  // Если есть предоставленные рекомендации, используем их
+  if (props.aiSuggestions && props.aiSuggestions.length > 0) {
+    suggestions.value = props.aiSuggestions;
+    isLoading.value = false;
+    return;
+  }
+  
+  // Иначе загружаем мок-данные
   setTimeout(() => {
     const response = getMockAiSuggestions(
-      props.resumeId, 
-      props.targetPosition, 
-      props.targetCompany
+      props.resumeData.id || 123, 
+      props.resumeData.job || 'Frontend Developer',
+      '',
+      props.resumeData.experience?.map(exp => exp.id)
     );
     
     suggestions.value = response.suggestions;
@@ -260,5 +340,20 @@ onMounted(() => {
   color: var(--neon-purple);
   font-weight: bold;
   z-index: 2;
+}
+
+.applied-suggestion-container {
+  animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

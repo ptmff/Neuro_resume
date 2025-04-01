@@ -149,6 +149,27 @@ const updateResumeData = (updated) => {
   resumeStore.setResumeForEdit(updated)
 }
 
+const applySuggestion = (suggestion) => {
+  // Показываем визуальное уведомление об успешном применении
+  const notification = document.createElement('div');
+  notification.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 flex items-center';
+  notification.innerHTML = `
+    <i class="fas fa-check-circle mr-2"></i>
+    <span>Рекомендация применена!</span>
+  `;
+  document.body.appendChild(notification);
+  
+  // Удаляем уведомление через 3 секунды
+  setTimeout(() => {
+    notification.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+    setTimeout(() => {
+      document.body.removeChild(notification);
+    }, 500);
+  }, 3000);
+  
+  // Логируем примененную рекомендацию
+  console.log('Применена рекомендация:', suggestion);
+}
 const createNewResume = () => {
   resumeStore.setResumeForEdit({
     title: '',

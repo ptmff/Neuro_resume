@@ -1,4 +1,5 @@
 // Типы данных для AI-рекомендаций
+
 export interface AiSuggestion {
   id: string;
   type: 'skills' | 'experience' | 'education' | 'description';
@@ -8,7 +9,7 @@ export interface AiSuggestion {
   before: any;
   after: any;
   reasoning: string;
-  targetExperienceId?: string;
+  targetExperienceId?: string | null;
 }
 
 export interface AiSuggestionStats {
@@ -37,9 +38,12 @@ export interface AiSuggestionsResponse {
 export function getMockAiSuggestions(
   resumeId: number = 123,
   targetPosition: string = 'Frontend Developer',
-  targetCompany: string = ''
+  targetCompany: string = '',
+  experienceIds?: string[]
 ): AiSuggestionsResponse {
-  // Базовые рекомендации, которые всегда присутствуют
+
+  const targetExperienceId = experienceIds?.length ? experienceIds[0] : null;  
+    // Базовые рекомендации, которые всегда присутствуют
   const baseSuggestions: AiSuggestion[] = [
     {
       id: 'sug-001',
@@ -57,7 +61,7 @@ export function getMockAiSuggestions(
       title: 'Улучшите описание опыта работы',
       description: 'Добавьте количественные результаты в описание вашей работы в компании ABC',
       confidence: 0.92,
-      targetExperienceId: 'exp-123',
+      targetExperienceId,
       before: 'Разрабатывал веб-приложения с использованием React',
       after: 'Разработал 5 высоконагруженных веб-приложений с использованием React, что привело к увеличению конверсии на 23%',
       reasoning: 'Количественные показатели делают ваши достижения более убедительными'
