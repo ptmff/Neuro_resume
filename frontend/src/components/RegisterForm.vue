@@ -1,11 +1,19 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import { useProfileStore } from '@/stores/profileStore'
 import { Cropper } from 'vue-advanced-cropper'
 import 'vue-advanced-cropper/dist/style.css'
+
 const profileStore = useProfileStore()
+const auth = useAuthStore()
+const router = useRouter()
+
+const step = ref(1)
+const photoFile = ref<File | null>(null)
+const photoPreview = ref<string>('')
+const cropper = ref()
 
 interface EducationDto {
   institution: string
@@ -14,13 +22,6 @@ interface EducationDto {
   startYear: number
   endYear: number
 }
-
-const step = ref(1)
-const photoFile = ref<File | null>(null)
-const photoPreview = ref<string>('')
-const auth = useAuthStore()
-const router = useRouter()
-const cropper = ref()
 
 const registerData = reactive({
   email: '',
@@ -32,13 +33,6 @@ const registerData = reactive({
   education: [] as EducationDto[],
 })
 
-const onPhotoChange = (e: Event) => {
-  const input = e.target as HTMLInputElement
-  if (!input.files?.length) return
-  photoFile.value = input.files[0]
-  photoPreview.value = URL.createObjectURL(photoFile.value)
-}
-
 const educationEntry = reactive<EducationDto>({
   institution: '',
   degree: '',
@@ -49,6 +43,13 @@ const educationEntry = reactive<EducationDto>({
 
 const croppedImage = ref<File | null>(null)
 
+const onPhotoChange = (e: Event) => {
+  const input = e.target as HTMLInputElement
+  if (!input.files?.length) return
+  photoFile.value = input.files[0]
+  photoPreview.value = URL.createObjectURL(photoFile.value)
+}
+
 const getCroppedImage = (): Promise<File | null> => {
   return new Promise((resolve) => {
     const result = cropper.value?.getResult()
@@ -57,7 +58,7 @@ const getCroppedImage = (): Promise<File | null> => {
     canvas?.toBlob((blob: BlobPart) => {
       if (blob) {
         const file = new File([blob], 'cropped.png', { type: 'image/png' })
-        croppedImage.value = file // 💾 сохранили
+        croppedImage.value = file
         resolve(file)
       } else {
         resolve(null)
@@ -66,7 +67,11 @@ const getCroppedImage = (): Promise<File | null> => {
   })
 }
 
-const nextStep = async () => {
+const prevStep = () => {
+  if (step.value > 1) step.value--
+}
+
+const nextStep = () => {
   if (!registerData.email && !registerData.phone) {
     auth.error = 'Укажите хотя бы email или телефон'
     return
@@ -76,23 +81,17 @@ const nextStep = async () => {
     return
   }
   auth.error = ''
-
-  if (step.value === 2) {
-    await getCroppedImage()
-  }
-
-  if (step.value < 3) step.value++
+  step.value++
 }
-
-
-const prevStep = () => {
-  if (step.value > 1) step.value--
-}
-console.log('Cropper value:', cropper.value)
-console.log('Cropper result:', cropper.value?.getResult())
 
 const handleRegister = async () => {
+  auth.error = ''
   registerData.education = [educationEntry]
+
+  // Кроп фото перед регистрацией
+  if (photoFile.value) {
+    await getCroppedImage()
+  }
 
   await auth.register({
     email: registerData.email,
@@ -104,9 +103,8 @@ const handleRegister = async () => {
   })
 
   if (!auth.error && croppedImage.value) {
-  await profileStore.uploadPhoto(croppedImage.value)
-}
-
+    await profileStore.uploadPhoto(croppedImage.value)
+  }
 
   if (!auth.error) {
     router.push('/')
@@ -120,7 +118,7 @@ const handleRegister = async () => {
       <div class="auth-box">
         <h2 class="auth-title">Регистрация</h2>
 
-        <form @submit.prevent="step === 3 ? handleRegister() : nextStep()" class="space-y-4 flex flex-col justify-between">
+        <form @submit.prevent="step === 2 ? handleRegister() : nextStep()" class="space-y-4 flex flex-col justify-between">
           <!-- Шаг 1 -->
           <div v-if="step === 1" class="grid grid-cols-2 gap-8">
             <div class="flex flex-col gap-2">
@@ -149,13 +147,10 @@ const handleRegister = async () => {
             </div>
           </div>
 
-          <!-- Шаг 2 -->
+          <!-- Шаг 2 (финальный) -->
           <div v-if="step === 2" class="flex gap-6 min-h-[480px]">
             <div class="flex-1 flex items-center justify-center bg-[var(--background-main)] rounded-2xl overflow-hidden border border-[var(--background-pale)] relative">
-              <div
-                v-if="photoPreview"
-                class="relative max-w-full max-h-full overflow-hidden rounded-xl"
-              >
+              <div v-if="photoPreview" class="relative max-w-full max-h-full overflow-hidden rounded-xl">
                 <div class="flex-1 bg-[var(--background-main)] rounded-2xl border border-[var(--background-pale)] overflow-hidden relative">
                   <Cropper
                     ref="cropper"
@@ -189,10 +184,11 @@ const handleRegister = async () => {
             </div>
           </div>
 
+          <!-- Кнопки -->
           <div class="flex justify-between pt-4 gap-4">
             <button type="button" @click="prevStep" v-if="step > 1" class="submit-btn w-full">Назад</button>
             <button type="submit" class="submit-btn w-full">
-              {{ step === 3 ? (auth.loading ? 'Регистрируем...' : 'Готово') : 'Далее' }}
+              {{ step === 2 ? (auth.loading ? 'Регистрируем...' : 'Завершить регистрацию') : 'Далее' }}
             </button>
           </div>
 

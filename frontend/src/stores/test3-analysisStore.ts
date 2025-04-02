@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, nextTick } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 import { useProfileStore } from './profileStore'
 import { useResumeStore } from './resumesStore'
 import {
@@ -9,8 +9,7 @@ import {
   highlightMatchedSkills,
   animateTimeline
 } from '@/composables/useAnalysisAnimations'
-
-import { fetchMockAnalysis } from '@/mocks/mockAnalysis' // 🧪 подключаем мок
+import { fetchMockAnalysis } from '@/mocks/mockAnalysis'
 
 interface AnalysisPhase {
   id: string
@@ -32,13 +31,16 @@ interface AnalysisResult {
   recommendations: string[]
 }
 
+const STORAGE_KEY = 'neuro-analysis-state'
+
 export const useAnalysisStore = defineStore('analysisStore', () => {
   const analysisMode = ref<'fast' | 'deep'>('deep')
   const result = ref<AnalysisResult | null>(null)
   const currentPhaseIndex = ref(0)
   const isBackendDone = ref(false)
+  const jobUrl = ref<string>('')
 
-  const phases = ref<AnalysisPhase[]>([
+  const getDefaultPhases = (): AnalysisPhase[] => [
     {
       id: 'connect',
       title: 'Подключение к вакансии',
@@ -47,9 +49,7 @@ export const useAnalysisStore = defineStore('analysisStore', () => {
       logicalProgress: 0,
       visualProgress: 0,
       duration: 1000,
-      requiredInFastMode: true,
-      onStart: () => playSound('connect'),
-      onComplete: () => showParticles('connect')
+      requiredInFastMode: true
     },
     {
       id: 'scanSkills',
@@ -59,9 +59,7 @@ export const useAnalysisStore = defineStore('analysisStore', () => {
       logicalProgress: 0,
       visualProgress: 0,
       duration: 1500,
-      requiredInFastMode: true,
-      onStart: () => animateSection('skills'),
-      onComplete: () => highlightMatchedSkills()
+      requiredInFastMode: true
     },
     {
       id: 'matchExperience',
@@ -71,8 +69,7 @@ export const useAnalysisStore = defineStore('analysisStore', () => {
       logicalProgress: 0,
       visualProgress: 0,
       duration: 1200,
-      requiredInFastMode: false,
-      onStart: () => animateTimeline()
+      requiredInFastMode: false
     },
     {
       id: 'aiModel',
@@ -92,7 +89,24 @@ export const useAnalysisStore = defineStore('analysisStore', () => {
       visualProgress: 0,
       duration: 1000
     }
-  ])
+  ]
+
+  const injectPhaseCallbacks = (phases: AnalysisPhase[]) => {
+    for (const phase of phases) {
+      if (phase.id === 'connect') {
+        phase.onStart = () => playSound('connect')
+        phase.onComplete = () => showParticles('connect')
+      } else if (phase.id === 'scanSkills') {
+        phase.onStart = () => animateSection('skills')
+        phase.onComplete = () => highlightMatchedSkills()
+      } else if (phase.id === 'matchExperience') {
+        phase.onStart = () => animateTimeline()
+      }
+    }
+  }
+
+  const phases = ref<AnalysisPhase[]>(getDefaultPhases())
+  injectPhaseCallbacks(phases.value)
 
   const simulatePhase = (phase: AnalysisPhase): Promise<void> => {
     return new Promise((resolve) => {
@@ -126,11 +140,6 @@ export const useAnalysisStore = defineStore('analysisStore', () => {
       const resume = resumesStore.resumes.find(r => r.id === mainResumeId)
       if (!resume) throw new Error('Не найдено резюме')
 
-      // 🧪 МОК вместо бэка:
-      const data = await fetchMockAnalysis(jobText)
-      result.value = data.result
-      isBackendDone.value = true
-
       // 🔁 Реальный вызов позже:
       /*
       const res = await fetch('/api/analyse', {
@@ -144,6 +153,9 @@ export const useAnalysisStore = defineStore('analysisStore', () => {
       isBackendDone.value = true
       */
 
+      const data = await fetchMockAnalysis(jobText)
+      result.value = data.result
+      isBackendDone.value = true
     } catch (err) {
       console.error('[analysisStore] Ошибка анализа:', err)
       throw err
@@ -180,10 +192,11 @@ export const useAnalysisStore = defineStore('analysisStore', () => {
     }
   }
 
-  const startJobAnalysis = async (jobText: string) => {
+  const startJobAnalysis = async (text: string) => {
     clear()
     isBackendDone.value = false
-    fetchAnalysisResult(jobText) // 🧪 идёт параллельно
+    jobUrl.value = text
+    fetchAnalysisResult(text)
     await nextTick()
     await startAnalysisPhases()
   }
@@ -192,16 +205,53 @@ export const useAnalysisStore = defineStore('analysisStore', () => {
     result.value = null
     isBackendDone.value = false
     currentPhaseIndex.value = 0
-    phases.value.forEach(p => {
-      p.status = 'pending'
-      p.logicalProgress = 0
-      p.visualProgress = 0
-    })
+    jobUrl.value = ''
+    phases.value = getDefaultPhases()
+    injectPhaseCallbacks(phases.value)
   }
 
   const setMode = (mode: 'fast' | 'deep') => {
     analysisMode.value = mode
   }
+
+  // 🧠 Хранилище в localStorage
+  const saveToLocalStorage = () => {
+    const data = {
+      analysisMode: analysisMode.value,
+      currentPhaseIndex: currentPhaseIndex.value,
+      result: result.value,
+      isBackendDone: isBackendDone.value,
+      phases: phases.value.map(({ onStart, onComplete, ...p }) => p),
+      jobUrl: jobUrl.value
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+  }
+
+  const loadFromLocalStorage = () => {
+    try {
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')
+      if (!data || !data.phases) return
+
+      analysisMode.value = data.analysisMode || 'deep'
+      currentPhaseIndex.value = data.currentPhaseIndex || 0
+      result.value = data.result || null
+      isBackendDone.value = data.isBackendDone || false
+      jobUrl.value = data.jobUrl || ''
+      phases.value = data.phases
+      injectPhaseCallbacks(phases.value)
+    } catch (err) {
+      console.error('[analysisStore] ошибка загрузки состояния:', err)
+    }
+  }
+
+  // 🧷 Автосохранение
+  watch(
+    [phases, result, isBackendDone, currentPhaseIndex, analysisMode, jobUrl],
+    saveToLocalStorage,
+    { deep: true }
+  )
+
+  loadFromLocalStorage()
 
   return {
     analysisMode,
@@ -211,6 +261,7 @@ export const useAnalysisStore = defineStore('analysisStore', () => {
     result,
     startJobAnalysis,
     clear,
-    isBackendDone
+    isBackendDone,
+    jobUrl
   }
 })

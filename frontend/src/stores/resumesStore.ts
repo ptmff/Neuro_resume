@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import api from '@/api'
 import type { Resume } from '@/types/types'
 import { useProfileStore } from './profileStore'
+
+const LOCAL_STORAGE_KEY = 'resumeToEdit'
 
 export const useResumeStore = defineStore('resumes', () => {
   const resumes = ref<Resume[]>([])
@@ -25,7 +27,6 @@ export const useResumeStore = defineStore('resumes', () => {
       const response = await api.post('/Resumes', newResume)
       resumes.value.push(response.data)
 
-      // Можно автоматически сделать его основным (опционально)
       const profileStore = useProfileStore()
       profileStore.setMainResume(response.data.id)
       await profileStore.updateProfile({ mainResumeId: response.data.id })
@@ -45,34 +46,52 @@ export const useResumeStore = defineStore('resumes', () => {
     }
   }
 
-// Удаление резюме
-const deleteResume = async (id: number) => {
-  try {
-    await api.delete(`/Resumes/${id}`)
-    resumes.value = resumes.value.filter(r => r.id !== id)
+  // Удаление резюме
+  const deleteResume = async (id: number) => {
+    try {
+      await api.delete(`/Resumes/${id}`)
+      resumes.value = resumes.value.filter(r => r.id !== id)
 
-    // Если удалили основное резюме — сбрасываем
-    const profileStore = useProfileStore()
-    if (profileStore.profile?.mainResumeId === id) {
-      profileStore.setMainResume(null)
-      await profileStore.updateProfile({ mainResumeId: null })
+      const profileStore = useProfileStore()
+      if (profileStore.profile?.mainResumeId === id) {
+        profileStore.setMainResume(null)
+        await profileStore.updateProfile({ mainResumeId: null })
+      }
+    } catch (err) {
+      console.error('[resumesStore] error deleting resume:', err)
     }
-  } catch (err) {
-    console.error('[resumesStore] error deleting resume:', err)
   }
-}
 
-
-  // Установить резюме для редактирования
+  // Установить резюме для редактирования + сохранить в localStorage
   const setResumeForEdit = (resume: Resume | null) => {
     resumeToEdit.value = resume
+    if (resume) {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(resume))
+    } else {
+      localStorage.removeItem(LOCAL_STORAGE_KEY)
+    }
   }
 
-  // Получить основное резюме из профиля
+  // Восстановить резюме при инициализации стора
+  const restoreResumeToEdit = () => {
+    const saved = localStorage.getItem(LOCAL_STORAGE_KEY)
+    if (saved) {
+      try {
+        resumeToEdit.value = JSON.parse(saved)
+      } catch (err) {
+        console.warn('[resumesStore] failed to parse saved resume:', err)
+        localStorage.removeItem(LOCAL_STORAGE_KEY)
+      }
+    }
+  }
+
+  // Автоматически восстанавливаем при подключении стора
+  restoreResumeToEdit()
+
+  // Вычисляемое основное резюме
   const mainResume = computed(() => {
     const profileStore = useProfileStore()
     const profile = profileStore.profile
-
     if (!profile || !profile.mainResumeId) return null
     return resumes.value.find(r => r.id === profile.mainResumeId) || null
   })
@@ -85,6 +104,7 @@ const deleteResume = async (id: number) => {
     updateResume,
     deleteResume,
     setResumeForEdit,
+    restoreResumeToEdit,
     mainResume
   }
 })

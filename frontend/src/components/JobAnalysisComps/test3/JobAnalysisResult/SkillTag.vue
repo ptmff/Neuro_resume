@@ -3,11 +3,27 @@ defineProps<{ label: string }>()
 </script>
 
 <template>
-  <span class="px-3 py-2 rounded-full text-white text-sm font-semibold 
-  border-[var(--gradient-danger)] shadow-[0_0_8px_2px_rgba(239,83,80,0.8)] 
-  hover:scale-105 transition"
-  style="background: var(--gradient-danger)"
-  >
+  <span class="tag-chip">
     {{ label }}
   </span>
 </template>
+
+<style scoped>
+.tag-chip {
+  display: inline-block;
+  padding: 0.5rem 0.75rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: white;
+  background: var(--gradient-danger);
+  border: 1px solid var(--resume-red);
+  box-shadow: 0 0 8px 2px rgba(239, 83, 80, 0.8);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.tag-chip:hover {
+  transform: scale(1.1);
+}
+</style>

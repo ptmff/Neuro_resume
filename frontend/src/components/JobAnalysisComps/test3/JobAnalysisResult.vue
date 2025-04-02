@@ -56,11 +56,11 @@ onMounted(() => {
       <h3 class="text-xl font-semibold mb-4">Не хватает навыков:</h3>
       <div class="flex flex-wrap gap-3 skill-chip">
         <SkillTag
-          v-for="skill in store.result.missingSkills"
+          v-for="(skill, index) in store.result.missingSkills"
           :key="skill"
           :label="skill"
           data-aos="fade-right"
-          :data-aos-delay="350+index*100"
+          :data-aos-delay="350 + index * 150"
         />
       </div>
     </div>
