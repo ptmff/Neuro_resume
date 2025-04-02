@@ -29,6 +29,8 @@ const resetAvatar = () => {
   selected.value = defaultAvatar
 }
 
+const fileInput = ref<HTMLInputElement | null>(null)
+
 const uploadCustomAvatar = async (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0]
   if (file) {
@@ -36,6 +38,10 @@ const uploadCustomAvatar = async (event: Event) => {
     await profileStore.fetchProfile()
     emit('close')
   }
+}
+
+const triggerFileDialog = () => {
+  fileInput.value?.click()
 }
 
 const saveAvatar = async () => {
@@ -96,19 +102,20 @@ const saveAvatar = async () => {
   
         <!-- Правая часть — действия -->
         <div class="w-full md:w-1/2 flex flex-col justify-center gap-4">
-          <button
+            <button
             class="w-full bg-[var(--background-cta)] text-white py-3 rounded-xl transition-all duration-200 hover:brightness-110 active:scale-95"
-            @click="$refs.fileInput.click()"
-          >
+            @click="triggerFileDialog"
+            >
             Загрузить свой
-          </button>
-          <input
+            </button>
+
+            <input
             type="file"
             accept="image/*"
             class="hidden"
             ref="fileInput"
             @change="uploadCustomAvatar"
-          />
+            />
   
           <button
             class="w-full bg-[var(--resume-red)] text-white py-3 rounded-xl transition-all duration-200 hover:brightness-110 active:scale-95"

@@ -14,6 +14,7 @@
     "@vueuse/core": "^13.0.0",
     "aos": "^2.3.4",
     "axios": "^1.8.2",
+    "cleave.js": "^1.6.0",
     "docx": "^9.3.0",
     "file-saver": "^2.0.5",
     "gsap": "^3.12.7",
@@ -26,8 +27,10 @@
     "three": "^0.174.0",
     "vue": "^3.5.13",
     "vue-advanced-cropper": "^2.8.9",
+    "vue-cleave-component": "^3.0.2",
     "vue-filepond": "^7.0.4",
     "vue-router": "^4.5.0",
+    "vue-the-mask": "^0.11.1",
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
@@ -42,6 +45,7 @@
     "@types/testing-library__jest-dom": "^5.14.9",
     "@types/testing-library__vue": "^5.0.0",
     "@types/three": "^0.174.0",
+    "@types/vue-the-mask": "^0.11.0",
     "@typescript-eslint/eslint-plugin": "^8.26.1",
     "@typescript-eslint/parser": "^8.26.1",
     "@vitejs/plugin-vue": "^5.2.1",

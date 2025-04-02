@@ -6,6 +6,7 @@ import { useAppStore } from '@/stores/appStore'
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter } from 'vue-router'
 import AvatarPicker from '@/components/ProfilePageComps/AvatarPicker.vue'
+import Settings from '@/components/ProfilePageComps/ProfileSettings.vue'
 
 const showAvatarPicker = ref(false)
 const openAvatarPicker = () => {
@@ -40,6 +41,10 @@ const startEdit = () => {
     isEditing.value = true
   }
 }
+
+const showSettings = ref(false)
+const openSettings = () => showSettings.value = true
+const closeSettings = () => showSettings.value = false
 
 const closeAvatarPicker = async () => {
   showAvatarPicker.value = false
@@ -132,6 +137,7 @@ const mainResume = computed(() => {
             <button
               class="p-2 rounded-full"
               title="Настройки"
+              @click="openSettings"
             >
               <i class="fas fa-cog text-2xl text-[var(--text-light)] rotate-twice-on-hover"></i>
             </button>
@@ -173,6 +179,10 @@ const mainResume = computed(() => {
       </section>
     </div>
   </div>
+  <Teleport to="body">
+  <Settings v-if="showSettings" :visible="showSettings" @close="closeSettings" 
+  data-aos="fade-down"/>
+</Teleport>
 </template>
 
 <style scoped>

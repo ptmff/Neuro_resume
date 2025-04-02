@@ -1,19 +1,20 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import { useProfileStore } from '@/stores/profileStore'
 import { Cropper } from 'vue-advanced-cropper'
 import 'vue-advanced-cropper/dist/style.css'
+import { usePhoneFormat } from '@/composables/usePhoneFormat'
 
 const profileStore = useProfileStore()
 const auth = useAuthStore()
 const router = useRouter()
+const { formatPhoneNumber, calculateCursorPosition, normalizePhoneNumber } = usePhoneFormat()
 
-const step = ref(1)
-const photoFile = ref<File | null>(null)
-const photoPreview = ref<string>('')
-const cropper = ref()
+// For displaying formatted phone in the input
+const formattedPhone = ref('')
+const isPhoneFormatting = ref(false)
 
 interface EducationDto {
   institution: string
@@ -22,6 +23,11 @@ interface EducationDto {
   startYear: number
   endYear: number
 }
+
+const step = ref(1)
+const photoFile = ref<File | null>(null)
+const photoPreview = ref<string>('')
+const cropper = ref()
 
 const registerData = reactive({
   email: '',
@@ -42,6 +48,17 @@ const educationEntry = reactive<EducationDto>({
 })
 
 const croppedImage = ref<File | null>(null)
+
+// Initialize phone field
+watch(
+  () => registerData.phone,
+  (newPhone) => {
+    if (!isPhoneFormatting.value && newPhone !== formattedPhone.value) {
+      formattedPhone.value = formatPhoneNumber(newPhone)
+    }
+  },
+  { immediate: true }
+)
 
 const onPhotoChange = (e: Event) => {
   const input = e.target as HTMLInputElement
@@ -84,9 +101,37 @@ const nextStep = () => {
   step.value++
 }
 
+const handlePhoneInput = (e: Event) => {
+  const input = e.target as HTMLInputElement
+  const cursorPosition = input.selectionStart
+  const previousValue = formattedPhone.value
+  
+  // Flag to prevent watch from triggering during manual formatting
+  isPhoneFormatting.value = true
+  
+  // Format the phone number
+  const formattedValue = formatPhoneNumber(input.value)
+  formattedPhone.value = formattedValue
+  registerData.phone = formattedValue
+  
+  // Calculate new cursor position
+  const newPosition = calculateCursorPosition(previousValue, formattedValue, cursorPosition)
+  
+  // After Vue updates the DOM
+  setTimeout(() => {
+    input.setSelectionRange(newPosition, newPosition)
+    isPhoneFormatting.value = false
+  }, 0)
+}
+
 const handleRegister = async () => {
   auth.error = ''
   registerData.education = [educationEntry]
+  
+  // Normalize phone number for submission
+  if (registerData.phone) {
+    registerData.phone = normalizePhoneNumber(registerData.phone)
+  }
 
   // Кроп фото перед регистрацией
   if (photoFile.value) {
@@ -125,7 +170,12 @@ const handleRegister = async () => {
               <label class="form-label">Почта</label>
               <input v-model="registerData.email" type="email" placeholder="Email" class="form-input" />
               <label class="form-label">Телефон</label>
-              <input v-model="registerData.phone" type="text" placeholder="Телефон" class="form-input" />
+              <input
+                v-model="formattedPhone"
+                @input="handlePhoneInput"
+                placeholder="+7 (___) ___-__-__"
+                class="form-input"
+              />
               <label class="form-label">Пароль</label>
               <input v-model="registerData.password" type="password" placeholder="Пароль" class="form-input" required />
               <input v-model="registerData.confirmPassword" type="password" placeholder="Повторите пароль" class="form-input" required />
@@ -307,3 +357,4 @@ const handleRegister = async () => {
   transform: scaleX(1);
 }
 </style>
+
