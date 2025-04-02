@@ -1,16 +1,44 @@
 import { defineStore } from 'pinia'
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import api from '@/api'
 import type { Resume } from '@/types/types'
 import { useProfileStore } from './profileStore'
 
 const LOCAL_STORAGE_KEY = 'resumeToEdit'
 
+// Локальные типы, если нет в @/types/types
+export interface AiSuggestion {
+  id: string;
+  type: 'skills' | 'experience' | 'education' | 'description';
+  title: string;
+  description: string;
+  confidence: number;
+  before: any;
+  after: any;
+  reasoning: string;
+  targetExperienceId?: string | null;
+}
+
+interface AiSuggestionsResponse {
+  success: boolean;
+  resumeId: number;
+  suggestions: AiSuggestion[];
+  stats: {
+    totalSuggestions: number;
+    estimatedImprovementScore: number;
+    targetPositionMatch: {
+      before: number;
+      after: number;
+    };
+  };
+}
+
 export const useResumeStore = defineStore('resumes', () => {
   const resumes = ref<Resume[]>([])
   const resumeToEdit = ref<Resume | null>(null)
+  const aiSuggestions = ref<AiSuggestion[]>([])
+  const aiStats = ref<AiSuggestionsResponse['stats'] | null>(null)
 
-  // Загрузка всех резюме
   const fetchResumes = async () => {
     try {
       const response = await api.get('/Resumes')
@@ -21,7 +49,6 @@ export const useResumeStore = defineStore('resumes', () => {
     }
   }
 
-  // Добавление нового резюме
   const addResume = async (newResume: Resume) => {
     try {
       const response = await api.post('/Resumes', newResume)
@@ -35,22 +62,20 @@ export const useResumeStore = defineStore('resumes', () => {
     }
   }
 
-  // Обновление резюме
   const updateResume = async (updatedResume: Resume) => {
     try {
       await api.put(`/Resumes/${updatedResume.id}`, updatedResume)
-      const index = resumes.value.findIndex(r => r.id === updatedResume.id)
+      const index = resumes.value.findIndex((r: Resume) => r.id === updatedResume.id)
       if (index !== -1) resumes.value[index] = updatedResume
     } catch (err) {
       console.error('[resumesStore] error updating resume:', err)
     }
   }
 
-  // Удаление резюме
   const deleteResume = async (id: number) => {
     try {
       await api.delete(`/Resumes/${id}`)
-      resumes.value = resumes.value.filter(r => r.id !== id)
+      resumes.value = resumes.value.filter((r: Resume) => r.id !== id)
 
       const profileStore = useProfileStore()
       if (profileStore.profile?.mainResumeId === id) {
@@ -62,7 +87,6 @@ export const useResumeStore = defineStore('resumes', () => {
     }
   }
 
-  // Установить резюме для редактирования + сохранить в localStorage
   const setResumeForEdit = (resume: Resume | null) => {
     resumeToEdit.value = resume
     if (resume) {
@@ -72,7 +96,6 @@ export const useResumeStore = defineStore('resumes', () => {
     }
   }
 
-  // Восстановить резюме при инициализации стора
   const restoreResumeToEdit = () => {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEY)
     if (saved) {
@@ -85,26 +108,39 @@ export const useResumeStore = defineStore('resumes', () => {
     }
   }
 
-  // Автоматически восстанавливаем при подключении стора
+  const fetchMockAiSuggestions = async (
+    resumeId: number = 123,
+    p0: string,
+    p1: string,
+    experienceIds: string[]
+  ) => {
+    const { getMockAiSuggestions } = await import('@/mocks/mockAiSuggestions')
+    const response = getMockAiSuggestions(resumeId, p0, p1, experienceIds)
+    aiSuggestions.value = response.suggestions
+    aiStats.value = response.stats
+  }
+
   restoreResumeToEdit()
 
-  // Вычисляемое основное резюме
   const mainResume = computed(() => {
     const profileStore = useProfileStore()
     const profile = profileStore.profile
     if (!profile || !profile.mainResumeId) return null
-    return resumes.value.find(r => r.id === profile.mainResumeId) || null
+    return resumes.value.find((r: Resume) => r.id === profile.mainResumeId) || null
   })
 
   return {
     resumes,
     resumeToEdit,
+    aiSuggestions,
+    aiStats,
     fetchResumes,
     addResume,
     updateResume,
     deleteResume,
     setResumeForEdit,
     restoreResumeToEdit,
-    mainResume
+    mainResume,
+    fetchMockAiSuggestions
   }
 })

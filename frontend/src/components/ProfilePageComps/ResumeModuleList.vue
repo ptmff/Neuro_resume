@@ -114,9 +114,17 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Если нет резюме -->
-    <div v-else class="text-[var(--text-light)] text-sm">
-      Загрузка резюме или резюме отсутствуют.
-    </div>
+<!-- Если нет резюме -->
+<div v-else class="flex flex-col items-center justify-center gap-4 py-10 text-[var(--text-light)]">
+  <p class="text-sm text-[var(--text-mainless)]">У вас пока нет резюме.</p>
+  <button
+    class="flex items-center gap-2 px-5 py-2 text-sm font-semibold rounded-full bg-[var(--background-cta)] hover:bg-[var(--background-cta-hover)] transition"
+    @click="createNewResume"
+  >
+    <i class="fas fa-plus"></i>
+    <span>Создать новое резюме</span>
+  </button>
+</div>
+
   </section>
 </template>
