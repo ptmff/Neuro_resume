@@ -59,6 +59,15 @@ builder.Services.AddScoped<IResumeService, ResumeService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserContext, UserContext>();
 
+// Регистрация сервисов для анализа резюме (с обходом для HttpClient)
+builder.Services.AddHttpClient<IResumeAnalysisService, ResumeAnalysisService>()
+    .ConfigurePrimaryHttpMessageHandler(() =>
+        new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+        });
+
+
 // Конфигурация аутентификации с использованием JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
