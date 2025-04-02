@@ -15,6 +15,8 @@ const resumes = computed(() => resumeStore.resumes)
 // Все резюме пользователя
 const userResumes = computed((): Resume[] => resumes.value)
 
+const formatDate = (dateString: string) => dateString.split('T')[0]
+
 // Редактировать резюме
 const editResume = (resume: Resume) => {
   resumeStore.setResumeForEdit(resume)
@@ -74,7 +76,7 @@ onMounted(async () => {
               ★
             </span>
           </h3>
-          <p class="text-xs text-[var(--text-mainless)] mt-1">{{ resume.date }}</p>
+          <p class="text-xs text-[var(--text-mainless)] mt-1">{{ formatDate(resume.date) }}</p>
         </div>
 
         <div class="flex items-center gap-2">
