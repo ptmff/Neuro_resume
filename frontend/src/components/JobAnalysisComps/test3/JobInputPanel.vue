@@ -22,7 +22,7 @@
           @click="emitUrl"
           class="absolute top-1/2 right-2 -translate-y-1/2 bg-gradient-to-r from-[var(--neon-purple)] to-[var(--neon-blue)] text-white p-3 rounded-lg hover:scale-105 active:scale-95 transition"
         >
-          <i class="fas fa-arrow-right text-[var(--text-light)]"></i>
+          <i class="fas fa-location-arrow rotate-45"></i>
         </button>
       </div>
 
