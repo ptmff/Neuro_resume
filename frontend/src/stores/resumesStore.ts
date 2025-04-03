@@ -123,9 +123,6 @@ export const useResumeStore = defineStore('resumes', () => {
       isAnalyzing.value = false
     }
   }
-  
-  
-  
 
   restoreResumeToEdit()
 
