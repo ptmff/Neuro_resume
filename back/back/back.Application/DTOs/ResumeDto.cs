@@ -21,3 +21,16 @@ public class ExperienceDto
     public string EndDate { get; set; }
     public string Description { get; set; }
 }
+
+public class ResumeDtoForAi
+{
+    public string Title { get; set; }
+    public DateTime Date { get; set; }
+    public string Job { get; set; }
+    public List<string> Skills { get; set; }
+    public string City { get; set; }
+    public List<ExperienceDto> Experience { get; set; } = new List<ExperienceDto>();
+    public List<EducationDto> Education { get; set; } = new List<EducationDto>();
+    public string Template { get; set; }
+    public string Description { get; set; }
+}
