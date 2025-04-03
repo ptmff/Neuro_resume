@@ -24,35 +24,28 @@ public class ResumeAnalysisService : IResumeAnalysisService
         _configuration = configuration;
     }
 
+
     public async Task<Result<List<SuggestionDto>>> AnalyzeResumeAsync(ResumeDtoForAi resume)
     {
-        // Функция для удаления символов новой строки после unescaping
         string CleanString(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
                 return input;
-            // Сначала убираем экранирование
             string unescaped = Regex.Unescape(input);
-            // Затем удаляем символы перевода строки и лишние пробелы
             return unescaped.Replace("\n", "").Replace("\r", "").Trim();
         }
 
-
         try
         {
-            // Получаем параметры из конфигурации
-            var authUrl = _configuration["AI:AuthUrl"]; // например, "https://ngw.devices.sberbank.ru:9443/api/v2/oauth"
-            var gigachatUrl =
-                _configuration
-                    ["AI:GigaChatApiUrl"]; // например, "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
-            var authorizationKey = _configuration["AI:AuthorizationKey"]; // ваш ключ
-            var scope = _configuration["AI:Scope"]; // например, "GIGACHAT_API_PERS"
+            var authUrl = _configuration["AI:AuthUrl"];
+            var gigachatUrl = _configuration["AI:GigaChatApiUrl"];
+            var authorizationKey = _configuration["AI:AuthorizationKey"];
+            var scope = _configuration["AI:Scope"];
 
             var token = await GetAccessTokenAsync(authUrl, authorizationKey, scope);
             if (string.IsNullOrEmpty(token))
                 return Result<List<SuggestionDto>>.Failure("Access token not obtained");
 
-            // Системный промпт (копируйте полный текст, как в вашем скрипте)
             string systemPrompt = @"
 Ты — профессиональный AI-движок по улучшению резюме. Твоя задача — проанализировать входное резюме, представленное в формате JSON, и вернуть массив объектов-предложений. Каждый объект должен описывать конкретное улучшение резюме и соответствовать строго следующему формату:
 
@@ -71,8 +64,9 @@ public class ResumeAnalysisService : IResumeAnalysisService
 2. Для поля ""experience"": улучшать можно только описание (""description""). ""before"" должно быть исходным массивом объектов опыта, а ""after"" — таким же массивом, где, если предложение применяется, значение ""description"" изменено, а остальные поля (company, position, startDate, endDate) остаются без изменений.
 3. Для поля ""skills"": если предложение относится к навыкам, то ""before"" — это массив исходных навыков (например, [""VueJS"", ""React"", ""Angular"", ""Rest API"", ""Composition API""]), а ""after"" — массив с этими же навыками, дополненный или изменённый (например, добавлен новый навык, если это уместно). Не возвращай пустые массивы.
 4. Для полей ""title"", ""job"" и ""description"": ""before"" и ""after"" должны быть строками. Предложение должно быть конкретным и адаптированным к входным данным.
-5. Поле ""reasoning"" обязательно должно содержать обоснование (например, ""Уточнение специализации поможет рекрутерам быстрее понять квалификацию кандидата."").
+5. Поле ""reasoning"" обязательно должно содержать обоснование (например, ""Уточнение специализации поможет рекрутерам быстрее понять квалификацию кандидата.""). Оно не должно быть пустым или равным ""null"".
 6. Результат ДОЛЖЕН быть строго валидным JSON без лишних символов, без Markdown, без комментариев.
+7. Старайся довести изначальные поля резюме до идеала, достойного высококвалифицированного специалиста, которого захотят видеть в любой компании. Не бойся предлагать смелые изменения, если они обоснованы. Также логически сопоставляй свои изменения чтобы не было противоречий между ними. Всё должно быть логично и идеально чтобы в итоге получалось резюме, которое будет вызывать восторг у рекрутера.
 
 Пример ожидаемого объекта для поля ""skills"":
 {
@@ -115,7 +109,6 @@ public class ResumeAnalysisService : IResumeAnalysisService
 }
 ".Trim();
 
-            // Формируем payload
             var payload = new
             {
                 model = "GigaChat",
@@ -128,58 +121,77 @@ public class ResumeAnalysisService : IResumeAnalysisService
                 }
             };
 
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, gigachatUrl);
-            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            requestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             var payloadJson = JsonConvert.SerializeObject(payload);
-            requestMessage.Content = new StringContent(payloadJson, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.SendAsync(requestMessage);
-            response.EnsureSuccessStatusCode();
-            var responseContent = await response.Content.ReadAsStringAsync();
+            int attempts = 0;
+            List<SuggestionDto> suggestions = null;
+            while (attempts < 3)
+            {
+                attempts++;
+                Console.WriteLine($"Попытка {attempts}: Отправка запроса к ИИ...");
 
-            // Парсинг ответа
-            dynamic responseJson = JsonConvert.DeserializeObject(responseContent);
-            string messageContent = responseJson.choices[0]?.message?.content;
-            if (string.IsNullOrWhiteSpace(messageContent))
-                return Result<List<SuggestionDto>>.Failure("No content in AI response");
+                // Создаем новый объект запроса для каждой попытки
+                var requestMessage = new HttpRequestMessage(HttpMethod.Post, gigachatUrl)
+                {
+                    Content = new StringContent(payloadJson, Encoding.UTF8, "application/json")
+                };
+                requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                requestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            // Удаляем Markdown-обёртку (например, ```json ... ```)
-            messageContent = Regex.Replace(messageContent.Trim(), @"^```json\s*|\s*```$", "", RegexOptions.Singleline);
+                var response = await _httpClient.SendAsync(requestMessage);
+                response.EnsureSuccessStatusCode();
+                var responseContent = await response.Content.ReadAsStringAsync();
 
-            // После deserialization suggestions, например:
-            var suggestions = JsonConvert.DeserializeObject<List<SuggestionDto>>(messageContent);
+                try
+                {
+                    dynamic responseJson = JsonConvert.DeserializeObject(responseContent);
+                    string messageContent = responseJson.choices[0]?.message?.content;
+
+                    if (string.IsNullOrWhiteSpace(messageContent))
+                    {
+                        Console.WriteLine("Ошибка: Пустой ответ от ИИ.");
+                        continue;
+                    }
+
+                    // Удаляем Markdown-обертку
+                    messageContent = Regex.Replace(messageContent.Trim(), @"^```json\s*|\s*```$", "",
+                        RegexOptions.Singleline);
+                    suggestions = JsonConvert.DeserializeObject<List<SuggestionDto>>(messageContent);
+
+                    if (suggestions != null)
+                    {
+                        Console.WriteLine("✅ Успешно получен корректный JSON.");
+                        break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Ошибка парсинга JSON (попытка {attempts}): {ex.Message}");
+                }
+
+                if (attempts >= 3)
+                    return Result<List<SuggestionDto>>.Failure("Не удалось получить корректный JSON после 3 попыток.");
+            }
+
             if (suggestions == null)
-                return Result<List<SuggestionDto>>.Failure("Failed to parse suggestions");
+                return Result<List<SuggestionDto>>.Failure("Ошибка: suggestions == null после 3 попыток.");
 
-
+            // Обработка каждого предложения
             foreach (var suggestion in suggestions)
             {
-                // Если Reasoning пустой или равен "null", заменяем
-                if (string.IsNullOrWhiteSpace(suggestion.Reasoning) ||
-                    suggestion.Reasoning.Trim().ToLower() == "null")
-                {
+                if (string.IsNullOrWhiteSpace(suggestion.Reasoning) || suggestion.Reasoning.Trim().ToLower() == "null")
                     suggestion.Reasoning = "Обоснование не предоставлено.";
-                }
 
-                // Если Before и After приходят как строки, очищаем их:
                 if (suggestion.Before is string beforeStr)
-                {
                     suggestion.Before = CleanString(beforeStr);
-                }
 
                 if (suggestion.After is string afterStr)
-                {
                     suggestion.After = CleanString(afterStr);
-                }
 
-                // Обработка для поля "skills"
                 if (suggestion.Type?.Trim().ToLower() == "skills")
                 {
-                    // Универсальный метод для обработки поля (Before или After)
                     List<string> ProcessSkillsField(object fieldValue)
                     {
-                        // Если поле уже строка, пробуем десериализовать его
                         if (fieldValue is string strValue && strValue.Trim().StartsWith("["))
                         {
                             try
@@ -192,8 +204,6 @@ public class ResumeAnalysisService : IResumeAnalysisService
                             }
                         }
 
-                        // Если поле представляет собой IEnumerable<object> (например, массив) 
-                        // проверяем, содержит ли оно один элемент, являющийся строкой, которая сама выглядит как JSON-массив
                         if (fieldValue is IEnumerable<object> enumerable)
                         {
                             var list = new List<object>(enumerable);
@@ -208,21 +218,10 @@ public class ResumeAnalysisService : IResumeAnalysisService
                                     return new List<string>();
                                 }
                             }
-                            else
-                            {
-                                // Если коллекция уже состоит из отдельных элементов, пытаемся привести их к строкам
-                                var result = new List<string>();
-                                foreach (var item in list)
-                                {
-                                    if (item != null)
-                                        result.Add(item.ToString());
-                                }
 
-                                return result;
-                            }
+                            return list.ConvertAll(item => item?.ToString() ?? "");
                         }
 
-                        // Если ничего не подошло, приводим к строке и оборачиваем в список
                         return new List<string> { fieldValue?.ToString() };
                     }
 
@@ -230,17 +229,14 @@ public class ResumeAnalysisService : IResumeAnalysisService
                     suggestion.After = ProcessSkillsField(suggestion.After);
                 }
 
-
-                // Обработка для поля "experience"
                 if (suggestion.Type?.Trim().ToLower() == "experience")
                 {
-                    // Обработка поля Before
                     if (suggestion.Before is string beforeExpStr && beforeExpStr.Trim().StartsWith("["))
                     {
                         try
                         {
-                            string cleanBefore = CleanString(beforeExpStr);
-                            suggestion.Before = JsonConvert.DeserializeObject<List<ExperienceDto>>(cleanBefore);
+                            suggestion.Before =
+                                JsonConvert.DeserializeObject<List<ExperienceDto>>(CleanString(beforeExpStr));
                         }
                         catch
                         {
@@ -267,13 +263,12 @@ public class ResumeAnalysisService : IResumeAnalysisService
                         }
                     }
 
-                    // Обработка поля After
                     if (suggestion.After is string afterExpStr && afterExpStr.Trim().StartsWith("["))
                     {
                         try
                         {
-                            string cleanAfter = CleanString(afterExpStr);
-                            suggestion.After = JsonConvert.DeserializeObject<List<ExperienceDto>>(cleanAfter);
+                            suggestion.After =
+                                JsonConvert.DeserializeObject<List<ExperienceDto>>(CleanString(afterExpStr));
                         }
                         catch
                         {
@@ -302,7 +297,6 @@ public class ResumeAnalysisService : IResumeAnalysisService
                 }
             }
 
-
             return Result<List<SuggestionDto>>.Success(suggestions);
         }
         catch (Exception ex)
@@ -310,6 +304,7 @@ public class ResumeAnalysisService : IResumeAnalysisService
             return Result<List<SuggestionDto>>.Failure($"Error during resume analysis: {ex.Message}");
         }
     }
+
 
     private async Task<string> GetAccessTokenAsync(string authUrl, string authorizationKey, string scope)
     {
