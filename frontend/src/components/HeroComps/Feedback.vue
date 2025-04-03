@@ -46,7 +46,7 @@
 
         <div class="flex justify-center items-center gap-4 mt-0">
           <button
-            @click="prevSlide"
+            @click="handlePrev"
             class="p-3 rounded-full bg-[var(--background-pale)] hover:bg-[var(--highlight)] transition-all"
           >
             ←
@@ -56,7 +56,7 @@
             <button
               v-for="(_, index) in reviews"
               :key="index"
-              @click="currentIndex = index"
+              @click="handleDotClick(index)"
               class="w-3 h-3 rounded-full transition-all"
               :class="currentIndex === index 
                 ? 'bg-[var(--highlight)] scale-125' 
@@ -65,7 +65,7 @@
           </div>
           
           <button
-            @click="nextSlide"
+            @click="handleNext"
             class="p-3 rounded-full bg-[var(--background-pale)] hover:bg-[var(--highlight)] transition-all"
           >
             →
@@ -77,7 +77,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 
 const reviews = ref([
   {
@@ -104,10 +104,17 @@ const reviews = ref([
 ])
 
 const currentIndex = ref(0)
+const intervalId = ref(null)
 
 const visibleReviews = computed(() => [reviews.value[currentIndex.value]])
 
 const isActive = (review) => reviews.value[currentIndex.value].id === review.id
+
+const startInterval = () => {
+  intervalId.value = setInterval(() => {
+    nextSlide()
+  }, 3000)
+}
 
 const nextSlide = () => {
   currentIndex.value = (currentIndex.value + 1) % reviews.value.length
@@ -116,6 +123,33 @@ const nextSlide = () => {
 const prevSlide = () => {
   currentIndex.value = (currentIndex.value - 1 + reviews.value.length) % reviews.value.length
 }
+
+const stopSlider = () => {
+  clearInterval(intervalId.value)
+}
+
+const handleNext = () => {
+  stopSlider()
+  nextSlide()
+}
+
+const handlePrev = () => {
+  stopSlider()
+  prevSlide()
+}
+
+const handleDotClick = (index) => {
+  stopSlider()
+  currentIndex.value = index
+}
+
+onMounted(() => {
+  startInterval()
+})
+
+onUnmounted(() => {
+  stopSlider()
+})
 </script>
 
 <style scoped>
