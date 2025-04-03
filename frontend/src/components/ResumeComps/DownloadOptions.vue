@@ -85,7 +85,7 @@ const isValidEmail = computed(() => {
 });
 
 const generatePDF = () => {
-  alert('Кнопка нажата!')
+  
   const element = document.getElementById('resume-content')
   html2pdf().from(element).save('myDocument.pdf')
 }

@@ -5,7 +5,7 @@
     </h2>
     
     <div 
-      class="w-[210mm] min-h-[297mm] p-[20mm] mx-auto bg-white shadow-lg relative overflow-hidden" 
+      class="w-[210mm] min-h-[296mm] p-[20mm] mx-auto bg-white shadow-lg relative overflow-hidden" 
       ref="resumeContent" 
       id="resume-content"
       :class="[`template-${resumeData.template || 'классический'}`]"
@@ -328,7 +328,6 @@ const getDragHandleClass = () => {
 }
 
 const generatePDF = (): void => {
-  alert('Кнопка нажата!')
   const element = document.getElementById('resume-content')
   if (element) {
     html2pdf().from(element).save('myDocument.pdf')
