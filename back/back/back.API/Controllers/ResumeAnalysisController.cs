@@ -26,8 +26,7 @@ public class ResumeAnalysisController : ControllerBase
     [HttpPost("analyze")]
     public async Task<IActionResult> AnalyzeResume([FromBody] ResumeDtoForAi resume)
     {
-        // При необходимости можно добавить проверку, чтобы резюме принадлежало текущему пользователю
-        var result = await _analysisService.AnalyzeResumeAsync(resume);
+        var result = await _analysisService. AnalyzeResumeAsync(resume);
         return result.ToActionResult();
     }
 }
