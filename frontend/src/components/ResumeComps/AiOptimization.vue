@@ -150,7 +150,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useResumeStore } from '@/stores/resumesStore';
 
-// Типы из стора
+// Типы
 import type { AiSuggestion } from '@/stores/resumesStore';
 
 interface Experience {
@@ -176,6 +176,13 @@ interface ResumeData {
   template?: string;
   date?: string;
   sectionsOrder?: string[];
+  education?: {
+    institution: string;
+    degree: string;
+    field: string;
+    startYear: number;
+    endYear: number;
+  }[];
   [key: string]: any;
 }
 
@@ -194,16 +201,13 @@ interface Emits {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-// Stores
 const resumeStore = useResumeStore();
 
-// State
 const isLoading = ref(true);
 const suggestions = computed(() => resumeStore.aiSuggestions);
 const stats = computed(() => resumeStore.aiStats);
 const lastAppliedSuggestion = ref<AiSuggestion | null>(null);
 
-// Методы
 const applySuggestion = (suggestion: AiSuggestion): void => {
   lastAppliedSuggestion.value = suggestion;
   const updatedResumeData: ResumeData = { ...props.resumeData };
@@ -227,9 +231,11 @@ const applySuggestion = (suggestion: AiSuggestion): void => {
           };
         }
       }
-      if (updatedResumeData.experience && updatedResumeData.experience.length > 0 &&
+      if (
+        updatedResumeData.experience.length > 0 &&
         (!suggestion.targetExperienceId ||
-         !updatedResumeData.experience.some((exp: Experience) => exp.id === suggestion.targetExperienceId))) {
+         !updatedResumeData.experience.some((exp: Experience) => exp.id === suggestion.targetExperienceId))
+      ) {
         updatedResumeData.experience[0] = {
           ...updatedResumeData.experience[0],
           description: suggestion.after as string
@@ -269,7 +275,6 @@ const formatBeforeAfter = (value: unknown): string => {
   return String(value);
 };
 
-// Загрузка рекомендаций из стора
 const loadSuggestions = async (): Promise<void> => {
   isLoading.value = true;
 
@@ -279,16 +284,24 @@ const loadSuggestions = async (): Promise<void> => {
     return;
   }
 
-  const experienceIds = props.resumeData.experience?.map(exp => exp.id).filter(Boolean) as string[];
-
-  await resumeStore.fetchMockAiSuggestions(
-    props.resumeData.id || 123,
-    props.resumeData.job || 'Frontend Developer',
-    '',
-    experienceIds
-  );
-
-  isLoading.value = false;
+  try {
+    await resumeStore.analyzeResume({
+      title: props.resumeData.title || '',
+      date: new Date().toISOString(),
+      job: props.resumeData.job || '',
+      skills: props.resumeData.skills || [],
+      city: props.resumeData.city || '',
+      experience: props.resumeData.experience || [],
+      education: props.resumeData.education || [],
+      template: props.resumeData.template || '',
+      description: props.resumeData.description || '',
+      id: 0
+    });
+  } catch (e) {
+    console.error('[ResumeAiOptimization] Ошибка анализа резюме:', e);
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 onMounted(loadSuggestions);

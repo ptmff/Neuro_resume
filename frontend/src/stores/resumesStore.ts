@@ -108,17 +108,24 @@ export const useResumeStore = defineStore('resumes', () => {
     }
   }
 
-  const fetchMockAiSuggestions = async (
-    resumeId: number = 123,
-    p0: string,
-    p1: string,
-    experienceIds: string[]
-  ) => {
-    const { getMockAiSuggestions } = await import('@/mocks/mockAiSuggestions')
-    const response = getMockAiSuggestions(resumeId, p0, p1, experienceIds)
-    aiSuggestions.value = response.suggestions
-    aiStats.value = response.stats
-  }
+  const analyzeResume = async (resume: Resume) => {
+    try {
+      const { id, ...resumeWithoutId } = resume;
+  
+      console.log('[analyzeResume] sending cleaned resume:', resumeWithoutId);
+  
+      const response = await api.post<AiSuggestionsResponse>(
+        '/ResumeAnalysis/analyze',
+        resumeWithoutId
+      );
+  
+      aiSuggestions.value = response.data.suggestions;
+      aiStats.value = response.data.stats;
+    } catch (err) {
+      console.error('[resumesStore] error during AI resume analysis:', err);
+    }
+  };
+  
 
   restoreResumeToEdit()
 
@@ -141,6 +148,6 @@ export const useResumeStore = defineStore('resumes', () => {
     setResumeForEdit,
     restoreResumeToEdit,
     mainResume,
-    fetchMockAiSuggestions
+    analyzeResume
   }
 })

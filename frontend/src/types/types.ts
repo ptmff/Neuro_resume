@@ -20,15 +20,16 @@ export interface Experience {
 
 // Тип одного резюме
 export interface Resume {
-  id: number
-  title: string
-  date: string
-  city: string
-  job: string
-  experience: Experience[]
-  education: Education[]
-  skills: string[]
-  template: string
+  id: number;
+  title: string;
+  job: string;
+  city: string;
+  date: string;
+  skills: string[];
+  experience: Experience[];
+  education: Education[];
+  template: string;
+  description?: string;
 }
 
 // Тип профиля пользователя
