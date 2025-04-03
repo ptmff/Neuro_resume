@@ -25,6 +25,16 @@
               <div class="text-left flex-1">
                 <div class="flex flex-col md:flex-row justify-between items-start mb-4">
                   <h3 class="text-xl font-semibold text-[var(--text-light)]">{{ review.name }}</h3>
+                  <div class="flex gap-1 mt-2 md:mt-0">
+                    <span
+                      v-for="star in 5"
+                      :key="star"
+                      class="text-xl transition-colors"
+                      :class="star <= review.rating ? 'text-amber-400' : 'text-[var(--text-mainless)]'"
+                    >
+                      ★
+                    </span>
+                  </div>
                 </div>
                 <p class="text-[var(--text-mainless)] italic text-lg leading-relaxed">
                   "{{ review.text }}"
@@ -36,7 +46,7 @@
 
         <div class="flex justify-center items-center gap-4 mt-0">
           <button
-            @click="prevSlide"
+            @click="handlePrev"
             class="p-3 rounded-full bg-[var(--background-pale)] hover:bg-[var(--highlight)] transition-all"
           >
             ←
@@ -46,7 +56,7 @@
             <button
               v-for="(_, index) in reviews"
               :key="index"
-              @click="currentIndex = index"
+              @click="handleDotClick(index)"
               class="w-3 h-3 rounded-full transition-all"
               :class="currentIndex === index 
                 ? 'bg-[var(--highlight)] scale-125' 
@@ -55,7 +65,7 @@
           </div>
           
           <button
-            @click="nextSlide"
+            @click="handleNext"
             class="p-3 rounded-full bg-[var(--background-pale)] hover:bg-[var(--highlight)] transition-all"
           >
             →
@@ -67,34 +77,44 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 
 const reviews = ref([
   {
     id: 1,
     name: 'Анна Петрова',
-    avatar: '#',
-    text: 'Neuro.Resume полностью изменил мой подход к поиску работы. Профессиональные шаблоны и умные рекомендации помогли создать идеальное резюме!'
+    avatar: '/avatars/avatar1.png',
+    text: 'Neuro.Resume полностью изменил мой подход к поиску работы. Профессиональные шаблоны и умные рекомендации помогли создать идеальное резюме!',
+    rating: 5
   },
   {
     id: 2,
     name: 'Максим Иванов',
-    avatar: '#',
-    text: 'Лучший сервис для карьерного роста. Получил в 3 раза больше откликов благодаря умной оптимизации резюме!'
+    avatar: '/avatars/avatar2.png',
+    text: 'Лучший сервис для карьерного роста. Получил в 3 раза больше откликов благодаря умной оптимизации резюме!',
+    rating: 4
   },
   {
     id: 3,
     name: 'Ольга Сидорова',
-    avatar: '#',
-    text: 'Удобный интерфейс и потрясающая гибкость настроек. Смогла выделить свои сильные стороны именно так, как хотела.',
+    avatar: '/avatars/avatar3.png',
+    text: 'Интуитивно понятный интерфейс и потрясающая гибкость настроек. Смогла выделить свои сильные стороны именно так, как хотела.',
+    rating: 5
   }
 ])
 
 const currentIndex = ref(0)
+const intervalId = ref(null)
 
 const visibleReviews = computed(() => [reviews.value[currentIndex.value]])
 
 const isActive = (review) => reviews.value[currentIndex.value].id === review.id
+
+const startInterval = () => {
+  intervalId.value = setInterval(() => {
+    nextSlide()
+  }, 3000)
+}
 
 const nextSlide = () => {
   currentIndex.value = (currentIndex.value + 1) % reviews.value.length
@@ -103,4 +123,53 @@ const nextSlide = () => {
 const prevSlide = () => {
   currentIndex.value = (currentIndex.value - 1 + reviews.value.length) % reviews.value.length
 }
+
+const stopSlider = () => {
+  clearInterval(intervalId.value)
+}
+
+const handleNext = () => {
+  stopSlider()
+  nextSlide()
+}
+
+const handlePrev = () => {
+  stopSlider()
+  prevSlide()
+}
+
+const handleDotClick = (index) => {
+  stopSlider()
+  currentIndex.value = index
+}
+
+onMounted(() => {
+  startInterval()
+})
+
+onUnmounted(() => {
+  stopSlider()
+})
 </script>
+
+<style scoped>
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: translateX(50px);
+}
+
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateX(-50px);
+}
+
+.slide-fade-leave-active {
+  position: absolute;
+  width: 100%;
+}
+</style>
