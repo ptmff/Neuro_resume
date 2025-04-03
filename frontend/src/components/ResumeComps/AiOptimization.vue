@@ -7,12 +7,12 @@
     >
       Оптимизация резюме с помощью AI
     </h2>
-    
+
     <!-- Загрузка -->
     <div v-if="isLoading" class="ai-optimization-container p-6 rounded-2xl bg-gradient-to-br from-[var(--neon-purple)]/10 to-[var(--neon-blue)]/10 flex justify-center items-center py-12">
       <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[var(--neon-purple)]"></div>
     </div>
-    
+
     <!-- Основной контент -->
     <div v-else class="ai-optimization-container p-6 rounded-2xl bg-gradient-to-br from-[var(--neon-purple)]/10 to-[var(--neon-blue)]/10">
       <div class="flex items-center mb-6">
@@ -28,7 +28,7 @@
           </p>
         </div>
       </div>
-      
+
       <!-- Статистика -->
       <div v-if="stats" class="stats-container p-4 mb-6 rounded-xl bg-[var(--background-section)] bg-opacity-70 border border-[var(--background-pale)]">
         <div class="flex justify-between items-center">
@@ -53,13 +53,13 @@
             <p class="text-xs text-[var(--text-mainless)]">Очки улучшения</p>
           </div>
           <div class="text-center">
-            <div class="text-3xl font-bold text-[var(--text-light)]">{{ suggestions.length }}</div>
+            <div class="text-3xl font-bold text-[var(--text-light)]">{{ suggestionsCount }}</div>
             <p class="text-xs text-[var(--text-mainless)]">Рекомендации</p>
           </div>
         </div>
       </div>
 
-      <!-- Последнее примененное изменение -->
+      <!-- Применённая рекомендация -->
       <div v-if="lastAppliedSuggestion" class="applied-suggestion-container mb-6 p-4 rounded-xl bg-[var(--background-section)] bg-opacity-70 border border-green-300">
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center">
@@ -78,25 +78,21 @@
         </div>
       </div>
 
-      <!-- Список рекомендаций -->
-      <div class="space-y-4">
+      <!-- Рекомендации -->
+      <div v-if="suggestionsCount > 0" class="space-y-4">
         <div
           v-for="suggestion in suggestions"
           :key="suggestion.id"
           class="suggestion-item p-4 rounded-xl bg-[var(--background-section)] bg-opacity-50 border border-[var(--background-pale)]"
         >
           <div class="flex justify-between items-start mb-2">
-            <h4 class="text-xl font-semibold text-[var(--text-light)]">
-              {{ suggestion.title }}
-            </h4>
-            <div class="confidence-badge px-2 py-1 rounded-full text-xs" 
-                 :class="getConfidenceBadgeClass(suggestion.confidence)">
+            <h4 class="text-xl font-semibold text-[var(--text-light)]">{{ suggestion.title }}</h4>
+            <div class="confidence-badge px-2 py-1 rounded-full text-xs" :class="getConfidenceBadgeClass(suggestion.confidence)">
               {{ Math.round(suggestion.confidence * 100) }}% уверенность
             </div>
           </div>
-          
           <p class="text-[var(--text-secondary)] mb-4">{{ suggestion.description }}</p>
-          
+
           <div class="before-after-container mb-4 p-3 rounded-lg bg-[var(--background-section)] bg-opacity-70">
             <div class="grid grid-cols-2 gap-4">
               <div>
@@ -106,18 +102,18 @@
                 </div>
               </div>
               <div>
-                <p class="text-xs text-[var(--text-mainless)] mb-1">Предлагаемое изменение:</p>
+                <p class="text-xs text-[var(--text-mainless)] mb-1">Предлагаемое:</p>
                 <div class="p-2 rounded bg-[var(--neon-purple)]/5 border border-[var(--neon-purple)]/10 text-sm text-[var(--text-light)]">
                   {{ formatBeforeAfter(suggestion.after) }}
                 </div>
               </div>
             </div>
           </div>
-          
+
           <div class="reasoning mb-4 text-sm text-[var(--text-mainless)] italic">
             <i class="fas fa-info-circle mr-1"></i> {{ suggestion.reasoning }}
           </div>
-          
+
           <div class="flex space-x-3">
             <button @click="applySuggestion(suggestion)" class="btn btn-primary">
               <i class="fas fa-check mr-2"></i> Применить
@@ -128,9 +124,9 @@
           </div>
         </div>
       </div>
-      
+
       <!-- Нет рекомендаций -->
-      <div v-if="suggestions.length === 0 && !isLoading" class="no-suggestions p-6 text-center">
+      <div v-if="suggestionsCount === 0 && !isLoading" class="no-suggestions p-6 text-center">
         <div class="bg-green-500/10 p-6 rounded-xl border border-green-500/20 mb-4">
           <i class="fas fa-check-circle text-green-500 text-4xl mb-3"></i>
           <h4 class="text-xl font-semibold text-[var(--text-light)] mb-2">Ваше резюме оптимизировано!</h4>
@@ -138,7 +134,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="flex justify-between mt-8">
       <button @click="$emit('prev-step')" class="btn btn-secondary">Назад</button>
       <button @click="$emit('next-step')" class="btn btn-primary">Далее</button>
@@ -147,12 +143,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
-import { useResumeStore } from '@/stores/resumesStore';
+import { ref, onMounted, computed } from 'vue'
+import { useResumeStore } from '@/stores/resumesStore'
+import type { AiSuggestion } from '@/stores/resumesStore'
 
 // Типы
-import type { AiSuggestion } from '@/stores/resumesStore';
-
 interface Experience {
   id?: string;
   company: string;
@@ -186,102 +181,73 @@ interface ResumeData {
   [key: string]: any;
 }
 
-interface Props {
-  resumeData: ResumeData;
-  aiSuggestions?: AiSuggestion[];
-}
+// Props & Emits
+const props = defineProps<{ resumeData: ResumeData; aiSuggestions?: AiSuggestion[] }>()
+const emit = defineEmits(['apply-suggestion', 'next-step', 'prev-step', 'update:modelValue'])
 
-interface Emits {
-  (e: 'apply-suggestion', suggestion: AiSuggestion): void;
-  (e: 'next-step'): void;
-  (e: 'prev-step'): void;
-  (e: 'update:modelValue', value: ResumeData): void;
-}
+// Store
+const resumeStore = useResumeStore()
 
-const props = defineProps<Props>();
-const emit = defineEmits<Emits>();
+// Состояния
+const isLoading = computed(() => resumeStore.isAnalyzing)
+const suggestions = computed(() => resumeStore.aiSuggestions)
+const stats = computed(() => resumeStore.aiStats)
+const lastAppliedSuggestion = ref<AiSuggestion | null>(null)
+const suggestionsCount = computed(() => suggestions.value?.length || 0)
 
-const resumeStore = useResumeStore();
+// Применить улучшение
+const applySuggestion = (s: AiSuggestion) => {
+  lastAppliedSuggestion.value = s
+  const updated = { ...props.resumeData }
 
-const isLoading = ref(true);
-const suggestions = computed(() => resumeStore.aiSuggestions);
-const stats = computed(() => resumeStore.aiStats);
-const lastAppliedSuggestion = ref<AiSuggestion | null>(null);
-
-const applySuggestion = (suggestion: AiSuggestion): void => {
-  lastAppliedSuggestion.value = suggestion;
-  const updatedResumeData: ResumeData = { ...props.resumeData };
-
-  switch (suggestion.type) {
-    case 'skills':
-      if (Array.isArray(suggestion.after)) {
-        updatedResumeData.skills = [...suggestion.after];
-      }
-      break;
-    case 'experience':
-      updatedResumeData.experience = [...(updatedResumeData.experience || [])];
-      if (suggestion.targetExperienceId) {
-        const index = updatedResumeData.experience.findIndex(
-          (exp: Experience) => exp.id === suggestion.targetExperienceId
-        );
-        if (index !== -1) {
-          updatedResumeData.experience[index] = {
-            ...updatedResumeData.experience[index],
-            description: suggestion.after as string
-          };
-        }
-      }
-      if (
-        updatedResumeData.experience.length > 0 &&
-        (!suggestion.targetExperienceId ||
-         !updatedResumeData.experience.some((exp: Experience) => exp.id === suggestion.targetExperienceId))
-      ) {
-        updatedResumeData.experience[0] = {
-          ...updatedResumeData.experience[0],
-          description: suggestion.after as string
-        };
-      }
-      break;
-    case 'description':
-      updatedResumeData.description = suggestion.after as string;
-      break;
+  if (s.type === 'skills' && Array.isArray(s.after)) {
+    updated.skills = [...s.after]
   }
 
-  emit('update:modelValue', updatedResumeData);
-  emit('apply-suggestion', suggestion);
+  if (s.type === 'experience') {
+    updated.experience = [...(updated.experience || [])]
+    if (s.targetExperienceId) {
+      const i = updated.experience.findIndex(e => e.id === s.targetExperienceId)
+      if (i !== -1) updated.experience[i].description = s.after as string
+    } else if (updated.experience.length > 0) {
+      updated.experience[0].description = s.after as string
+    }
+  }
 
-  resumeStore.aiSuggestions = resumeStore.aiSuggestions.filter((s: AiSuggestion) => s.id !== suggestion.id);
+  if (s.type === 'description') {
+    updated.description = s.after as string
+  }
 
-  if (resumeStore.aiStats) resumeStore.aiStats.totalSuggestions--;
+  emit('update:modelValue', updated)
+  emit('apply-suggestion', s)
 
-  setTimeout(() => {
-    lastAppliedSuggestion.value = null;
-  }, 5000);
-};
+  // Удаляем применённый из списка
+  resumeStore.aiSuggestions = resumeStore.aiSuggestions.filter(sug => sug.id !== s.id)
+  if (resumeStore.aiStats) resumeStore.aiStats.totalSuggestions--
 
-const ignoreSuggestion = (suggestionId: string): void => {
-  resumeStore.aiSuggestions = resumeStore.aiSuggestions.filter((s: AiSuggestion) => s.id !== suggestionId);
-  if (resumeStore.aiStats) resumeStore.aiStats.totalSuggestions--;
-};
+  setTimeout(() => (lastAppliedSuggestion.value = null), 5000)
+}
 
-const getConfidenceBadgeClass = (confidence: number): string => {
-  if (confidence >= 0.9) return 'bg-green-500/20 text-green-500';
-  if (confidence >= 0.7) return 'bg-blue-500/20 text-blue-500';
-  return 'bg-yellow-500/20 text-yellow-500';
-};
+// Игнорировать рекомендацию
+const ignoreSuggestion = (id: string) => {
+  resumeStore.aiSuggestions = resumeStore.aiSuggestions.filter(s => s.id !== id)
+  if (resumeStore.aiStats) resumeStore.aiStats.totalSuggestions--
+}
 
-const formatBeforeAfter = (value: unknown): string => {
-  if (Array.isArray(value)) return value.join(', ');
-  return String(value);
-};
+// Отображение значка уверенности
+const getConfidenceBadgeClass = (n: number) =>
+  n >= 0.9 ? 'bg-green-500/20 text-green-500' :
+  n >= 0.7 ? 'bg-blue-500/20 text-blue-500' :
+             'bg-yellow-500/20 text-yellow-500'
 
-const loadSuggestions = async (): Promise<void> => {
-  isLoading.value = true;
+// Упрощённый вывод
+const formatBeforeAfter = (v: unknown) => Array.isArray(v) ? v.join(', ') : String(v)
 
-  if (props.aiSuggestions && props.aiSuggestions.length > 0) {
-    resumeStore.aiSuggestions = props.aiSuggestions;
-    isLoading.value = false;
-    return;
+// Загрузка при монтировании
+const loadSuggestions = async () => {
+  if (props.aiSuggestions?.length) {
+    resumeStore.aiSuggestions = props.aiSuggestions
+    return
   }
 
   try {
@@ -296,15 +262,13 @@ const loadSuggestions = async (): Promise<void> => {
       template: props.resumeData.template || '',
       description: props.resumeData.description || '',
       id: 0
-    });
+    })
   } catch (e) {
-    console.error('[ResumeAiOptimization] Ошибка анализа резюме:', e);
-  } finally {
-    isLoading.value = false;
+    console.error('[ResumeAiOptimization] Ошибка анализа резюме:', e)
   }
-};
+}
 
-onMounted(loadSuggestions);
+onMounted(loadSuggestions)
 </script>
 
 

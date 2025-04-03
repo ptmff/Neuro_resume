@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import api from '@/api'
 import type { Resume } from '@/types/types'
 import { useProfileStore } from './profileStore'
@@ -108,23 +108,23 @@ export const useResumeStore = defineStore('resumes', () => {
     }
   }
 
+  const isAnalyzing = ref(false)
+
   const analyzeResume = async (resume: Resume) => {
+    isAnalyzing.value = true
     try {
-      const { id, ...resumeWithoutId } = resume;
-  
-      console.log('[analyzeResume] sending cleaned resume:', resumeWithoutId);
-  
-      const response = await api.post<AiSuggestionsResponse>(
-        '/ResumeAnalysis/analyze',
-        resumeWithoutId
-      );
-  
-      aiSuggestions.value = response.data.suggestions;
-      aiStats.value = response.data.stats;
+      const { id, ...resumeWithoutId } = resume
+      const response = await api.post<AiSuggestion[]>('/ResumeAnalysis/analyze', resumeWithoutId)
+      aiSuggestions.value = Array.isArray(response.data) ? response.data : []
+      aiStats.value = null // если stats не приходит
     } catch (err) {
-      console.error('[resumesStore] error during AI resume analysis:', err);
+      console.error('[resumesStore] error during AI resume analysis:', err)
+    } finally {
+      isAnalyzing.value = false
     }
-  };
+  }
+  
+  
   
 
   restoreResumeToEdit()
@@ -141,6 +141,7 @@ export const useResumeStore = defineStore('resumes', () => {
     resumeToEdit,
     aiSuggestions,
     aiStats,
+    isAnalyzing,
     fetchResumes,
     addResume,
     updateResume,

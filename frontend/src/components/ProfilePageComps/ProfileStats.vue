@@ -22,22 +22,12 @@ import { useResumeStore } from '@/stores/resumesStore'
 const profileStore = useProfileStore()
 const resumeStore = useResumeStore()
 
-// ✅ Резюме считаем из resumeStore
 const resumeCount = computed(() => resumeStore.resumes.length)
 
-// ✅ Навыки суммируем по всем резюме
 const totalSkills = computed(() =>
   resumeStore.resumes.reduce((acc, resume) => acc + (resume.skills?.length ?? 0), 0)
 )
 
-// ✅ Основное резюме — из profileStore
-const hasMainResume = computed(() => !!profileStore.profile?.mainResumeId)
-
-const mainResumeLabel = computed(() =>
-  profileStore.profile?.mainResumeId ? `#${profileStore.profile.mainResumeId}` : 'Нет'
-)
-
-// ✅ Заполненность профиля (зависит от profile и resumeStore)
 const profileCompletion = computed(() => {
   let score = 0
   const p = profileStore.profile
@@ -45,15 +35,18 @@ const profileCompletion = computed(() => {
   if (p.name) score++
   if (p.email) score++
   if (resumeCount.value > 0) score++
-  if (hasMainResume.value) score++
+  if (p.mainResumeId) score++
   return Math.round((score / 4) * 100) + '%'
 })
 
-// ✅ Объединяем статистику
+// Кол-во анализов вакансий
+// const jobAnalysisCount = computed(() => profileStore.profile?.jobAnalysisCount ?? 0)
+
+// Объединяем статистику
 const stats = computed(() => [
   { label: 'Создано резюме', value: resumeCount.value },
   { label: 'Указано навыков', value: totalSkills.value },
-  { label: 'Основное резюме', value: mainResumeLabel.value },
+  { label: 'Анализов вакансий', value: 14 },
   { label: 'Заполненность профиля', value: profileCompletion.value }
 ])
 </script>
