@@ -1,0 +1,13 @@
+{
+    "result": {
+      "matchScore": 84,
+      "missingSkills": ["Docker", "Kubernetes"],
+      "overlappingExperience": true
+    },
+    "steps": [
+      { "type": "skills", "description": "Совпадения по навыкам найдены" },
+      { "type": "gap", "description": "Пробелы в опыте обнаружены" },
+      { "type": "ai", "description": "AI сформировал итоговую оценку" }
+    ]
+  }
+  

@@ -1,0 +1,127 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* 🌌 Основные цвета (темные и футуристические) */
+  --primary-dark: #0A1E28; /* Глубокий тёмно-синий, фон сайта */
+  --primary-light: #04292D; /* Приглушенный холодный синий */
+  --accent: #9d00ff; /* Неоновый фиолетовый */
+  --secondary-dark: #161b33; /* Почти чёрный с холодным подтоном */
+  --secondary-light: #7289da; /* Мягкий пастельный синий, фоновые блоки */
+
+  /* ✨ Текст */
+  --text-main: #e0e6f8; /* Светло-голубой, основной текст */
+  --text-mainless: rgba(255, 255, 255, 0.6);
+  --text-subdued: rgba(255, 255, 255, 0.8);
+  --text-secondary: #c77dff; /* Фиолетовый для акцентных текстов */
+  --text-light: #ffffff; /* Чисто белый */
+  --icons-bfr-hover: rgba(255, 255, 255, 0.3); /* Иконки до наведения, слегка прозрачные */
+  --icons-bg-adventages: rgba(199, 125, 255, 0.2); /* Adventages icons bg */
+
+  /* 🌆 Фоны */
+  --background-main: #0a0a1f; /* Глубокий тёмный фон */
+  --background-section: #161b33; /* Темный, но с оттенком синего */
+  --background-cta: #9d00ff; /* Кнопки и важные элементы */
+  --background-cta-hover: #6700a7; /* Кнопки и важные элементы при наведении */
+  --background-highlight: #2b3a67; /* Выделенные элементы */
+  --background-pale: rgba(255, 255, 255, 0.1);
+  --background-indicator: rgba(255, 255, 255, 0.2); /* Индикатор навбара */
+  --background-overlay: rgba(255, 255, 255, 0.05); /* Оверлей для превью и инсайт кардс */
+  --background-job-analysis: #111111;
+
+  /* 🌠 Градиенты (неоновые эффекты) */
+  --gradient-primary: linear-gradient(135deg, #9d00ff, #00e5ff); /* Фиолетово-бирюзовый */
+  --gradient-card: linear-gradient(135deg, rgba(157, 0, 255, 0.2), rgba(0, 229, 255, 0.2));
+  --gradient-danger: linear-gradient(135deg, #ca1b18, #FF7A00);
+
+  /* 💡 Дополнительные */
+  --neon-blue: #00e5ff; /* Неоновый бирюзовый */
+  --neon-purple: #9d00ff; /* Неоновый фиолетовый */
+  --shadow: rgba(0, 0, 0, 0.3);
+  --highlight: rgba(255, 255, 255, 0.15);
+
+  --profile-avatar-border: rgba(199, 125, 255, 0.5);
+  --profile-is-editing: #4caf50;
+
+  --progressbar-shadow: rgba(0, 255, 255, 0.5);
+  --progressbar-shadow-hover: rgba(0, 255, 255, 1);
+
+  --resume-red: #ef5350;
+  --resume-red-opac: #ef5350a2;
+  --resume-red-hover: #ef9a9a;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--background-main);
+  overflow-x: hidden;
+}
+
+#app {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.gradient-page {
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 10, 31, 1) 0%,
+    rgba(14, 14, 44, 1) 75%,
+    rgb(27, 4, 78) 100%
+  );
+}
+
+.particle-blast {
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(circle, var(--neon-blue), transparent);
+  border-radius: 9999px;
+  animation: particle-blast 1s ease-out forwards;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+@keyframes particle-blast {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(3);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

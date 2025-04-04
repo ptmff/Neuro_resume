@@ -13,3 +13,4 @@ back.Tests/bin
 back.Tests/obj
 /back.API/appsettingsjson
 back.sln.DotSettings.user
+/back.API/wwwroot/uploads/
