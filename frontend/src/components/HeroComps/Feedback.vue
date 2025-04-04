@@ -1,42 +1,44 @@
 <template>
-  <section class="w-full py-24 px-6 md:px-12" data-aos="fade-up" data-aos-duration="1200">
+  <section class="w-full py-12 md:py-24 px-4 sm:px-6 md:px-12" data-aos="fade-up" data-aos-duration="1200">
     <div class="max-w-6xl mx-auto text-center">
-      <h2 class="text-3xl md:text-4xl font-bold text-[var(--text-light)] mb-8">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--text-light)] mb-6 md:mb-8">
         Отзывы наших пользователей
       </h2>
-      <p class="text-[var(--text-mainless)] mb-10 max-w-2xl mx-auto">
+      <p class="text-[var(--text-mainless)] mb-8 md:mb-10 max-w-2xl mx-auto text-sm md:text-base">
         Узнайте, что говорят те, кто уже создал резюме мечты с Neuro.Resume
       </p>
 
       <div class="relative max-w-4xl mx-auto">
-        <transition-group name="slide-fade" tag="div" class="relative h-[230px]">
+        <transition-group name="slide-fade" tag="div" class="relative min-h-[300px] md:min-h-[230px]">
           <div 
             v-for="review in visibleReviews"
             :key="review.id"
-            class="absolute w-full bg-[var(--background-overlay)] backdrop-blur-sm border border-[var(--highlight)] rounded-2xl p-8 shadow-xl"
+            class="absolute w-full bg-[var(--background-overlay)] backdrop-blur-sm border border-[var(--highlight)] rounded-2xl p-6 md:p-8 shadow-xl"
             :class="{ 'z-10': isActive(review) }"
           >
-            <div class="flex flex-col md:flex-row gap-6 items-start">
+            <div class="flex flex-col md:flex-row gap-4 md:gap-6 items-center md:items-start">
               <img 
                 :src="review.avatar" 
                 :alt="review.name"
-                class="w-20 h-20 rounded-full border-2 border-[var(--highlight)]"
+                class="w-12 h-12 md:w-20 md:h-20 rounded-full border-2 border-[var(--highlight)]"
               >
-              <div class="text-left flex-1">
-                <div class="flex flex-col md:flex-row justify-between items-start mb-4">
-                  <h3 class="text-xl font-semibold text-[var(--text-light)]">{{ review.name }}</h3>
-                  <div class="flex gap-1 mt-2 md:mt-0">
+              <div class="text-center md:text-left flex-1">
+                <div class="flex flex-col md:flex-row justify-between items-center md:items-start mb-3 md:mb-4">
+                  <h3 class="text-lg md:text-xl font-semibold text-[var(--text-light)] mb-2 md:mb-0">
+                    {{ review.name }}
+                  </h3>
+                  <div class="flex gap-1">
                     <span
                       v-for="star in 5"
                       :key="star"
-                      class="text-xl transition-colors"
+                      class="text-lg md:text-xl transition-colors"
                       :class="star <= review.rating ? 'text-amber-400' : 'text-[var(--text-mainless)]'"
                     >
                       ★
                     </span>
                   </div>
                 </div>
-                <p class="text-[var(--text-mainless)] italic text-lg leading-relaxed">
+                <p class="text-[var(--text-mainless)] italic text-sm md:text-base lg:text-lg leading-relaxed">
                   "{{ review.text }}"
                 </p>
               </div>
@@ -44,20 +46,20 @@
           </div>
         </transition-group>
 
-        <div class="flex justify-center items-center gap-4 mt-0">
+        <div class="flex justify-center items-center gap-2 md:gap-4 mt-6">
           <button
             @click="handlePrev"
-            class="p-3 rounded-full bg-[var(--background-pale)] hover:bg-[var(--highlight)] transition-all"
+            class="p-2 md:p-3 rounded-full bg-[var(--background-pale)] hover:bg-[var(--highlight)] transition-all text-sm md:text-base"
           >
             ←
           </button>
           
-          <div class="flex gap-2">
+          <div class="flex gap-1 md:gap-2">
             <button
               v-for="(_, index) in reviews"
               :key="index"
               @click="handleDotClick(index)"
-              class="w-3 h-3 rounded-full transition-all"
+              class="w-2 h-2 md:w-3 md:h-3 rounded-full transition-all"
               :class="currentIndex === index 
                 ? 'bg-[var(--highlight)] scale-125' 
                 : 'bg-[var(--text-mainless)] opacity-50'"
@@ -66,7 +68,7 @@
           
           <button
             @click="handleNext"
-            class="p-3 rounded-full bg-[var(--background-pale)] hover:bg-[var(--highlight)] transition-all"
+            class="p-2 md:p-3 rounded-full bg-[var(--background-pale)] hover:bg-[var(--highlight)] transition-all text-sm md:text-base"
           >
             →
           </button>
