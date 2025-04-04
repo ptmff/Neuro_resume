@@ -55,6 +55,22 @@ public class AuthService : IAuthService
             City = request.City
         };
 
+        // Добавляем образование, если оно указано
+        if (request.Education != null && request.Education.Any())
+        {
+            foreach (var eduDto in request.Education)
+            {
+                user.Education.Add(new Education
+                {
+                    Institution = eduDto.Institution,
+                    Degree = eduDto.Degree,
+                    Field = eduDto.Field,
+                    StartYear = eduDto.StartYear,
+                    EndYear = eduDto.EndYear
+                });
+            }
+        }
+
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
@@ -63,7 +79,15 @@ public class AuthService : IAuthService
             Email = user.Email,
             Phone = user.Phone,
             Name = user.Name,
-            City = user.City
+            City = user.City,
+            Education = user.Education.Select(e => new EducationDto
+            {
+                Institution = e.Institution,
+                Degree = e.Degree,
+                Field = e.Field,
+                StartYear = e.StartYear,
+                EndYear = e.EndYear
+            }).ToList()
         };
 
         return Result<UserDto>.Success(resultDto);
