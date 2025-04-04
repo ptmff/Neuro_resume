@@ -1,0 +1,97 @@
+{
+  "resumes": [
+    {
+      "id": 1,
+      "title": "Резюме для Frontend",
+      "date": "2025-03-25",
+      "city": "Обнинск",
+      "job": "Frontend-разработчик",
+      "experience": [
+        {
+          "company": "Google",
+          "position": "Frontend-разработчик",
+          "startDate": "2023-01",
+          "endDate": "2024-03",
+          "description": "Разработка интерфейсов на Vue, интеграция с REST API"
+        }
+      ],
+      "skills": [
+        "VueJS",
+        "REST API",
+        "Vite",
+        "Pinia"
+      ],
+      "template": "классический",
+      "description": "Фронтенд-разработчик, увлечённый созданием масштабируемых и быстрых интерфейсов. Люблю Vue, разбираюсь в архитектуре приложений, всегда стремлюсь к чистому и удобному UI ( или не особо, но это не точно )."
+    },
+    {
+      "id": 2,
+      "title": "Резюме для Пиу-пиу-пиуу",
+      "date": "2025-03-16",
+      "city": "Москва",
+      "job": "Проджект-менеджер",
+      "experience": [
+        {
+          "company": "VK",
+          "position": "teamlead",
+          "startDate": "2017-02",
+          "endDate": "2019-01",
+          "description": "всех пиздил палкой по жопе"
+        },
+        {
+          "company": "Google",
+          "position": "Frontend",
+          "startDate": "2019-02",
+          "endDate": "2021-04",
+          "description": "fffffff"
+        },
+        {
+          "company": "Яндекс",
+          "position": "PM",
+          "startDate": "2022-01",
+          "endDate": "2024-02",
+          "description": "Управление продуктовой командой, внедрение Scrum"
+        }
+      ],
+      "skills": [
+        "Agile",
+        "Scrum",
+        "Jira",
+        "Коммуникация",
+        "абрикос"
+      ],
+      "template": "профессиональный",
+      "description": "Опытный проджект-менеджер с ярко выраженными лидерскими качествами. Умею организовать хаос, встроить Scrum даже в каменный век и довести команду до результата — пусть даже палкой по жопе."
+    },
+    {
+      "title": "test555555555",
+      "city": "test5",
+      "job": "test",
+      "experience": [
+        {
+          "company": "test",
+          "position": "test",
+          "startDate": "2005-05",
+          "endDate": "2025-03",
+          "description": "test"
+        },
+        {
+          "company": "test1",
+          "position": "test1",
+          "startDate": "2007-07",
+          "endDate": "2007-09",
+          "description": "test1"
+        }
+      ],
+      "skills": [
+        "test",
+        "test1",
+        "test3"
+      ],
+      "template": "технический",
+      "description": "Опытный проджект-менеджер с ярко выраженными лидерскими качествами. Умею организовать хаос, встроить Scrum даже в каменный век и довести команду до результата — пусть даже палкой по жопе.",
+      "date": "2025-03-16",
+      "id": 1742149153043
+    }
+  ]
+}

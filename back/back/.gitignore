@@ -1,0 +1,13 @@
+.idea
+back.API/bin
+back.API/obj
+back.Application/bin
+back.Application/obj
+back.Domain/bin
+back.Domain/obj
+back.Infrastructure/bin
+back.Infrastructure/obj
+back.Tests/bin
+back.Tests/obj
+/back.API/appsettingsjson
+/back.API/wwwroot/uploads/
