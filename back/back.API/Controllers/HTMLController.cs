@@ -13,15 +13,37 @@ namespace back.API.Controllers
     [Route("api/[controller]")]
     public class ResumeController : ControllerBase
     {
+        private readonly IHtmlGenerator _htmlGenerator;
+        private readonly IPdfGenerator _pdfGenerator;
+
+        public ResumeController()
+        {
+            _htmlGenerator = new HtmlGenerator();
+            _pdfGenerator = new PdfGenerator();
+        }
+
         [HttpPost("generate-html")]
         public async Task<IActionResult> GenerateHtml([FromBody] ResumeDto resumeDto)
         {
             if (resumeDto == null)
-            {
                 return BadRequest("Неверные данные резюме.");
-            }
 
-            string htmlTemplate = $@"
+            string htmlContent = _htmlGenerator.Generate(resumeDto);
+            byte[] fileBytes = Encoding.UTF8.GetBytes(htmlContent);
+            return File(fileBytes, "text/html", "resume.html");
+        }
+    }
+
+    public interface IHtmlGenerator
+    {
+        string Generate(ResumeDto resumeDto);
+    }
+
+    public class HtmlGenerator : IHtmlGenerator
+    {
+        public string Generate(ResumeDto resumeDto)
+        {
+            return $@"
 <!DOCTYPE html>
 <html>
 <head>
@@ -51,21 +73,25 @@ namespace back.API.Controllers
     </ul>
 </body>
 </html>";
+        }
+    }
 
-            var browserFetcher = new BrowserFetcher();
-            await browserFetcher.DownloadAsync();
+    public interface IPdfGenerator
+    {
+        Task<byte[]> GeneratePdfAsync(string htmlContent);
+    }
 
+    public class PdfGenerator : IPdfGenerator
+    {
+        public async Task<byte[]> GeneratePdfAsync(string htmlContent)
+        {
+            await new BrowserFetcher().DownloadAsync();
             var launchOptions = new LaunchOptions { Headless = true };
-
             using (var browser = await Puppeteer.LaunchAsync(launchOptions))
             using (var page = await browser.NewPageAsync())
             {
-                await page.SetContentAsync(htmlTemplate);
-
-                string renderedHtml = await page.GetContentAsync();
-
-                byte[] fileBytes = Encoding.UTF8.GetBytes(renderedHtml);
-                return File(fileBytes, "text/html", "resume.html");
+                await page.SetContentAsync(htmlContent);
+                return await page.PdfDataAsync();
             }
         }
     }
