@@ -24,35 +24,47 @@ public class ResumeService : IResumeService
             return Result<IEnumerable<Resume>>.Success(resumes);
         }
 
-        public async Task<Result<Resume>> CreateResume(int userId, ResumeDto dto)
-        {
-            var resume = new Resume
-            {
-                Title = dto.Title,
-                Date = dto.Date,
-                Job = dto.Job,
-                Skills = dto.Skills,
-                City = dto.City,
-                Template = dto.Template,
-                Description = dto.Description,
-                // Преобразуем список ExperienceDto в Experience
-                Experience = dto.Experience.Select(e => new Experience
-                {
-                    Company = e.Company,
-                    Position = e.Position,
-                    StartDate = e.StartDate,
-                    EndDate = e.EndDate,
-                    Description = e.Description
-                }).ToList(),
-                UserId = userId
-            };
+    public async Task<Result<Resume>> CreateResume(int userId, ResumeDto dto)
+    {
+        var hasOtherResumes = await _context.Resumes.AnyAsync(r => r.UserId == userId);
 
-            _context.Resumes.Add(resume);
-            await _context.SaveChangesAsync();
-            return Result<Resume>.Success(resume);
+        var resume = new Resume
+        {
+            Title = dto.Title,
+            Date = dto.Date,
+            Job = dto.Job,
+            Skills = dto.Skills,
+            City = dto.City,
+            Template = dto.Template,
+            Description = dto.Description,
+            Experience = dto.Experience?.Select(e => new Experience
+            {
+                Company = e.Company,
+                Position = e.Position,
+                StartDate = e.StartDate,
+                EndDate = e.EndDate,
+                Description = e.Description
+            }).ToList(),
+            UserId = userId
+        };
+
+        _context.Resumes.Add(resume);
+        await _context.SaveChangesAsync();
+
+        if (!hasOtherResumes)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user != null)
+            {
+                user.MainResumeId = resume.Id;
+                await _context.SaveChangesAsync();
+            }
         }
 
-        public async Task<Result> UpdateResume(int userId, int resumeId, ResumeDto dto)
+        return Result<Resume>.Success(resume);
+    }
+
+    public async Task<Result> UpdateResume(int userId, int resumeId, ResumeDto dto)
         {
             var resume = await _context.Resumes.FindAsync(resumeId);
             if (resume == null)
