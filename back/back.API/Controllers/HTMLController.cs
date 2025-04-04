@@ -21,8 +21,6 @@ namespace back.API.Controllers
                 return BadRequest("Неверные данные резюме.");
             }
 
-            // Формирование HTML-строки с использованием данных из DTO.
-            // Предполагается, что ExperienceDto содержит свойства: Position, Company, StartDate и EndDate.
             string htmlTemplate = $@"
 <!DOCTYPE html>
 <html>
@@ -54,23 +52,18 @@ namespace back.API.Controllers
 </body>
 </html>";
 
-            // Загружаем Chromium, если он ещё не скачан.
             var browserFetcher = new BrowserFetcher();
             await browserFetcher.DownloadAsync();
 
             var launchOptions = new LaunchOptions { Headless = true };
 
-            // Запускаем браузер PuppeteerSharp.
             using (var browser = await Puppeteer.LaunchAsync(launchOptions))
             using (var page = await browser.NewPageAsync())
             {
-                // Устанавливаем HTML-контент страницы.
                 await page.SetContentAsync(htmlTemplate);
 
-                // Получаем итоговый HTML-код страницы.
                 string renderedHtml = await page.GetContentAsync();
 
-                // Преобразуем HTML в массив байтов для последующей отправки файла.
                 byte[] fileBytes = Encoding.UTF8.GetBytes(renderedHtml);
                 return File(fileBytes, "text/html", "resume.html");
             }
