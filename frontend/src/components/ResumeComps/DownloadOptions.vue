@@ -133,6 +133,8 @@ const saveResume = async (): Promise<void> => {
     }
 
     resumeStore.setResumeForEdit(resume)
+    // Clear suggestion history after saving
+    resumeStore.clearSuggestionHistory()
     emit('update:modelValue', resume)
     alert('Резюме сохранено!')
   } catch (err) {
@@ -221,3 +223,4 @@ const saveResume = async (): Promise<void> => {
 }
 
 </style>
+

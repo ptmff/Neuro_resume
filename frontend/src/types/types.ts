@@ -16,20 +16,21 @@ export interface Experience {
   startDate: string // YYYY-MM
   endDate: string // YYYY-MM
   description: string
+  id?: string // Adding optional ID for targeting specific experiences
 }
 
 // Тип одного резюме
 export interface Resume {
-  id: number;
-  title: string;
-  job: string;
-  city: string;
-  date: string;
-  skills: string[];
-  experience: Experience[];
-  education: Education[];
-  template: string;
-  description?: string;
+  id: number
+  title: string
+  job: string
+  city: string
+  date: string
+  skills: string[]
+  experience: Experience[]
+  education: Education[]
+  template: string
+  description?: string
 }
 
 // Тип профиля пользователя
@@ -46,7 +47,37 @@ export interface UserProfile {
 }
 
 // Тип для сокращённого редактирования
-export type EditableProfileFields = Pick<UserProfile, 'name' | 'email'>
+export type EditableProfileFields = Pick<UserProfile, "name" | "email">
 
 // Алиас для удобства совместимости
 export type Profile = UserProfile
+
+// AI Suggestion types
+export interface AiSuggestion {
+  id: string
+  type: "skills" | "experience" | "education" | "description" | "title"
+  title: string
+  description: string
+  confidence: number
+  before: any
+  after: any
+  reasoning: string
+  targetExperienceId?: string | null
+}
+
+export interface AiStats {
+  totalSuggestions: number
+  estimatedImprovementScore: number
+  targetPositionMatch: {
+    before: number
+    after: number
+  }
+}
+
+export interface AiSuggestionsResponse {
+  success: boolean
+  resumeId: number
+  suggestions: AiSuggestion[]
+  stats: AiStats
+}
+

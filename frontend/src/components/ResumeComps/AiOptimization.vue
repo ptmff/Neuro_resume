@@ -10,7 +10,11 @@
 
     <!-- Загрузка -->
     <div v-if="isLoading" class="ai-optimization-container p-6 rounded-2xl bg-gradient-to-br from-[var(--neon-purple)]/10 to-[var(--neon-blue)]/10 flex justify-center items-center py-12">
-      <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[var(--neon-purple)]"></div>
+      <div class="flex flex-col items-center">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[var(--neon-purple)] mb-4"></div>
+        <p class="text-[var(--text-secondary)]">Анализируем ваше резюме...</p>
+        <p class="text-xs text-[var(--text-mainless)] mt-2">Это может занять некоторое время</p>
+      </div>
     </div>
 
     <!-- Основной контент -->
@@ -98,13 +102,13 @@
               <div>
                 <p class="text-xs text-[var(--text-mainless)] mb-1">Сейчас:</p>
                 <div class="p-2 rounded bg-[var(--background-pale)] bg-opacity-30 text-sm text-[var(--text-secondary)]">
-                  {{ formatBeforeAfter(suggestion.before) }}
+                  <pre class="whitespace-pre-wrap break-words">{{ formatBeforeAfter(suggestion.before, suggestion.type) }}</pre>
                 </div>
               </div>
               <div>
                 <p class="text-xs text-[var(--text-mainless)] mb-1">Предлагаемое:</p>
                 <div class="p-2 rounded bg-[var(--neon-purple)]/5 border border-[var(--neon-purple)]/10 text-sm text-[var(--text-light)]">
-                  {{ formatBeforeAfter(suggestion.after) }}
+                  <pre class="whitespace-pre-wrap break-words">{{ formatBeforeAfter(suggestion.after, suggestion.type) }}</pre>
                 </div>
               </div>
             </div>
@@ -143,9 +147,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useResumeStore } from '@/stores/resumesStore'
-import type { AiSuggestion } from '@/stores/resumesStore'
+import type { AiSuggestion } from '@/types/types'
 
 // Типы
 interface Experience {
@@ -182,7 +186,12 @@ interface ResumeData {
 }
 
 // Props & Emits
-const props = defineProps<{ resumeData: ResumeData; aiSuggestions?: AiSuggestion[] }>()
+const props = defineProps<{ 
+  resumeData: ResumeData; 
+  aiSuggestions?: AiSuggestion[];
+  modelValue?: ResumeData;
+}>()
+
 const emit = defineEmits(['apply-suggestion', 'next-step', 'prev-step', 'update:modelValue'])
 
 // Store
@@ -194,44 +203,108 @@ const suggestions = computed(() => resumeStore.aiSuggestions)
 const stats = computed(() => resumeStore.aiStats)
 const lastAppliedSuggestion = ref<AiSuggestion | null>(null)
 const suggestionsCount = computed(() => suggestions.value?.length || 0)
+const isApplyingChanges = ref(false)
 
 // Применить улучшение
-const applySuggestion = (s: AiSuggestion) => {
-  lastAppliedSuggestion.value = s
-  const updated = { ...props.resumeData }
-
-  if (s.type === 'skills' && Array.isArray(s.after)) {
-    updated.skills = [...s.after]
-  }
-
-  if (s.type === 'experience') {
-    updated.experience = [...(updated.experience || [])]
-    if (s.targetExperienceId) {
-      const i = updated.experience.findIndex(e => e.id === s.targetExperienceId)
-      if (i !== -1) updated.experience[i].description = s.after as string
-    } else if (updated.experience.length > 0) {
-      updated.experience[0].description = s.after as string
+const applySuggestion = async (suggestion: AiSuggestion) => {
+  isApplyingChanges.value = true
+  
+  try {
+    // Create a deep copy of the current resumeData
+    const updated = JSON.parse(JSON.stringify(props.resumeData))
+    
+    // Apply changes based on suggestion type
+    switch (suggestion.type) {
+      case 'title':
+        updated.title = suggestion.after as string
+        break
+        
+      case 'skills':
+        if (Array.isArray(suggestion.after)) {
+          updated.skills = [...suggestion.after]
+        }
+        break
+        
+      case 'experience':
+        if (Array.isArray(suggestion.after)) {
+          // Handle case where entire experience array is replaced
+          updated.experience = [...suggestion.after]
+        } else if (suggestion.targetExperienceId && updated.experience) {
+          // Handle case where a specific experience entry is updated
+          const index = updated.experience.findIndex((e: { id: string | null | undefined; }) => e.id === suggestion.targetExperienceId)
+          if (index !== -1) {
+            if (typeof suggestion.after === 'object') {
+              updated.experience[index] = {
+                ...updated.experience[index],
+                ...suggestion.after
+              }
+            } else {
+              updated.experience[index].description = suggestion.after as string
+            }
+          }
+        } else if (updated.experience && updated.experience.length > 0) {
+          // Fallback to updating the first experience entry
+          if (typeof suggestion.after === 'object') {
+            updated.experience[0] = {
+              ...updated.experience[0],
+              ...suggestion.after
+            }
+          } else {
+            updated.experience[0].description = suggestion.after as string
+          }
+        }
+        break
+        
+      case 'description':
+        updated.description = suggestion.after as string
+        break
+        
+      case 'education':
+        if (Array.isArray(suggestion.after)) {
+          updated.education = [...suggestion.after]
+        }
+        break
     }
+    
+    // Update the parent component with the new data
+    emit('update:modelValue', updated)
+    
+    // Also update the store if needed
+    if (resumeStore.resumeToEdit && props.resumeData.id === resumeStore.resumeToEdit.id) {
+      // Apply the suggestion directly to the store
+      resumeStore.applySuggestion(suggestion)
+    }
+    
+    // Show the applied suggestion notification
+    lastAppliedSuggestion.value = suggestion
+    
+    // Remove the suggestion from the list
+    resumeStore.aiSuggestions = resumeStore.aiSuggestions.filter(s => s.id !== suggestion.id)
+    
+    // Update stats if available
+    if (resumeStore.aiStats) {
+      resumeStore.aiStats.totalSuggestions--
+    }
+    
+    // Emit the event for parent components
+    emit('apply-suggestion', suggestion)
+    
+    // Auto-hide the notification after 5 seconds
+    setTimeout(() => {
+      if (lastAppliedSuggestion.value?.id === suggestion.id) {
+        lastAppliedSuggestion.value = null
+      }
+    }, 5000)
+  } catch (error) {
+    console.error('[AiOptimization] Error applying suggestion:', error)
+  } finally {
+    isApplyingChanges.value = false
   }
-
-  if (s.type === 'description') {
-    updated.description = s.after as string
-  }
-
-  emit('update:modelValue', updated)
-  emit('apply-suggestion', s)
-
-  // Удаляем применённый из списка
-  resumeStore.aiSuggestions = resumeStore.aiSuggestions.filter(sug => sug.id !== s.id)
-  if (resumeStore.aiStats) resumeStore.aiStats.totalSuggestions--
-
-  setTimeout(() => (lastAppliedSuggestion.value = null), 5000)
 }
 
 // Игнорировать рекомендацию
 const ignoreSuggestion = (id: string) => {
-  resumeStore.aiSuggestions = resumeStore.aiSuggestions.filter(s => s.id !== id)
-  if (resumeStore.aiStats) resumeStore.aiStats.totalSuggestions--
+  resumeStore.ignoreSuggestion(id)
 }
 
 // Отображение значка уверенности
@@ -240,8 +313,40 @@ const getConfidenceBadgeClass = (n: number) =>
   n >= 0.7 ? 'bg-blue-500/20 text-blue-500' :
              'bg-yellow-500/20 text-yellow-500'
 
-// Упрощённый вывод
-const formatBeforeAfter = (v: unknown) => Array.isArray(v) ? v.join(', ') : String(v)
+// Форматирование для отображения before/after значений
+const formatBeforeAfter = (v: unknown, type?: string): string => {
+  if (v === null || v === undefined) {
+    return 'Нет данных'
+  }
+  
+  // Special handling for experience type
+  if (type === 'experience' && Array.isArray(v)) {
+    // For experience, only show the description field
+    if (v.length > 0 && typeof v[0] === 'object' && 'description' in v[0]) {
+      return v[0].description as string
+    }
+  }
+  
+  if (Array.isArray(v)) {
+    if (v.length === 0) {
+      return 'Пустой список'
+    }
+    
+    // For skills and other simple arrays
+    if (typeof v[0] !== 'object') {
+      return v.join(', ')
+    }
+    
+    // For complex objects, still use JSON but with better formatting
+    return JSON.stringify(v, null, 2)
+  }
+  
+  if (typeof v === 'object') {
+    return JSON.stringify(v, null, 2)
+  }
+  
+  return String(v)
+}
 
 // Загрузка при монтировании
 const loadSuggestions = async () => {
@@ -251,9 +356,10 @@ const loadSuggestions = async () => {
   }
 
   try {
+    // Ensure we have all required fields for analysis
     await resumeStore.analyzeResume({
       title: props.resumeData.title || '',
-      date: new Date().toISOString(),
+      date: props.resumeData.date || new Date().toISOString(),
       job: props.resumeData.job || '',
       skills: props.resumeData.skills || [],
       city: props.resumeData.city || '',
@@ -261,12 +367,22 @@ const loadSuggestions = async () => {
       education: props.resumeData.education || [],
       template: props.resumeData.template || '',
       description: props.resumeData.description || '',
-      id: 0
+      id: props.resumeData.id || 0
     })
   } catch (e) {
     console.error('[ResumeAiOptimization] Ошибка анализа резюме:', e)
   }
 }
+
+// Watch for changes to props.resumeData and update if needed
+watch(() => props.resumeData, (newValue) => {
+  if (newValue && !isApplyingChanges.value) {
+    // Only reload suggestions if this is a completely different resume
+    if (resumeStore.resumeToEdit?.id !== newValue.id) {
+      loadSuggestions()
+    }
+  }
+}, { deep: true })
 
 onMounted(loadSuggestions)
 </script>
@@ -336,3 +452,4 @@ onMounted(loadSuggestions)
   }
 }
 </style>
+
