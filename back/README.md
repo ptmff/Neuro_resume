@@ -56,6 +56,74 @@ Neuro Resume — инновационный проект, использующи
 
 ---
 
+
+## Запуск проекта
+
+### 1. Клонирование репозитория
+
+Откройте терминал и выполните команду:
+```bash
+git clone https://github.com/ptmff/neuro_resume.git
+```
+
+### 2. Настройка конфигурации бэкенда
+
+В каталоге `back/back.API` создайте (или отредактируйте) файл `appsettings.json` с необходимыми параметрами подключения к базе данных, JWT и API ИИ. Пример (без конфиденциальных данных):
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Port=5432;Database=Resume;Username=postgres;Password=ВАШ_ПАРОЛЬ"
+  },
+  "Jwt": {
+    "Key": "ВАШ_СЕКРЕТНЫЙ_КЛЮЧ",
+    "Issuer": "your_issuer",
+    "Audience": "your_audience",
+    "ExpireDays": 7
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AI": {
+    "AuthUrl": "https://ngw.devices.sberbank.ru:9443/api/v2/oauth",
+    "GigaChatApiUrl": "https://gigachat.devices.sberbank.ru/api/v1/chat/completions",
+    "AuthorizationKey": "ВАШ_КЛЮЧ",
+    "Scope": "GIGACHAT_API_PERS"
+  }
+}
+```
+
+### 3. Запуск бэкенда
+
+Перейдите в каталог проекта бэкенда и запустите приложение:
+```bash
+cd back/back.API
+dotnet run
+```
+После запуска бэкенд будет доступен по адресу:
+```
+http://localhost:5184/swagger
+```
+Swagger UI позволит вам протестировать API.
+
+### 4. Запуск фронтенда
+
+Перейдите в каталог проекта фронтенда:
+```bash
+cd frontend
+npm install
+npm run dev
+```
+Фронтенд будет доступен по адресу:
+```
+http://localhost:5173/
+```
+
+---
+
+
 ## Вклад и обратная связь
 
 Мы всегда открыты для новых идей и улучшений!  
