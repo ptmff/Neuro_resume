@@ -1,4 +1,6 @@
 .idea
+obj
+back/obj
 back.API/bin
 back.API/obj
 back.Application/bin
@@ -10,4 +12,4 @@ back.Infrastructure/obj
 back.Tests/bin
 back.Tests/obj
 /back.API/appsettingsjson
-/back.API/wwwroot/uploads/
+back.sln.DotSettings.user
