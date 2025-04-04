@@ -27,6 +27,7 @@ public class UserRegisterDto
     public string Password { get; set; }
     public string? Name { get; set; }
     public string? City { get; set; }
+    public List<EducationDto>? Education { get; set; } = new List<EducationDto>();
 }
 
 public class UserLoginDto
