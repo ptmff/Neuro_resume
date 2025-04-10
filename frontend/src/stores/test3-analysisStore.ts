@@ -10,6 +10,7 @@ import {
   animateTimeline
 } from '@/composables/useAnalysisAnimations'
 import { fetchMockAnalysis } from '@/mocks/mockAnalysis'
+import api from '@/api'
 
 interface AnalysisPhase {
   id: string
@@ -133,28 +134,19 @@ export const useAnalysisStore = defineStore('analysisStore', () => {
     try {
       const profileStore = useProfileStore()
       const resumesStore = useResumeStore()
-
+  
       const mainResumeId = profileStore.profile?.mainResumeId
       if (!mainResumeId) throw new Error('Главное резюме не выбрано')
-
+  
       const resume = resumesStore.resumes.find(r => r.id === mainResumeId)
       if (!resume) throw new Error('Не найдено резюме')
-
-      // 🔁 Реальный вызов позже:
-      /*
-      const res = await fetch('/api/analyse', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jobText, resume })
+  
+      const { data } = await api.post('/ResumeAnalysis/analyzeVacancy', {
+        resume,
+        vacancyUrl: jobText
       })
-
-      const data = await res.json()
-      result.value = data.result
-      isBackendDone.value = true
-      */
-
-      const data = await fetchMockAnalysis(jobText)
-      result.value = data.result
+  
+      result.value = data
       isBackendDone.value = true
     } catch (err) {
       console.error('[analysisStore] Ошибка анализа:', err)
