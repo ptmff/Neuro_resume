@@ -29,4 +29,11 @@ public class ResumeAnalysisController : ControllerBase
         var result = await _analysisService. AnalyzeResumeAsync(resume);
         return result.ToActionResult();
     }
+    
+    [HttpPost("analyzeVacancy")]
+    public async Task<IActionResult> AnalyzeResumeVacancy([FromBody] ResumeVacancyAnalysisRequestDto request)
+    {
+        var result = await _analysisService.AnalyzeResumeVacancyAsync(request);
+        return result.ToActionResult();
+    }
 }

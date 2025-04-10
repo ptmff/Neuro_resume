@@ -1,3 +1,5 @@
+using back.Infrastructure.Services;
+
 namespace back.Application.Services;
 
 using System;
@@ -302,6 +304,124 @@ public class ResumeAnalysisService : IResumeAnalysisService
         catch (Exception ex)
         {
             return Result<List<SuggestionDto>>.Failure($"Error during resume analysis: {ex.Message}");
+        }
+    }
+
+    public async Task<Result<VacancyAnalysisResultDto>> AnalyzeResumeVacancyAsync(
+        ResumeVacancyAnalysisRequestDto request)
+    {
+        try
+        {
+            // Получаем параметры из конфигурации
+            var authUrl = _configuration["AI:AuthUrl"];
+            var gigachatUrl = _configuration["AI:GigaChatApiUrl"];
+            var authorizationKey = _configuration["AI:AuthorizationKey"];
+            var scope = _configuration["AI:Scope"];
+
+            var token = await GetAccessTokenAsync(authUrl, authorizationKey, scope);
+            if (string.IsNullOrEmpty(token))
+                return Result<VacancyAnalysisResultDto>.Failure("Access token not obtained");
+
+            // Получаем данные вакансии, используя VacancyHelper.ParseVacancyAsync.
+            // Предполагается, что метод ParseVacancyAsync находится в back.Infrastructure.Services.VacancyHelper.
+            // Он принимает vacancy URL и HttpClient.
+            // Если нужно, можно создать экземпляр HttpClient для этого вызова.
+            string vacancyText;
+            try
+            {
+                // Создаем HttpClient для вызова ParseVacancyAsync, если он не передается извне.
+                using (var client = new HttpClient())
+                {
+                    // Убедитесь, что VacancyHelper не требует специальных настроек и 
+                    // что URL нормализуется внутри метода.
+                    var vacancyDto = await VacancyHelper.ParseVacancyAsync(request.VacancyUrl, client);
+                    // Из vacancyDto можно извлечь текст вакансии, например,
+                    // объединяя основные поля. Здесь предполагаем, что у вас в VacancyDto есть нужные свойства.
+                    vacancyText = JsonConvert.SerializeObject(vacancyDto);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Result<VacancyAnalysisResultDto>.Failure("Error while parsing vacancy: " + ex.Message);
+            }
+
+            // Формируем объединенный текст: резюме пользователя и текст вакансии.
+            // Например, разделитель можно задать явным образом.
+            string combinedText = "Вакансия: " + vacancyText + "\nРезюме: " +
+                                  JsonConvert.SerializeObject(request.Resume, Formatting.None);
+
+            // Формируем системный промпт для анализа соответствия
+            string systemPrompt = @"
+Ты – профессиональный AI-движок для оценки соответствия резюме вакансии. Тебе поступают два текста: 
+1. Текст вакансии.
+2. Резюме пользователя.
+
+Твоя задача проанализировать, насколько резюме пользователя соответствует требованиям вакансии, и вернуть итоговый результат в следующем формате (валидный JSON):
+
+{
+  ""matchScore"": число от 0 до 100,
+  ""missingSkills"": [""скилл1"", ""скилл2"", ...],
+  ""overlappingExperience"": true или false,
+  ""recommendations"": [""рекомендация1"", ""рекомендация2"", ...]
+}
+
+ВАЖНО:
+- ""matchScore"" отражает процент соответствия резюме вакансии.
+                - ""missingSkills"" – список навыков, которых не хватает в резюме для соответствия вакансии.
+            -""overlappingExperience"" – true, если опыт работы в резюме удовлетворяет требованиям вакансии, иначе false.
+            -""recommendations"" – конкретные рекомендации по улучшению резюме, чтобы оно точно соответствовало вакансии.
+                Верни только JSON без лишних символов, без Markdown и без комментариев.
+            ".Trim();
+
+            // Формируем payload для GigaChat
+            var payload = new
+            {
+                model = "GigaChat",
+                stream = false,
+                update_interval = 0,
+                messages = new object[]
+                {
+                    new { role = "system", content = systemPrompt },
+                    new { role = "user", content = combinedText }
+                }
+            };
+
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, gigachatUrl);
+            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            requestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            string payloadJson = JsonConvert.SerializeObject(payload);
+            requestMessage.Content = new StringContent(payloadJson, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.SendAsync(requestMessage);
+            response.EnsureSuccessStatusCode();
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            // Парсим ответ от GigaChat
+            dynamic responseJson = JsonConvert.DeserializeObject(responseContent);
+            string messageContent = responseJson.choices[0]?.message?.content;
+            if (string.IsNullOrWhiteSpace(messageContent))
+                return Result<VacancyAnalysisResultDto>.Failure("No content in AI response");
+
+            // Убираем Markdown обертку, если есть
+            messageContent = Regex.Replace(messageContent.Trim(), @"^```json\s*|\s*```$", "", RegexOptions.Singleline);
+
+            // Десериализуем итоговый JSON согласно формату: matchScore, missingSkills, overlappingExperience, recommendations
+            VacancyAnalysisResultDto resultDto;
+            try
+            {
+                resultDto = JsonConvert.DeserializeObject<VacancyAnalysisResultDto>(messageContent);
+            }
+            catch (Exception ex)
+            {
+                return Result<VacancyAnalysisResultDto>.Failure(
+                    "Failed to parse vacancy analysis result: " + ex.Message);
+            }
+
+            return Result<VacancyAnalysisResultDto>.Success(resultDto);
+        }
+        catch (Exception ex)
+        {
+            return Result<VacancyAnalysisResultDto>.Failure("Error during resume-vacancy analysis: " + ex.Message);
         }
     }
 

@@ -34,3 +34,4 @@ public class ResumeDtoForAi
     public string Template { get; set; }
     public string Description { get; set; }
 }
+

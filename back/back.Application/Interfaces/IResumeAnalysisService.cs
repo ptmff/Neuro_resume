@@ -7,4 +7,5 @@ using Common;
 public interface IResumeAnalysisService
 {
     Task<Result<List<SuggestionDto>>> AnalyzeResumeAsync(ResumeDtoForAi resume);
+    Task<Result<VacancyAnalysisResultDto>> AnalyzeResumeVacancyAsync(ResumeVacancyAnalysisRequestDto request);
 }
