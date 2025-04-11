@@ -9,6 +9,7 @@
     <ItemGroup>
       <ProjectReference Include="..\back.Domain\back.Domain.csproj" />
       <ProjectReference Include="..\back.Infrastructure\back.Infrastructure.csproj" />
+      <PackageReference Include="PuppeteerSharp" Version="20.1.3" />
     </ItemGroup>
 
     <ItemGroup>
