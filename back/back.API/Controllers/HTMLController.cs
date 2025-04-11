@@ -32,9 +32,6 @@ namespace back.API.Controllers
             byte[] fileBytes = Encoding.UTF8.GetBytes(htmlContent);
             return File(fileBytes, "text/html", "resume.html");
         }
-
-        // Если нужно создать эндпоинт для генерации PDF, его можно добавить аналогичным образом,
-        // используя _pdfGenerator.GeneratePdfAsync(htmlContent);
     }
 
     public interface IHtmlGenerator
