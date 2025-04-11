@@ -63,6 +63,88 @@ Neuro Resume — инновационный проект, использующи
 
 ---
 
+# Инструкция по запуску проекта Neuro_resume
+
+Ниже приведены подробные шаги, разделённые по функциональным частям, для корректного запуска проекта.
+
+---
+
+## 1. Клонирование репозитория
+
+Сначала клонируйте репозиторий с GitHub:
+
+```bash
+git clone https://github.com/ptmff/Neuro_resume
+
+Перейдите в каталог с проектом:
+
+cd Neuro_resume
+
+
+
+⸻
+
+2. Настройка серверной части (back.API)
+
+2.1 Создание конфигурационного файла
+
+Перейдите в папку серверной части:
+
+cd back.API
+
+Создайте файл appsettings.json в каталоге back.API (если его ещё нет) со следующим примерным содержимым:
+
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Port=5432;Database=Resume;Username=postgres;Password=пароль"
+  },
+  "Jwt": {
+    "Key": "апи ключ",
+    "Issuer": "your_issuer",
+    "Audience": "your_audience",
+    "ExpireDays": 7
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AI": {
+    "AuthUrl": "https://ngw.devices.sberbank.ru:9443/api/v2/oauth",
+    "GigaChatApiUrl": "https://gigachat.devices.sberbank.ru/api/v1/chat/completions",
+    "AuthorizationKey": "апи ключ",
+    "Scope": "GIGACHAT_API_PERS"
+  }
+}
+
+
+
+2.2 Запуск серверной части
+
+Перейдите в нужную директорию и запустите сервер:
+
+cd ../back.API
+dotnet run
+
+
+
+⸻
+
+3. Запуск клиентской части (frontend)
+
+Перейдите в директорию с фронтендом, установите зависимости и запустите сервер разработки:
+
+cd ../frontend
+npm install
+npm run dev
+
+
+
+⸻
+
+
+
 © 2025 Neuro Resume. Все права защищены.
 
 
