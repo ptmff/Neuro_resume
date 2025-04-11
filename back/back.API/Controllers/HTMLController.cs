@@ -24,15 +24,17 @@ namespace back.API.Controllers
             _pdfGenerator = new PdfGenerator();
         }
 
-        [HttpPost("generate-html")]
-        public async Task<IActionResult> GenerateHtml([FromBody] ResumeDto resumeDto)
+        [HttpPost("generate-pdf")]
+        public async Task<IActionResult> GeneratePdf([FromBody] ResumeDto resumeDto)
         {
             if (resumeDto == null)
                 return BadRequest("Неверные данные резюме.");
 
             string htmlContent = _htmlGenerator.Generate(resumeDto);
-            byte[] fileBytes = Encoding.UTF8.GetBytes(htmlContent);
-            return File(fileBytes, "text/html", "resume.html");
+
+            byte[] pdfFileBytes = await _pdfGenerator.GeneratePdfAsync(htmlContent);
+            return File(pdfFileBytes, "application/pdf", "resume.pdf");
         }
     }
+
 }
