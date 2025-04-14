@@ -1,7 +1,7 @@
 <template>
   <nav
     ref="navRef"
-    class="navbar max-w-[700px] w-full flex justify-center fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-3xl transition-all duration-300"
+    class="navbar max-w-[700px] w-full flex justify-center fixed top-6 left-1/2 -translate-x-1/2 z-50 px-12 py-4 rounded-3xl transition-all duration-300"
     :class="{
       'bg-[var(--primary-dark)]/50 backdrop-blur-2xl shadow-lg': isScrolled,
       'bg-transparent': !isScrolled,
@@ -130,6 +130,11 @@ ul {
 li {
   padding: 0.5rem 1.5rem;
   font-size: 1rem;
+  font-weight: 1000;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+  white-space: nowrap;
 }
 
 @media (max-width: 768px) {
@@ -143,6 +148,8 @@ li {
   li {
     padding: 0.5rem 0.5rem;
     font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
   }
 }
 
